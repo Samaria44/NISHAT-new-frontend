@@ -4,7 +4,7 @@ const path = require("path");
 
 const productRoutes = require("./routes/product.routes");
 const orderRoutes = require("./routes/order.routes");
-
+const categoryRoutes = require("./routes/category.routes");
 const app = express();
 
 app.use(cors());
@@ -17,5 +17,5 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Correct routes
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
-
+app.use("/categories", categoryRoutes);
 module.exports = app;
