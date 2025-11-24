@@ -20,7 +20,10 @@ exports.addCategory = async (req, res) => {
 
 exports.updateCategory = async (req, res) => {
   try {
-    const category = await CategoryService.updateCategory(req.params.id, req.body.name);
+    const category = await CategoryService.updateCategory(
+      req.params.id,
+      req.body.name
+    );
     res.json(category);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -38,7 +41,9 @@ exports.deleteCategory = async (req, res) => {
 
 exports.addSubcategory = async (req, res) => {
   try {
-    const category = await CategoryService.addSubcategory(req.params.id, { name: req.body.name });
+    const category = await CategoryService.addSubcategory(req.params.id, {
+      name: req.body.name,
+    });
     res.json(category);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -47,7 +52,11 @@ exports.addSubcategory = async (req, res) => {
 
 exports.updateSubcategory = async (req, res) => {
   try {
-    const category = await CategoryService.updateSubcategory(req.params.id, req.params.subId, { name: req.body.name });
+    const category = await CategoryService.updateSubcategory(
+      req.params.id,
+      req.params.subId,
+      { name: req.body.name }
+    );
     res.json(category);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -56,7 +65,10 @@ exports.updateSubcategory = async (req, res) => {
 
 exports.deleteSubcategory = async (req, res) => {
   try {
-    const category = await CategoryService.deleteSubcategory(req.params.id, req.params.subId);
+    const category = await CategoryService.deleteSubcategory(
+      req.params.id,
+      req.params.subId
+    );
     res.json(category);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -66,7 +78,11 @@ exports.deleteSubcategory = async (req, res) => {
 exports.updateSubcategoryImage = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-    const category = await CategoryService.updateSubcategoryImage(req.params.id, req.params.subId, req.file);
+    const category = await CategoryService.updateSubcategoryImage(
+      req.params.id,
+      req.params.subId,
+      req.file
+    );
     res.json({ message: "Image updated", category });
   } catch (err) {
     res.status(500).json({ message: err.message });

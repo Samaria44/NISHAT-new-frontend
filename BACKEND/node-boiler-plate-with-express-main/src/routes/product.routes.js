@@ -14,18 +14,23 @@ const router = express.Router();
 
 // Multer setup
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, "../uploads")),
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+  destination: (req, file, cb) =>
+    cb(null, path.join(__dirname, "../uploads")),
+  filename: (req, file, cb) =>
+    cb(null, `${Date.now()}-${file.originalname}`),
 });
 
 const upload = multer({ storage });
 
 // Routes
 router.get("/", getAllProducts);
-router.get("/new", getNewArrivals); 
+router.get("/new", getNewArrivals);
 router.get("/:id", getProductById);
-router.post("/", upload.single("image"), addProduct);
-router.patch("/:id", upload.single("image"), updateProduct);
+
+// ✅ multiple images on add + update
+router.post("/", upload.array("images", 6), addProduct);
+router.patch("/:id", upload.array("images", 6), updateProduct);
+
 router.delete("/:id", deleteProduct);
 
 module.exports = router;
