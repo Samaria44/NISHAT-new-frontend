@@ -5,11 +5,22 @@ const Role = require("./Role");
 const User = require("./Users");
 const Product = require("./productModel");   
 const Order = require("./orderModel");       
+const RefreshToken = require("./RefreshToken");
+// const db = {};
+// db.mongoose = mongoose;
+// db.role = Role;
+// db.user = User;
+// 
+//  RefreshToken,   // ✅ make sure key matches
+//   ROLES: ["user", "admin", "moderator"],
+// module.exports = db;
 
-const db = {};
-db.mongoose = mongoose;
-db.role = Role;
-db.user = User;
 
 
-module.exports = db;
+
+module.exports = {
+  user: User,
+  role: Role,
+  RefreshToken,   // ✅ make sure key matches
+  ROLES: ["user", "admin", "moderator"],
+};

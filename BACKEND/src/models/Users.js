@@ -1,3 +1,4 @@
+//C:\Users\samar\Desktop\GCS\NISHAT-new\BACKEND\src\models\Users.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({

@@ -401,3 +401,74 @@ font-size: 14px;
   border-radius: 50%;
   font-weight: bold;
 }
+/* USER AUTH SIDEBAR */
+.user-sidebar {
+  position: fixed;
+  top: 0;
+  right: -px;
+  width: 340px;
+  height: 100%;
+  background: #fff;
+  z-index: 999;
+  transition: 0.3s ease;
+  padding: 20px;
+  box-shadow: -2px 0 6px rgba(0,0,0,0.2);
+}
+
+.user-sidebar.open {
+  right: 0;
+}
+
+.user-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-form {
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  border-radius: 4px;
+}
+
+.sidebar-btn {
+  padding: 12px;
+  width: 100%;
+  background: black;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.switch-text {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.switch-text span {
+  color: #d40;
+  cursor: pointer;
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 998;
+}

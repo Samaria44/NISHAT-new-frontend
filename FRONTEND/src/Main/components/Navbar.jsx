@@ -13,46 +13,41 @@ import {
 } from "react-icons/fi";
 
 import { CategoryContext } from "../../Admin/context/CategoryContext";
-import { useCart } from "./context/CartContext"; // Cart context
+import { useCart } from "./context/CartContext";
+
+// ✔ Correct Import
+import UserSidebar from "./Login.jsx";
 
 export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loginSidebarOpen, setLoginSidebarOpen] = useState(false);
+
   const { categories } = useContext(CategoryContext);
   const navigate = useNavigate();
 
-  // ✅ Cart count
   const { cartItems } = useCart();
-  const cartCount = cartItems.reduce((acc, item) => acc + (item.qty || 1), 0);
+  const cartCount = cartItems.reduce((acc, i) => acc + (i.qty || 1), 0);
 
-  // ✅ Wishlist count
   const [wishCount, setWishCount] = useState(0);
 
-  const updateWishlistCount = () => {
-    const wish = JSON.parse(localStorage.getItem("wishlist")) || [];
-    setWishCount(wish.length);
-  };
-
   useEffect(() => {
-    updateWishlistCount();
-    // Listen for storage events in case wishlist changes in other tabs/components
-    window.addEventListener("storage", updateWishlistCount);
-    return () => window.removeEventListener("storage", updateWishlistCount);
+    const update = () => {
+      const wish = JSON.parse(localStorage.getItem("wishlist")) || [];
+      setWishCount(wish.length);
+    };
+    update();
+    window.addEventListener("storage", update);
+    return () => window.removeEventListener("storage", update);
   }, []);
-
-  // ✅ Navigation functions
-  const goToCart = () => navigate("/cart");
-  const goToWish = () => navigate("/wishlist");
 
   return (
     <header className="navbar">
-      {/* Top Bar */}
+      {/* TOP BAR */}
       <div className="top-bar">
-        <p>
-          The Wait is Over — Winter Has Arrived. <a href="#">Shop Now!</a>
-        </p>
+        <p>The Wait is Over — Winter Has Arrived. <a href="#">Shop Now!</a></p>
       </div>
 
-      {/* Main Navbar */}
+      {/* MAIN NAVBAR */}
       <div className="navbar-main">
         <div className="mobile-menu-icon" onClick={() => setSidebarOpen(true)}>
           <FiMenu />
@@ -69,29 +64,28 @@ export default function Navbar() {
         <div className="right-icons">
           <FiSearch className="icon" />
 
+          {/* ✔ Login Sidebar Trigger */}
           <FiUser
             className="icon hide-mobile"
-            onClick={() => navigate("/user")} // <-- Add navigation here
-            style={{ cursor: "pointer" }} // optional: show pointer on hover
+            onClick={() => setLoginSidebarOpen(true)}
+            style={{ cursor: "pointer" }}
           />
 
-          {/* Wishlist */}
-          <div className="icon-wrapper" onClick={goToWish}>
+          <div className="icon-wrapper" onClick={() => navigate("/wishlist")}>
             <FiHeart className="icon" />
             {wishCount > 0 && <span className="badge">{wishCount}</span>}
           </div>
 
           <FiTruck className="icon hide-mobile" />
 
-          {/* Cart */}
-          <div className="icon-wrapper" onClick={goToCart}>
+          <div className="icon-wrapper" onClick={() => navigate("/cart")}>
             <FiShoppingCart className="icon" />
             {cartCount > 0 && <span className="badge">{cartCount}</span>}
           </div>
         </div>
       </div>
 
-      {/* Desktop Menu */}
+      {/* DESKTOP MENU */}
       <nav className="menu">
         {categories.map((cat) => (
           <div
@@ -100,6 +94,7 @@ export default function Navbar() {
             onClick={() => navigate(`/category/${cat.name}`)}
           >
             {cat.name}
+
             {cat.subcategories.length > 0 && (
               <div className="submenu">
                 {cat.subcategories.map((sub) => (
@@ -120,7 +115,7 @@ export default function Navbar() {
         ))}
       </nav>
 
-      {/* Mobile Sidebar */}
+      {/* MOBILE SIDEBAR */}
       <div className={`sidebar1 ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar1-header">
           <h4>MENU</h4>
@@ -136,6 +131,7 @@ export default function Navbar() {
               >
                 {cat.name}
               </p>
+
               {cat.subcategories.length > 0 && (
                 <div className="mobile-sub-list">
                   {cat.subcategories.map((sub) => (
@@ -155,8 +151,13 @@ export default function Navbar() {
         </div>
 
         <div className="sidebar1-footer">
-          <p onClick={goToWish}>Wishlist {wishCount > 0 && `(${wishCount})`}</p>
-          <p>Login / Register</p>
+          <p onClick={() => navigate("/wishlist")}>
+            Wishlist {wishCount > 0 && `(${wishCount})`}
+          </p>
+
+          {/* ✔ Login Sidebar Trigger */}
+          <p onClick={() => setLoginSidebarOpen(true)}>Login / Register</p>
+
           <div className="contact">
             <p>Need help?</p>
             <p>042-38103311</p>
@@ -165,10 +166,16 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Overlay */}
+      {/* OVERLAY */}
       {sidebarOpen && (
         <div className="overlay" onClick={() => setSidebarOpen(false)}></div>
       )}
+
+      {/* ✔ RIGHT LOGIN SIDEBAR */}
+      <UserSidebar
+        open={loginSidebarOpen}
+        onClose={() => setLoginSidebarOpen(false)}
+      />
     </header>
   );
 }

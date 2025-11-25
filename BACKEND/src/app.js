@@ -9,6 +9,8 @@ const orderRoutes = require("./routes/order.routes");
 const categoryRoutes = require("./routes/category.routes");
 const newsletterRoutes = require("./routes/newsletter.routes.js");
 const contactRoutes = require("./routes/contact.routes.js");
+const authRoutes = require("./routes/auth.js");
+
 const app = express();
 
 app.use(cors());
@@ -24,4 +26,5 @@ app.use("/orders", orderRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/newsletter", newsletterRoutes);
 app.use("/contact", contactRoutes);
+app.use("/auth", authRoutes);
 module.exports = app;

@@ -1,3 +1,4 @@
+//C:\Users\samar\Desktop\GCS\NISHAT-new\BACKEND\src\middleware\authMiddleware.js
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config");
 const db = require("../models");

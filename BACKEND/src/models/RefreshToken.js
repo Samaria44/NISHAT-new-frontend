@@ -1,3 +1,4 @@
+//C:\Users\samar\Desktop\GCS\NISHAT-new\BACKEND\src\models\RefreshToken.js
 const mongoose = require("mongoose");
 const config = require("../config/auth.config");
 const { v4: uuidv4 } = require('uuid');

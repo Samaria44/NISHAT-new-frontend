@@ -1,8 +1,9 @@
+//C:\Users\samar\Desktop\GCS\NISHAT-new\BACKEND\src\controllers\auth.controller.js
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const config = require("../config/auth.config");
 const db = require("../models");
-const { user: User, role: Role, refreshToken: RefreshToken } = db;
+const { user: User, role: Role, RefreshToken } = db;
 
 // Signup
 exports.signup = async (req, res) => {

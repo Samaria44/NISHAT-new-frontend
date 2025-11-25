@@ -1,4 +1,3 @@
-// App.js
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 
@@ -14,7 +13,7 @@ import OrderDetail from "./Admin/Admincomponents/Orderdetail";
 import AdminCategory from "./Admin/Admincomponents/Admincategory";
 import { CategoryProvider } from "./Admin/context/CategoryContext";
 import CategoryPage from "./Main/pages/CategoryPage";
-import CartProvider from "./Main/components/context/CartContext"
+import CartProvider from "./Main/components/context/CartContext";
 import Cart from "./Main/pages/cart";
 import ThankYou from "./Main/pages/ThankYou";
 import Wishlist from "./Main/components/Wishlist";
@@ -27,30 +26,28 @@ import Contact from "./Main/pages/contact";
 import ContactAdmin from "./Admin/Admincomponents/Users";
 import AboutUs from "./Main/pages/Aboutus";
 import PrivacyPolicy from "./Main/components/privacypolicy";
-import Signup from "./Main/components/Signup";
-import ForgotPassword from "./Main/components/ForgotPassword";
-import ResetPassword from "./Main/components/ResetPassword";
+import UserLogin from "./Admin/Admincomponents/user-login"; // rename component to PascalCase
+
 function App() {
   const router = createBrowserRouter([
+    // Main frontend routes
     {
       path: "/",
       element: <AppLayout />,
       children: [
         { path: "/", element: <Home /> },
-        // { path:"/" ,element: <CategoryCarousel />},
-        {path:"/category/:categoryName" ,element:<CategoryPage />},
-         {path:"/category/:categoryName/:subName" ,element:<CategoryPage />},
-        {path:"cart",element:<Cart/>},
-        // {path:"checkout",element:<Checkout/>},
-        {path:"thank-you",element:<ThankYou/>},
-        {path:"wishlist",element:<Wishlist/>},
-        {path:"product/:id",element:<ProductDetail/>},
-        {path:"contact",element:<Contact/>},
-        {path:"/about-us",element:<AboutUs/>},
-        {path:"/privacy-policy",element:<PrivacyPolicy/>},
-    
+        { path: "category/:categoryName", element: <CategoryPage /> },
+        { path: "category/:categoryName/:subName", element: <CategoryPage /> },
+        { path: "cart", element: <Cart /> },
+        { path: "checkout", element: <Checkout /> },
+        { path: "thank-you", element: <ThankYou /> },
+        { path: "wishlist", element: <Wishlist /> },
+        { path: "product/:id", element: <ProductDetail /> },
+        { path: "contact", element: <Contact /> },
+        { path: "about-us", element: <AboutUs /> },
+        { path: "privacy-policy", element: <PrivacyPolicy /> },
         {
-          path: "/User",
+          path: "user",
           element: (
             <ProtectedRoute>
               <User />
@@ -59,21 +56,23 @@ function App() {
         },
       ],
     },
-        { path: "/Login", element: <Login /> },
-        { path: "/forgot-password", element: <ForgotPassword /> },
-        { path: "/reset-password", element: <ResetPassword /> },  
-        {path:"/signup",element:<Signup/>},
-     {path:"checkout",element:<Checkout/>},
-    { path: "/dashboard/login", element: <AdminLogin /> },
+
+    { path: "/login", element: <Login /> },
+
+    // Admin routes
+    {
+      path: "/dashboard/login",
+      element: <AdminLogin />,
+    },
     {
       path: "/dashboard",
       element: <AdminLayout />,
       children: [
-        // { path: "", element: <Admin /> },
         { path: "products", element: <ProductUpload /> },
-        { path: "category", element: <AdminCategory /> }, 
+        { path: "category", element: <AdminCategory /> },
         { path: "orders", element: <Orders /> },
         { path: "users", element: <ContactAdmin /> },
+        { path: "users-login", element: <UserLogin /> }, // relative path
         { path: "orderdetail/:id", element: <OrderDetail /> },
         { path: "newsletter", element: <Newsletter /> },
       ],
@@ -82,9 +81,8 @@ function App() {
 
   return (
     <CategoryProvider>
-      
       <CartProvider>
-      <RouterProvider router={router} />
+        <RouterProvider router={router} />
       </CartProvider>
     </CategoryProvider>
   );

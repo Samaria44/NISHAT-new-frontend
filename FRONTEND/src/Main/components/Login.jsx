@@ -1,88 +1,185 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { FiX } from "react-icons/fi";
 import axios from "axios";
 import "./Login.css";
 
-const BACKEND_URL = "http://localhost:8000/api/auth";
+const BACKEND_URL = "http://localhost:8000/auth"; // your backend API
 
-export default function Login() {
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-  const navigate = useNavigate();
-
-  // Check if user is already logged in
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) navigate("/user");
-  }, [navigate]);
+const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
+  const [view, setView] = useState("login"); 
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginForm((prev) => ({ ...prev, [name]: value }));
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!loginForm.email || !loginForm.password) {
-      alert("Enter all fields");
-      return;
-    }
-
+  // LOGIN
+  const handleLogin = async () => {
+    if (!form.email || !form.password) return alert("Enter email & password");
     try {
-      const res = await axios.post(`${BACKEND_URL}/signin`, loginForm);
+      setLoading(true);
+      const res = await axios.post(`${BACKEND_URL}/signin`, {
+        email: form.email,
+        password: form.password,
+      });
+
       localStorage.setItem("accessToken", res.data.accessToken);
       localStorage.setItem("refreshToken", res.data.refreshToken);
-      localStorage.setItem("user", JSON.stringify({
-        id: res.data.id,
-        email: res.data.email,
-        firstName: res.data.firstName,
-        lastName: res.data.lastName,
-        roles: res.data.roles,
-      }));
-      navigate("/user");
+      localStorage.setItem("user", JSON.stringify(res.data));
+      alert("Login successful!");
+      onLoginSuccess?.(); // callback to update UI
+      onClose();
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // SIGNUP
+  const handleSignup = async () => {
+    if (!form.name || !form.email || !form.password)
+      return alert("All fields are required!");
+    try {
+      setLoading(true);
+      await axios.post(`${BACKEND_URL}/signup`, {
+        firstName: form.name.split(" ")[0] || "",
+        lastName: form.name.split(" ")[1] || "",
+        email: form.email,
+        password: form.password,
+      });
+      alert("Account created successfully! Please login.");
+      setView("login");
+      setForm({ name: "", email: "", password: "" });
+    } catch (err) {
+      alert(err.response?.data?.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // FORGOT PASSWORD
+  const handleForgot = async () => {
+    if (!form.email) return alert("Enter your email");
+    try {
+      setLoading(true);
+      await axios.post(`${BACKEND_URL}/forgot-password`, { email: form.email });
+      alert("Password reset link sent! Check your email.");
+      setView("login");
+    } catch (err) {
+      alert(err.response?.data?.message || "Error sending reset link");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleLogin}>
-        <h2>Login</h2>
-
-        <div className="input-group">
-          <label>Email</label>
-          <input
-            name="email"
-            type="email"
-            placeholder="Enter your email"
-            value={loginForm.email}
-            onChange={handleChange}
-            required
-          />
+    <>
+      <div className={`user-sidebar ${open ? "open" : ""}`}>
+        <div className="user-sidebar-header">
+          <h3>
+            {view === "login" && "Login"}
+            {view === "signup" && "Create Account"}
+            {view === "forgot" && "Forgot Password"}
+          </h3>
+          <FiX className="close-icon" onClick={onClose} />
         </div>
 
-        <div className="input-group">
-          <label>Password</label>
-          <input
-            name="password"
-            type="password"
-            placeholder="Enter your password"
-            value={loginForm.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        <div className="user-sidebar-content">
+          {/* LOGIN */}
+          {view === "login" && (
+            <div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="input"
+                value={form.email}
+                onChange={handleChange}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="input"
+                value={form.password}
+                onChange={handleChange}
+              />
+              <button className="primary-btn" onClick={handleLogin} disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
+              </button>
+              <p className="link" onClick={() => setView("forgot")}>Forgot Password?</p>
+              <p className="switch-text">
+                Don't have an account?{" "}
+                <span className="link" onClick={() => setView("signup")}>Sign up</span>
+              </p>
+            </div>
+          )}
 
-        <button type="submit" className="login-btn">Sign in</button>
+          {/* SIGNUP */}
+          {view === "signup" && (
+            <div>
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                className="input"
+                value={form.name}
+                onChange={handleChange}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="input"
+                value={form.email}
+                onChange={handleChange}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="input"
+                value={form.password}
+                onChange={handleChange}
+              />
+              <button className="primary-btn" onClick={handleSignup} disabled={loading}>
+                {loading ? "Signing up..." : "Create Account"}
+              </button>
+              <p className="switch-text">
+                Already have an account?{" "}
+                <span className="link" onClick={() => setView("login")}>Login</span>
+              </p>
+            </div>
+          )}
 
-        <div className="login-links">
-          <a href="/forgot-password">Forgot Password?</a>
-          <span> | </span>
-          <a href="/signup">Create an Account</a>
-          <span> | </span>
-          <a href="/reset-password">Reset Password</a>
+          {/* FORGOT PASSWORD */}
+          {view === "forgot" && (
+            <div>
+              <p>Enter your email and we'll send password reset link.</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="input"
+                value={form.email}
+                onChange={handleChange}
+              />
+              <button className="primary-btn" onClick={handleForgot} disabled={loading}>
+                {loading ? "Sending..." : "Send Reset Link"}
+              </button>
+              <p className="switch-text">
+                Back to{" "}
+                <span className="link" onClick={() => setView("login")}>Login</span>
+              </p>
+            </div>
+          )}
         </div>
-      </form>
-    </div>
+      </div>
+      {open && <div className="overlay" onClick={onClose}></div>}
+    </>
   );
-}
+};
+
+export default UserSidebar;

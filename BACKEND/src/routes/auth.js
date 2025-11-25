@@ -1,7 +1,9 @@
+//C:\Users\samar\Desktop\GCS\NISHAT-new\BACKEND\src\routes\auth.js
 const express = require("express");
 const router = express.Router();
 const { verifySignUp, authJwt } = require("../middleware");
 const authController = require("../controllers/auth.controller");
+
 
 // Signup & Signin
 router.post("/signup", [verifySignUp.checkDuplicateEmail, verifySignUp.checkRolesExisted], authController.signup);
