@@ -1,0 +1,228 @@
+/* ====== ORDERS PAGE WRAPPER ====== */
+.order-table-container {
+  margin-left: 279px;         /* match sidebar width */
+         /* space for fixed header */
+  margin-right: 24px;
+  margin-bottom: 32px;
+  background: #ffffff;
+  padding: 22px 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  font-family: "Poppins", sans-serif;
+}
+
+/* ====== HEADER ====== */
+.order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.order-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.order-title .count {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f3f4f6;
+}
+
+/* ====== TABLE BASE ====== */
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.order-table thead {
+  background: #f9fafb;
+}
+
+.order-table th,
+.order-table td {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.order-table thead th {
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.order-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.18s ease;
+}
+
+.order-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.order-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* ====== ORDER ID LINK ====== */
+.order-id-link {
+  cursor: pointer;
+  font-weight: 600;
+  color: #111827;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+}
+
+.order-id-link:hover {
+  text-decoration: underline;
+}
+
+/* ====== STATUS SELECT ====== */
+.status {
+  border-radius: 999px;
+  padding: 4px 10px;
+  border: 1px solid #d1d5db;
+  font-size: 12px;
+  outline: none;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+/* Default */
+.status.pending {
+  background: #fef3c7;
+  border-color: #fbbf24;
+  color: #92400e;
+}
+
+.status.shipped {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
+.status.delivered {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.status.cancelled {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+/* When no explicit class (fallback) */
+.status option {
+  color: #111827;
+}
+
+/* ====== DELETE ICON ====== */
+.delete {
+  cursor: pointer;
+  font-size: 18px;
+  color: #9ca3af;
+  transition: color 0.18s ease, transform 0.12s ease;
+}
+
+.delete:hover {
+  color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+/* ====== "NO ORDERS" ROW ====== */
+.order-table td[colspan] {
+  padding: 14px 12px;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 1024px) {
+  .order-table-container {
+    margin-left: 220px;
+    margin-right: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .order-table-container {
+    margin-left: 0;
+    margin-top: 80px;
+    margin-right: 12px;
+    margin-left: 12px;
+    padding: 16px 14px;
+  }
+
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .order-table,
+  .order-table thead,
+  .order-table tbody,
+  .order-table th,
+  .order-table td,
+  .order-table tr {
+    display: block;
+  }
+
+  .order-table thead {
+    display: none;
+  }
+
+  .order-table tr {
+    background: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    padding: 8px 8px 6px;
+  }
+
+  .order-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+
+  .order-table td:last-child {
+    border-bottom: none;
+  }
+
+  .order-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 10px;
+  }
+
+  .status {
+    margin-left: auto;
+  }
+}

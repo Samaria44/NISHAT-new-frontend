@@ -1,0 +1,258 @@
+.pd-page {
+  display: flex;
+  gap: 32px;
+  padding: 40px 10%;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* LEFT */
+.pd-left {
+  display: flex;
+  gap: 16px;
+  flex: 1.2;
+}
+
+.pd-thumbs-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.thumb-arrow {
+  background: #eee;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 16px;
+}
+
+.pd-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+ 
+ 
+  scroll-behavior: smooth;
+}
+
+/* Thumbnails */
+.pd-thumb-img {
+  width: 127px;
+  height: 153px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s, border 0.3s, filter 0.3s;
+  filter: blur(2px); /* default: slightly blurred */
+  opacity: 1; /* dim inactive thumbnails */
+}
+
+.pd-thumb-img.active {
+ 
+  transform: scale(1.05);
+  filter: blur(0); 
+  opacity: 1;
+}
+
+
+.pd-main-image-wrapper {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.pd-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s, opacity 0.5s;
+}
+.pd-main-image:hover {
+  transform: scale(1.1);
+}
+
+.fade {
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.main-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: #fff;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 24px;
+  z-index: 2;
+}
+.main-arrow.left { left: 10px; }
+.main-arrow.right { right: 26px; }
+
+/* RIGHT */
+.pd-right {
+  flex: 1;
+}
+
+.pd-title { font-size: 26px; font-weight: 600; margin-bottom: 8px; }
+.pd-price { font-size: 22px; color: gray; margin-bottom: 12px; }
+
+.pd-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ccc;
+  padding: 11px 22px;
+  border-radius: 26px;
+}
+.quantity-selector button {
+  border: none;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 28px;
+  width: 28px;
+  height: 22px;
+  border-radius: 4px;
+}
+
+.pd-add-cart-btn {
+  padding: 14px 20px;
+  border-radius: 24px;
+  border: none;
+  background: #222;
+  color: #fff;
+  font-size: 15px;
+ 
+  cursor: pointer;
+}
+
+.pd-wishlist-btn {
+  padding: 10px 11px;
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  background: #fff;
+  font-size: 26px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.pd-social-share {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+
+.pd-social-share { margin-top: 16px; display: flex; gap: 10px; }
+
+.pd-back-btn {
+  margin-top: 20px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* DESCRIPTION STYLING */
+.pd-description-dropdown {
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background: #ffffff; 
+}
+
+.pd-description-dropdown h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.pd-description-dropdown p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  margin: 0;
+}
+.desc-toggle {
+  border: none;
+  background: transparent;
+  color: #000000;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* QUANTITY SELECTOR */
+
+
+/* RELATED PRODUCTS */
+.related-products {
+  margin-top: 40px;
+}
+
+.related-products h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.related-products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* .related-product-card {
+  width: 180px;
+  cursor: pointer;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+} */
+
+.related-product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.related-product-img {
+  width: 100%;
+  height: 634px;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.related-product-name {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.related-product-price {
+  font-size: 14px;
+  color: gray;
+}

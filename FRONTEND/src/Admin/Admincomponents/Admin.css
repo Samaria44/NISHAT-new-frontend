@@ -1,0 +1,178 @@
+/* ROOT CONTAINER FOR ADMIN */
+.admin-dashboard {
+  background-color: #f4f5f7;
+  font-family: "Poppins", sans-serif;
+  color: #222;
+}
+
+/* ===== HEADER ===== */
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 256px; 
+  right: 0;
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e2e2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 900;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+/* Header left (title + subtitle) */
+.admin-header-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-title {
+  font-size: 30px;
+  font-weight: 600;
+  color: #111827;
+}
+
+
+
+/* Header right (logout + avatar) */
+.admin-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #111827;
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Logout Button */
+.logout-btn {
+  background: #111827;
+  color: #ffffff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+}
+
+.logout-btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+}
+
+/* ===== DASHBOARD OVERVIEW SECTION ===== */
+.dashboard-overview {
+  margin-left: 300px; /* sidebar width */
+  margin-top: 80px;   /* header height + spacing */
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 20px 28px 28px;
+}
+
+/* Cards Base */
+.card {
+  flex: 1;
+  min-width: 240px;
+  max-width: 320px;
+  border-radius: 16px;
+  padding: 18px 18px 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Colored top accent bar */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  border-radius: 999px;
+}
+
+/* Specific card colors */
+.product-card {
+  background: #ffffff;
+}
+.product-card::before {
+  background: linear-gradient(135deg, #f97316, #fb923c);
+}
+
+.order-card {
+  background: #ffffff;
+}
+.order-card::before {
+  background: linear-gradient(135deg, #22c55e, #4ade80);
+}
+
+.user-card {
+  background: #ffffff;
+}
+.user-card::before {
+  background: linear-gradient(135deg, #eab308, #facc15);
+}
+
+/* Card Text */
+.card h3 {
+  color: #6b7280;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.card p {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin: 3px 0 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .admin-header {
+    left: 220px;
+  }
+
+  .dashboard-overview {
+    margin-left: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    left: 0;
+  }
+
+  .dashboard-overview {
+    margin-left: 0;
+    padding: 80px 16px 24px;
+  }
+
+  .card {
+    min-width: 100%;
+  }
+}

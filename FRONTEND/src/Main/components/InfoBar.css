@@ -1,0 +1,81 @@
+.info-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 40px 80px;
+  background: #fff;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 80%;
+  margin: auto;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 22%;
+}
+
+.info-icon {
+  font-size: 32px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.info-text h4 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.info-text p {
+  font-size: 0.9rem;
+  margin: 4px 0 0 0;
+  color: #777;
+  line-height: 1.4;
+}
+
+/* ===== MOBILE CAROUSEL ===== */
+@media (max-width: 768px) {
+  .info-bar-wrapper {
+    position: relative;
+  }
+
+  .info-bar {
+    flex-wrap: nowrap;
+    overflow: hidden;
+    padding: 20px;
+  }
+
+  .info-item {
+    flex: 0 0 100%; /* show 1 item at a time */
+    justify-content: center;
+    text-align: center;
+  }
+
+  .info-item.hidden {
+    display: none;
+  }
+
+  /* Dots */
+  .dots {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .dot {
+    height: 10px;
+    width: 10px;
+    background: #ccc;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .dot.active {
+    background: #c59f5d;
+  }
+}

@@ -1,0 +1,442 @@
+/* ====== GLOBAL STYLES ====== */
+body {
+  font-family: "Poppins", sans-serif;
+  background: #ffffff;
+  color: #111827;
+  margin: 0;
+  padding: 0;
+}
+
+/* ====== PRODUCTS PAGE WRAPPER ====== */
+.products-page {
+  margin-left: 279px;         
+  /* margin-top: 80px;             */
+  margin-right: 24px;
+  margin-bottom: 32px;
+  background: #ffffff;
+  padding: 22px 24px;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+/* ====== HEADER ====== */
+.products-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.products-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.products-header h2 {
+  font-size: 20px;
+  color: #111827;
+  font-weight: 600;
+  margin: 0;
+}
+
+.products-header span {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.products-header button {
+  background: #111827;
+  color: #fff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.products-header button:hover {
+  background-color: #000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+}
+
+/* ====== TABLE ====== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 13px;
+}
+
+thead th {
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+/* Table images */
+td img {
+  /* border-radius: 10px; */
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+}
+
+/* Action icons */
+td svg {
+  cursor: pointer;
+  margin-right: 8px;
+  color: #6b7280;
+  transition: color 0.18s ease, transform 0.08s ease;
+  font-size: 18px;
+}
+
+td svg:hover {
+  color: #111827;
+  transform: translateY(-1px);
+}
+
+/* ====== POPUP OVERLAY ====== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  backdrop-filter: blur(2px);
+}
+
+/* ====== POPUP FORM CARD ====== */
+.popup-form {
+  background: #ffffff;
+  padding: 22px 24px;
+  border-radius: 18px;
+  width: 400px;
+  max-width: 92vw;
+  position: relative;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+  animation: popupShow 0.26s ease-out;
+}
+
+/* Small top bar accent */
+.popup-form::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 18px;
+  right: 18px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f97316, #fb923c);
+}
+
+@keyframes popupShow {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Popup heading (optional, if you add h3 inside) */
+.popup-form h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Form layout */
+.popup-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.popup-form label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+/* Inputs / Select / Textarea */
+.popup-form input,
+.popup-form textarea,
+.popup-form select {
+  padding: 9px 11px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  background: #ffffff;
+  color: #111827;
+}
+
+.popup-form input::placeholder,
+.popup-form textarea::placeholder {
+  color: #9ca3af;
+}
+
+/* Focus state */
+.popup-form input:focus,
+.popup-form textarea:focus,
+.popup-form select:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.08);
+}
+
+/* Dropdown styling */
+.popup-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='18' viewBox='0 0 24 24' width='18' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+.popup-form textarea {
+  resize: none;
+  min-height: 80px;
+}
+
+/* Submit button */
+.popup-form button {
+  margin-top: 6px;
+  background-color: #111827;
+  color: #fff;
+  border: none;
+  padding: 3px 5px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  transition: background 0.2s ease, transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.popup-form button:hover {
+  background-color: #000;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+}
+
+/* ====== CLOSE ICON IN POPUP ====== */
+.popup-form > svg {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.18s ease, transform 0.1s ease;
+  font-size: 20px;
+}
+
+.popup-form > svg:hover {
+  color: #111827;
+  transform: scale(1.05);
+}
+.thumbs-row {
+  display: flex;
+  align-items: center;
+}
+
+.description-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.file-label {
+  font-size: 13px;
+  margin-top: 8px;
+  display: block;
+  opacity: 0.8;
+}
+
+/* ====== IMAGE PREVIEW ====== */
+.popup-form img {
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  max-height: 120px;
+  object-fit: cover;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 1024px) {
+  .products-page {
+    margin-left: 220px;
+    margin-right: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .products-page {
+    margin-left: 0;
+    margin-top: 80px;
+    margin-right: 12px;
+    margin-left: 12px;
+    padding: 16px 14px;
+  }
+
+  .products-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .products-header button {
+    align-self: flex-start;
+  }
+
+  /* MOBILE TABLE STYLE */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    background: #ffffff;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    padding: 8px 8px 6px;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 8px;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+
+  td:last-child {
+    border-bottom: none;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-right: 8px;
+  }
+}
+.preview-wrapper {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.preview-item {
+  position: relative;
+  display: inline-block;
+}
+
+.preview-item img {
+  display: block;
+}
+
+.preview-remove-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  border: none;
+  background: #ff4d4f;
+  color: #fff;
+  border-radius: 50%;
+ padding: 2px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ .thumbs-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.thumb-item {
+  position: relative;
+  display: inline-block;
+}
+
+.thumb-remove-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  border: none;
+  background: #000000;
+  color: #fff;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

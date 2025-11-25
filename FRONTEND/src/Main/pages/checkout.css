@@ -1,0 +1,364 @@
+/* MAIN LAYOUT */
+.ck-container {
+  display: flex;
+  gap: 32px;
+  padding: 10px 17%;
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.ck-left,
+.ck-right {
+ 
+  padding: 28px;
+ 
+}
+
+.ck-left {
+  flex: 2;
+}
+
+.ck-right {
+  flex: 1;
+  
+  position: sticky;
+  top: 30px;
+  background-color: rgb(226, 224, 221);
+}
+
+/* SECTIONS */
+.ck-section {
+  margin-bottom: 26px;
+}
+
+.ck-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #111;
+}
+
+/* LABELS & INPUTS */
+.ck-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.ck-input {
+  width: 100%;
+  padding: 22px 13px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  background: #fafbfc;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.ck-input:focus {
+  border-color: #0b79f7;
+  box-shadow: 0 0 0 2px rgba(11, 121, 247, 0.15);
+  background: #fff;
+}
+.card-input {
+  width: 100%;
+  padding: 22px 13px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  background: #fafbfc;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.card-input:focus {
+  border-color: #0b79f7;
+  box-shadow: 0 0 0 2px rgba(11, 121, 247, 0.15);
+  background: #fff;
+}
+/* GRID */
+.ck-two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* TEXTS */
+.ck-muted-text {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.ck-error-text {
+  color: #d93025;
+  font-size: 12px;
+  margin-top: -6px;
+  margin-bottom: 8px;
+}
+
+/* PAYMENT OPTIONS */
+.ck-payment-options {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.ck-payment-option-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  font-size: 14px;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.ck-payment-option-card:hover {
+  border-color: #0b79f7;
+  background: #f2f6ff;
+}
+
+.ck-payment-option-card input {
+  accent-color: #0b79f7;
+}
+
+/* CARD DETAILS */
+.ck-card-details {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f8f9fc;
+  border: 1px solid #e2e4ee;
+}
+
+/* SUMMARY */
+.ck-summary-items {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ck-summary-card {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+ 
+  transition: background 0.2s;
+}
+
+
+
+.ck-summary-img {
+  width: 105px;
+  height: 104px;
+  border-radius: 10px;
+border-style: ridge;
+}
+
+.ck-summary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ck-summary-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ck-summary-meta {
+  font-size: 12px;
+  color: #666;
+}
+
+.ck-summary-price {
+  font-size: 13px;
+  color: #444;
+}
+
+.ck-summary-total {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* TOTALS BOX */
+.ck-total-box {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e4e4e4;
+}
+
+.ck-row-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.ck-total-row {
+  font-size: 23px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+/* BUTTON */
+.ck-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #111;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.ck-btn:hover {
+  background: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.ck-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .ck-container {
+    flex-direction: column;
+    padding: 20px 12px;
+  }
+
+  .ck-right {
+    position: static;
+    margin-top: 16px;
+  }
+}
+/* FIELD WRAPPER – to keep gaps consistent */
+.ck-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.ck-two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px; /* thora zyada gap for better spacing */
+}
+.ck-summary-img-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.ck-qty-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #111;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 7px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+}
+/* HEADER */
+.ck-header {
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  background: #ffffff;
+}
+
+.ck-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 8%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* .ck-logo {
+  font-size: 22px;
+  letter-spacing: 0.25em;
+  font-weight: 700;
+  cursor: pointer;
+} */
+.ck-logo {
+  font-size: 55px;
+  font-weight: 700;
+  color: #b68c44;
+  text-transform: lowercase;
+ 
+}
+.ck-cart-icon-btn {
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ck-cart-icon {
+  font-size: 22px;
+}
+
+.ck-cart-count {
+  font-size: 12px;
+  background: #111;
+  color: #fff;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+/* FOOTER SECTION (inside right summary) */
+.ck-footer {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #555;
+}
+
+.ck-footer-line {
+  height: 1px;
+  background: #ccc;
+  margin-bottom: 10px;
+}
+
+.ck-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.ck-footer-links button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -1,0 +1,144 @@
+/* ===== Footer Container ===== */
+.footer-container {
+ background-color: #f7f7f7;
+}
+.footer {
+
+  padding: 40px 30px;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+ margin: auto;
+ width: 80%;
+}
+
+.footer-section {
+  flex: 1 1 200px;
+  margin-right: 5px;
+  text-decoration: none;
+  
+}
+
+.footer-section h4 {
+  font-weight: 600;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+/* Footer links styling */
+.footer-section a {
+  text-decoration: none; /* Remove underline */
+  color: inherit;        /* Inherit text color */
+  transition: color 0.3s;
+}
+
+.footer-section a:hover {
+  color: #b68944; /* Optional hover color */
+}
+
+.footer-section p {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* space between icon and text */
+  margin: 28px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.contact-icon {
+  font-size: 30px;
+  color: #000000;
+}
+
+/* ===== Newsletter ===== */
+.newsletter {
+  display: flex;
+  margin-top: 10px;
+}
+
+.newsletter input {
+  flex: 1;
+  padding: 18px;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-radius: 3px 0 0 3px;
+  font-size: 16px;
+}
+
+.newsletter button {
+  padding: 8px 15px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 0 3px 3px 0;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.newsletter button:hover {
+  background: #b68944;
+}
+
+/* ===== Social Icons ===== */
+.social-icon {
+  margin-top: 15px;
+  display: flex;
+  gap: 12px;
+}
+
+.social-icon svg {
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.social-icon svg:nth-child(1) { color: #3b5998; }
+.social-icon svg:nth-child(2) { color: #e1306c; }
+.social-icon svg:nth-child(3) { color: #ff0000; }
+
+/* ===== Footer Bottom ===== */
+.fbottomcontainer {
+  background: #fffefe;
+
+}
+.footer-bottom {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  margin-top: 30px;
+  font-size: 18px;
+  color: rgb(126, 128, 131);
+ 
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.payment-logos {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  margin-left: 10px;
+  font-size: 73px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .payment-logos {
+    justify-content: center;
+    margin-top: 10px;
+  }
+}

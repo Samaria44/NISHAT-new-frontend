@@ -1,0 +1,129 @@
+.orderdetail-container {
+  padding: 40px;
+  background: #fff;
+  color: #000;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  margin-left: 181px;
+}
+
+.orderdetail-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #000;
+  border-bottom: 2px solid #000;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.order-id {
+  color: #555;
+  font-weight: 500;
+}
+
+/* Order Information Box */
+.orderdetail-info {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  border: 1px solid #ddd;
+  line-height: 1.8;
+}
+
+.orderdetail-info p {
+  font-size: 15px;
+  color: #333;
+  margin: 6px 0;
+}
+
+.orderdetail-info strong {
+  color: #000;
+}
+
+/* Table Styles */
+.orderdetail-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.orderdetail-table th,
+.orderdetail-table td {
+  padding: 14px 18px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
+}
+
+.orderdetail-table th {
+  background: #222020;
+  color: #fff;
+  font-weight: 600;
+}
+
+.orderdetail-table td {
+  color: #333;
+}
+
+.orderdetail-table tr:hover {
+  background: #f3f3f3;
+  transition: 0.3s ease;
+}
+
+.orderdetail-table img {
+  border-radius: 6px;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+/* Back Button */
+.back-btn {
+  background: #1f1e1e;
+  color: #fff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+/* Empty State */
+.orderdetail-container h2 {
+  text-align: center;
+  color: #000;
+  margin-bottom: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .orderdetail-container {
+    padding: 20px;
+  }
+
+  .orderdetail-title {
+    font-size: 20px;
+  }
+
+  .orderdetail-table th,
+  .orderdetail-table td {
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .orderdetail-info {
+    font-size: 14px;
+  }
+}
