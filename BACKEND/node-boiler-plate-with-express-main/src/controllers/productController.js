@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const Product = require("../models/productModel");
 
 // Get all products
@@ -125,6 +127,49 @@ exports.getNewArrivals = async (req, res) => {
     res.json(newProducts);
   } catch (error) {
     console.error("Get new arrivals error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+//single image delete from product
+// 🔹 Single image delete (product ke images array se)
+exports.deleteSingleImage = async (req, res) => {
+  try {
+    const { id, imageIndex } = req.params; // /products/:id/images/:imageIndex
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    const idx = Number(imageIndex);
+    if (isNaN(idx) || idx < 0 || idx >= product.images.length) {
+      return res.status(400).json({ message: "Invalid image index" });
+    }
+
+    // jis image ko delete karna hai
+    const imagePath = product.images[idx];
+
+    // array se remove
+    product.images.splice(idx, 1);
+    await product.save();
+
+    // OPTIONAL: disk se file bhi delete karni ho to
+    if (imagePath) {
+      // imagePath like "/uploads/123-name.jpg"
+      const fullPath = path.join(__dirname, "..", imagePath); 
+      fs.unlink(fullPath, (err) => {
+        if (err) {
+          console.error("File delete error:", err.message);
+        }
+      });
+    }
+
+    res.json({
+      message: "Image deleted successfully",
+      product,
+    });
+  } catch (error) {
+    console.error("Delete single image error:", error);
     res.status(500).json({ message: error.message });
   }
 };

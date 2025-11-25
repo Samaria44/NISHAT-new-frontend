@@ -8,6 +8,7 @@ const {
   updateProduct,
   deleteProduct,
   getNewArrivals,
+  deleteSingleImage,   // 🔹 yeh line add karo
 } = require("../controllers/productController");
 
 const router = express.Router();
@@ -32,5 +33,8 @@ router.post("/", upload.array("images", 6), addProduct);
 router.patch("/:id", upload.array("images", 6), updateProduct);
 
 router.delete("/:id", deleteProduct);
+
+// 🔹 NEW: single image delete
+router.delete("/:id/images/:imageIndex", deleteSingleImage);
 
 module.exports = router;
