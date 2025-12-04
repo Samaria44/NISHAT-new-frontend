@@ -10,7 +10,11 @@ const categoryRoutes = require("./routes/category.routes");
 const newsletterRoutes = require("./routes/newsletter.routes.js");
 const contactRoutes = require("./routes/contact.routes.js");
 const authRoutes = require("./routes/auth.js");
-
+const specialSaleRoutes = require("./routes/specialSale.routes");
+const carouselRoutes = require("./routes/carousel.routes.js");
+const saletextRoutes = require("./routes/saletext.routes.js");
+const inventoryRoutes = require("./routes/inventory.routes");
+const adminRoutes = require("./routes/adminRoutes");
 const app = express();
 
 app.use(cors());
@@ -27,4 +31,12 @@ app.use("/categories", categoryRoutes);
 app.use("/newsletter", newsletterRoutes);
 app.use("/contact", contactRoutes);
 app.use("/auth", authRoutes);
+app.use ("/Admin" , adminRoutes);
+app.use("/specialsale", specialSaleRoutes);
+app.use("/carousel", carouselRoutes);
+
+app.use("/specialsale/banner", saletextRoutes);
+
+app.use("/inventory", inventoryRoutes);
+
 module.exports = app;

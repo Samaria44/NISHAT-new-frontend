@@ -2,10 +2,18 @@ const fs = require("fs");
 const path = require("path");
 const Product = require("../models/productModel");
 
-// Get all products
+// ===================== Get all products =====================
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const { query, category, subCategory } = req.query;
+    const filter = {};
+
+    if (query) filter.name = { $regex: query.trim(), $options: "i" };
+    if (category) filter.category = { $regex: `^${category.trim()}$`, $options: "i" };
+    if (subCategory)
+      filter.subCategory = { $regex: `^${subCategory.trim()}$`, $options: "i" };
+
+    const products = await Product.find(filter).sort({ createdAt: -1 });
     res.json(products);
   } catch (error) {
     console.error("Get all products error:", error);
@@ -13,7 +21,7 @@ exports.getAllProducts = async (req, res) => {
   }
 };
 
-// Get product by ID
+// ===================== Get product by ID =====================
 exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -25,24 +33,41 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-// Add new product  ✅ multiple images
+// ===================== Add new product =====================
 exports.addProduct = async (req, res) => {
   try {
-    const { name, price, description, category, subCategory, size } = req.body;
+    const { name, description, category, subCategory, size, batches } = req.body;
 
-    // req.files is an array (upload.array)
-    const images = req.files && req.files.length > 0
-      ? req.files.map((file) => `/uploads/${file.filename}`)
-      : [];
+    // Upload images
+    const images =
+      req.files && req.files.length > 0
+        ? req.files.map((file) => `/uploads/${file.filename}`)
+        : [];
+
+    // Parse generalSizes
+    let generalSizesParsed = [];
+    if (size) {
+      if (Array.isArray(size)) generalSizesParsed = size;
+      else {
+        try {
+          generalSizesParsed = JSON.parse(size);
+        } catch {
+          generalSizesParsed = size.split(",").map((s) => s.trim());
+        }
+      }
+    }
+
+    // Parse batches
+    const batchData = batches ? JSON.parse(batches) : [];
 
     const newProduct = new Product({
       name,
-      price,
       description,
-      subCategory,
       category,
-      size,
-      images, // array of image paths
+      subCategory,
+      generalSizes: generalSizesParsed,
+      images,
+      batches: batchData,
     });
 
     await newProduct.save();
@@ -53,51 +78,43 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-// Update product  ✅ append new images, don't lose old ones
+// ===================== Update product =====================
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, price, description, category, subCategory, size } = req.body;
+    const { name, description, category, subCategory, size, batches } = req.body;
 
-    // Pehle existing product nikaalo
     const existing = await Product.findById(req.params.id);
-    if (!existing) {
-      return res.status(404).json({ message: "Product not found" });
+    if (!existing) return res.status(404).json({ message: "Product not found" });
+
+    const updatedData = { name, description, category, subCategory };
+
+    // generalSizes
+    if (size) {
+      if (Array.isArray(size)) updatedData.generalSizes = size;
+      else {
+        try {
+          updatedData.generalSizes = JSON.parse(size);
+        } catch {
+          updatedData.generalSizes = size.split(",").map((s) => s.trim());
+        }
+      }
+    } else {
+      updatedData.generalSizes = existing.generalSizes;
     }
 
-    // Jo basic fields update karne hain
-    const updatedData = {
-      name,
-      price,
-      description,
-      category,
-      subCategory,
-      size,
-    };
-
-    // Agar nayi images aayi hain:
+    // Images
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map((file) => `/uploads/${file.filename}`);
-
-      // ✅ OLD + NEW images
-      updatedData.images = [
-        ...(existing.images || []),
-        ...newImages,
-      ];
+      updatedData.images = [...(existing.images || []), ...newImages];
     } else {
-      // ✅ agar new files nahi bheji, to purani images jaisi ki taisi rehne do
       updatedData.images = existing.images;
     }
 
-    const updated = await Product.findByIdAndUpdate(
-      req.params.id,
-      updatedData,
-      { new: true }
-    );
+    // Batches
+    if (batches) updatedData.batches = JSON.parse(batches);
+    else updatedData.batches = existing.batches;
 
-    if (!updated) {
-      return res.status(404).json({ message: "Product not found after update" });
-    }
-
+    const updated = await Product.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     res.json(updated);
   } catch (error) {
     console.error("Update product error:", error);
@@ -105,12 +122,11 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-// Delete product
+// ===================== Delete product =====================
 exports.deleteProduct = async (req, res) => {
   try {
     const deleted = await Product.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Product not found" });
-
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Delete product error:", error);
@@ -118,58 +134,85 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
-// Get New Arrivals (latest 4 products)
+// ===================== Delete single image =====================
+exports.deleteSingleImage = async (req, res) => {
+  try {
+    const { id, imageIndex } = req.params;
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const idx = Number(imageIndex);
+    if (isNaN(idx) || idx < 0 || idx >= product.images.length)
+      return res.status(400).json({ message: "Invalid image index" });
+
+    const imagePath = product.images[idx];
+    product.images.splice(idx, 1);
+    await product.save();
+
+    // Delete from filesystem
+    if (imagePath) {
+      const fullPath = path.join(__dirname, "..", imagePath);
+      fs.unlink(fullPath, (err) => {
+        if (err) console.error("File delete error:", err.message);
+      });
+    }
+
+    res.json({ message: "Image deleted successfully", product });
+  } catch (error) {
+    console.error("Delete single image error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ===================== New Arrivals =====================
 exports.getNewArrivals = async (req, res) => {
   try {
-    const newProducts = await Product.find()
-      .sort({ createdAt: -1 })
-      .limit(4);
+    const newProducts = await Product.find().sort({ createdAt: -1 }).limit(4);
     res.json(newProducts);
   } catch (error) {
     console.error("Get new arrivals error:", error);
     res.status(500).json({ message: error.message });
   }
 };
-//single image delete from product
-// 🔹 Single image delete (product ke images array se)
-exports.deleteSingleImage = async (req, res) => {
+
+// ===================== Out of Stock =====================
+exports.getOutOfStock = async (req, res) => {
   try {
-    const { id, imageIndex } = req.params; // /products/:id/images/:imageIndex
+    const products = await Product.find();
+    const outOfStock = products.filter(
+      (p) => (p.batches || []).reduce((sum, b) => sum + (Number(b.stock) || 0), 0) === 0
+    );
+    res.json(outOfStock);
+  } catch (err) {
+    console.error("Get out-of-stock error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
 
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    const idx = Number(imageIndex);
-    if (isNaN(idx) || idx < 0 || idx >= product.images.length) {
-      return res.status(400).json({ message: "Invalid image index" });
-    }
-
-    // jis image ko delete karna hai
-    const imagePath = product.images[idx];
-
-    // array se remove
-    product.images.splice(idx, 1);
-    await product.save();
-
-    // OPTIONAL: disk se file bhi delete karni ho to
-    if (imagePath) {
-      // imagePath like "/uploads/123-name.jpg"
-      const fullPath = path.join(__dirname, "..", imagePath); 
-      fs.unlink(fullPath, (err) => {
-        if (err) {
-          console.error("File delete error:", err.message);
-        }
-      });
-    }
-
-    res.json({
-      message: "Image deleted successfully",
-      product,
+// ===================== Low Stock =====================
+exports.getLowStock = async (req, res) => {
+  try {
+    const threshold = Number(req.query.threshold) || 5;
+    const products = await Product.find();
+    const lowStock = products.filter((p) => {
+      const totalStock = (p.batches || []).reduce((sum, b) => sum + (Number(b.stock) || 0), 0);
+      return totalStock > 0 && totalStock <= threshold;
     });
-  } catch (error) {
-    console.error("Delete single image error:", error);
-    res.status(500).json({ message: error.message });
+    res.json(lowStock);
+  } catch (err) {
+    console.error("Get low-stock error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// ===================== Top Selling =====================
+exports.getTopSelling = async (req, res) => {
+  try {
+    const products = await Product.find();
+    const sorted = products.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+    res.json(sorted.slice(0, 5));
+  } catch (err) {
+    console.error("Get top-selling error:", err);
+    res.status(500).json({ message: err.message });
   }
 };

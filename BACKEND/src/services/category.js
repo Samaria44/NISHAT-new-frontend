@@ -88,3 +88,21 @@ exports.updateSubcategoryImage = async (categoryId, subId, file) => {
 
   return await category.save();
 };
+
+exports.updateCategoryImage = async (categoryId, file) => {
+  if (!file) throw new Error("No file uploaded");
+
+  const category = await Category.findById(categoryId);
+  if (!category) throw new Error("Category not found");
+
+  // Delete old image if exists
+  if (category.image) {
+    const oldPath = path.join(__dirname, "..", category.image);
+    if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+  }
+
+  // Save new image
+  category.image = `/uploads/categories/${file.filename}`;
+
+  return await category.save();
+};

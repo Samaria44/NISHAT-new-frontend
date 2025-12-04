@@ -13,6 +13,7 @@ export default function AdminCategory() {
     updateSubcategory,
     deleteSubcategory,
     updateSubcategoryImage,
+    updateCategoryImage,
   } = useContext(CategoryContext);
 
   const [newCategory, setNewCategory] = useState("");
@@ -22,7 +23,6 @@ export default function AdminCategory() {
   const [subInputs, setSubInputs] = useState({});
   const [editSubId, setEditSubId] = useState(null);
   const [editSubName, setEditSubName] = useState({});
-  const [subImages, setSubImages] = useState({});
 
   return (
     <div className="admin-category-page">
@@ -52,16 +52,42 @@ export default function AdminCategory() {
       <table className="category-table">
         <thead>
           <tr>
-         <td data-label="Category">Category</td>
-<td data-label="Subcategories">Subcategories</td>
-<td data-label="Add Subcategory">Add Subcategory</td>
-<td data-label="Actions">Actions</td>
-
+            <th>Category Image</th>
+            <th>Category</th>
+            <th>Subcategories</th>
+            <th>Add Subcategory</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {categories.map((cat, idx) => (
             <tr key={cat._id}>
+              {/* CATEGORY IMAGE */}
+              <td>
+                <div className="cat-image-container">
+                  <img
+                    src={
+                      cat.image
+                        ? `http://localhost:8000${cat.image}`
+                        : "https://via.placeholder.com/80x80?text=No+Image"
+                    }
+                    alt={cat.name}
+                    className="cat-image"
+                  />
+                  <label className="image-upload-label">
+                    <FiImage />
+                    <input
+                      type="file"
+                      hidden
+                      onChange={(e) => {
+                        if (!e.target.files[0]) return;
+                        updateCategoryImage(cat._id, e.target.files[0]);
+                      }}
+                    />
+                  </label>
+                </div>
+              </td>
+
               {/* CATEGORY NAME */}
               <td>
                 {editCategoryId === cat._id ? (
@@ -86,27 +112,37 @@ export default function AdminCategory() {
               {/* SUBCATEGORIES */}
               <td>
                 {cat.subcategories.map((sub) => (
+                  console.log("subcategories:", sub),
                   <div key={sub._id} className="sub-tag">
-                    <img
-                      src={
-                        sub.image
-                          ? `http://localhost:8000${sub.image}`
-                          : "https://via.placeholder.com/50?text=No+Image"
-                      }
-                      alt={sub.name}
-                      className="sub-image"
-                    />
-                    <input
-                      type="file"
-                      onChange={(e) => {
-                        if (!e.target.files[0]) return;
-                        updateSubcategoryImage(
-                          cat._id,
-                          sub._id,
-                          e.target.files[0]
-                        );
-                      }}
-                    />
+                    {/* SUBCATEGORY IMAGE */}
+                    <div className="sub-image-wrapper">
+                      <img
+                        src={
+                          sub.image
+                            ? `http://localhost:8000${sub.image}`
+                            : "https://via.placeholder.com/50x50?text=No+Image"
+                        }
+                        alt={sub.name}
+                        className="sub-image"
+                      />
+                      <label className="sub-image-upload">
+                        <FiImage />
+                        <input
+                          type="file"
+                          hidden
+                          onChange={(e) => {
+                            if (!e.target.files[0]) return;
+                            updateSubcategoryImage(
+                              cat._id,
+                              sub._id,
+                              e.target.files[0]
+                            );
+                          }}
+                        />
+                      </label>
+                    </div>
+
+                    {/* SUBCATEGORY NAME */}
                     {editSubId === sub._id ? (
                       <>
                         <input
@@ -136,10 +172,7 @@ export default function AdminCategory() {
                         <FiEdit
                           onClick={() => {
                             setEditSubId(sub._id);
-                            setEditSubName({
-                              ...editSubName,
-                              [sub._id]: sub.name,
-                            });
+                            setEditSubName({ ...editSubName, [sub._id]: sub.name });
                           }}
                         />
                         <FiTrash

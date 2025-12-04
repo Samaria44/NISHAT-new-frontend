@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { AiOutlineHeart } from "react-icons/ai";
+import { useCart } from "../components/context/CartContext";
 import "./CategoryPage.css"; 
 
 export default function SubDetail() {
@@ -70,13 +71,13 @@ export default function SubDetail() {
     return wishlist.some((p) => p._id === product._id);
   };
 
+  const { addToCart } = useCart();
+
   const handleAddToCart = (product) => {
     setSelectedProduct(product);
     setShowCartPopup(true);
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cart.push(product);
-    localStorage.setItem("cart", JSON.stringify(cart));
+    addToCart(product, 1);
   };
 
   const handleContinueShopping = () => {
@@ -119,7 +120,7 @@ export default function SubDetail() {
                     src={
                       p.images && p.images.length > 0
                         ? `http://localhost:8000${p.images[0]}`
-                        : "https://via.placeholder.com/150"
+                        : "https://placeholder.co/150x150?text=No+Image"
                     }
                     alt={p.name}
                     className="product-image"

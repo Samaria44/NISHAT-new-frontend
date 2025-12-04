@@ -1,6 +1,6 @@
 // D:\samaria\NISHAT\FRONTEND\my-react-app\src\Admin\Admincomponents\AdminSlidebar.jsx
 import { NavLink } from "react-router-dom";
-import { FiHome, FiBox, FiShoppingBag, FiUsers, FiGrid } from "react-icons/fi";
+import { FiHome, FiBox, FiShoppingBag, FiUsers, FiGrid, FiImage } from "react-icons/fi";
 import "./Slidebar.css";
 
 export default function Slidebar() {
@@ -44,6 +44,27 @@ export default function Slidebar() {
 
         <li>
           <NavLink
+            to="/dashboard/specialsales"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <FiShoppingBag className="sidebar-icon" />
+            <span>Special Sales</span>
+          </NavLink>
+        </li>
+
+        <li>
+          <NavLink
+            to="/dashboard/carousel"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <FiImage className="sidebar-icon" />
+            <span>Hero Carousel</span>
+          </NavLink>
+        </li>
+
+
+        <li>
+          <NavLink
             to="/dashboard/orders"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
@@ -73,11 +94,20 @@ export default function Slidebar() {
         </li>
                <li>
           <NavLink
-            to="/dashboard/users-login"
+            to="/dashboard/admin-users"
             className={({ isActive }) => (isActive ? "active" : "")}
           >
             <FiUsers className="sidebar-icon" />
             <span>Users Login</span>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/dashboard/inventory"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <FiBox className="sidebar-icon" />
+            <span>Inventory Dashboard</span>
           </NavLink>
         </li>
       </ul>

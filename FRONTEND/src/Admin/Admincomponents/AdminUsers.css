@@ -1,0 +1,34 @@
+.admin-users {
+  padding: 20px;
+  background: #f7f7f7;
+  min-height: 100vh;
+  margin-left: 257px;
+}
+
+.admin-users h2 {
+  margin-bottom: 20px;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.users-table th {
+ background: #f5f7fb;
+  color: #7e7e7e;
+  padding: 12px;
+  text-align: left;
+}
+
+.users-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.users-table tr:hover {
+  background: #f1f1f1;
+}

@@ -76,45 +76,56 @@ export default function Checkout() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePlaceOrder = async () => {
-    if (!validateForm()) return;
+ const handlePlaceOrder = async () => {
+  if (!validateForm()) return;
 
-    const orderData = {
-      customer: billing.firstName + " " + billing.lastName,
-      email: billing.email,
-      phone: billing.phone,
-      address: billing.address,
-      paymentMethod: billing.payment,
-      products: cartItems.map((item) => item._id), // product ObjectIds
-      totalAmount: total,
-      status: "Pending",
-      date: new Date().toLocaleString(),
-    };
-
-    try {
-      const res = await fetch("http://localhost:8000/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
-      if (!res.ok) throw new Error("Failed to place order");
-
-      const data = await res.json();
-      console.log("ORDER DATA:", data);
-
-      alert(
-        billing.payment === "card"
-          ? "Payment successful! ✅"
-          : "Order placed successfully! ✅"
-      );
-
-      localStorage.removeItem("cart");
-      navigate("/thank-you");
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Try again!");
-    }
+  const orderData = {
+    customer: billing.firstName + " " + billing.lastName,
+    email: billing.email,
+    phone: billing.phone,
+    address: billing.address,
+    city: billing.city,
+    paymentMethod: billing.payment,
+    products: cartItems.map((item) => ({
+      product: item._id,
+      qty: item.quantity || 1,
+      size: item.selectedSize || item.size || "",
+      price: item.price,
+      name: item.name
+    })),
+    totalAmount: total,
+    status: "Pending",
+    date: new Date().toLocaleString(),
   };
+
+  try {
+    const res = await fetch("http://localhost:8000/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!res.ok) throw new Error("Failed to place order");
+
+    const data = await res.json();
+    console.log("ORDER DATA:", data);
+
+    alert(
+      billing.payment === "card"
+        ? "Payment successful! "
+        : "Order placed successfully! "
+    );
+
+    localStorage.removeItem("cart");
+
+    //  Send order to thank-you page
+    navigate("/thank-you", { state: { order: data } });
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong. Try again!");
+  }
+};
 
   const buttonLabel = billing.payment === "card" ? "Pay Now" : "Complete Order";
 
@@ -236,28 +247,32 @@ export default function Checkout() {
 
             {billing.payment === "card" && (
               <>
-                <input className="card-input"
+                <input
+                  className="card-input"
                   type="text"
                   name="nameOnCard"
                   placeholder="Name on Card"
                   value={card.nameOnCard}
                   onChange={handleCardChange}
                 />
-                <input className="card-input"
+                <input
+                  className="card-input"
                   type="text"
                   name="cardNumber"
                   placeholder="Card Number"
                   value={card.cardNumber}
                   onChange={handleCardChange}
                 />
-                <input className="card-input"
+                <input
+                  className="card-input"
                   type="text"
                   name="expiry"
                   placeholder="MM/YY"
                   value={card.expiry}
                   onChange={handleCardChange}
                 />
-                <input className="card-input"
+                <input
+                  className="card-input"
                   type="password"
                   name="cvv"
                   placeholder="CVV"
@@ -291,24 +306,35 @@ export default function Checkout() {
           {errors.cart && <p className="ck-error-text">{errors.cart}</p>}
           {cartItems.map((item, i) => (
             <div className="ck-summary-card" key={i}>
-              <img className="ck-summary-img"
+              <img
+                className="ck-summary-img"
                 src={
-                  item.image
-                    ? `http://localhost:8000${item.image}` 
+                  item.images && item.images.length > 0
+                    ? `http://localhost:8000${item.images[0]}`
                     : "https://via.placeholder.com/80"
                 }
                 alt={item.name}
               />
 
               <div>{item.name}</div>
-              <div>RS {(item.price || 0) * (item.quantity || 1)}</div>
+              <div className="ck-price">RS {(item.price || 0) * (item.quantity || 1)}</div>
             </div>
           ))}
-          <div className="ck-total-box">
-            <div>Subtotal: RS {subtotal}</div>
-            <div>Shipping: {shipping === 0 ? "FREE" : `RS ${shipping}`}</div>
-            <div>Total: RS {total}</div>
-          </div>
+         <div className="ck-total-box">
+  <div className="ck-total-row">
+    <span>Subtotal</span>
+    <span>RS {subtotal.toLocaleString()}</span>
+  </div>
+  <div className="ck-total-row">
+    <span>Shipping</span>
+    <span>{shipping === 0 ? "FREE" : `RS ${shipping.toLocaleString()}`}</span>
+  </div>
+  <div className="ck-total-row ck-total-final">
+    <span>Total</span>
+    <span>RS {total.toLocaleString()}</span>
+  </div>
+</div>
+
         </div>
       </div>
     </>

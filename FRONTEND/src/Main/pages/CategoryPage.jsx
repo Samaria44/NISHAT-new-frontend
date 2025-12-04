@@ -1,66 +1,95 @@
-// CategoryPage.jsx
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useCart } from "../components/context/CartContext";
 import { AiOutlineHeart } from "react-icons/ai";
+
+import SearchSidebar from "../components/Filters";
 import "./CategoryPage.css";
 
 export default function CategoryPage() {
   const { categoryName, subName } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [category, setCategory] = useState(null);
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
-  const [showCartPopup, setShowCartPopup] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const [wishlist, setWishlist] = useState(
     JSON.parse(localStorage.getItem("wishlist")) || []
   );
 
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchSidebarOpen, setSearchSidebarOpen] = useState(false);
+  const [allCategories, setAllCategories] = useState([]);
+
+  // ----------------- Fetch category and products -----------------
   useEffect(() => {
     async function fetchCategoryAndProducts() {
       try {
         setLoading(true);
 
-        const categoryRes = await axios.get("http://localhost:8000/categories");
-        const allCategories = categoryRes.data;
+        const { data: categoriesFromApi } = await axios.get(
+          "http://localhost:8000/categories"
+        );
+        setAllCategories(categoriesFromApi);
 
-        const foundCategory = allCategories.find(
-          (c) => c.name.toLowerCase() === categoryName.toLowerCase()
+        // Find main category
+        const foundCategory = categoriesFromApi.find(
+          (c) =>
+            typeof c.name === "string" &&
+            c.name.toLowerCase() === (categoryName || "").toLowerCase()
         );
 
         if (!foundCategory) {
           setError("Category not found");
           setCategory(null);
           setProducts([]);
+          setFilteredProducts([]);
           return;
         }
-
         setCategory(foundCategory);
-        setError("");
 
-        const productRes = await axios.get("http://localhost:8000/products");
-        const allProducts = productRes.data;
+        // Fetch all products
+        const { data: allProducts } = await axios.get(
+          "http://localhost:8000/products"
+        );
 
-        let filteredProducts = allProducts.filter(
+        let categoryProducts = allProducts.filter(
           (p) =>
-            p.category &&
+            typeof p.category === "string" &&
             p.category.toLowerCase() === foundCategory.name.toLowerCase()
         );
 
+        // Filter by subcategory if provided
         if (subName) {
-          filteredProducts = filteredProducts.filter(
+          categoryProducts = categoryProducts.filter(
             (p) =>
-              p.subCategory &&
+              typeof p.subCategory === "string" &&
               p.subCategory.toLowerCase() === subName.toLowerCase()
           );
         }
 
-        setProducts(filteredProducts);
+        // Compute minimum price for each product
+        categoryProducts = categoryProducts.map((p) => {
+          if (p.batches && p.batches.length > 0) {
+            p.minPrice = Math.min(
+              ...p.batches.map((b) =>
+                b.price !== undefined && b.price !== null ? Number(b.price) : Infinity
+              )
+            );
+          } else {
+            p.minPrice = p.price || "-";
+          }
+          return p;
+        });
+
+        setProducts(categoryProducts);
+        setFilteredProducts(categoryProducts);
       } catch (err) {
         console.error(err);
         setError("Server error while fetching data");
@@ -72,29 +101,24 @@ export default function CategoryPage() {
     fetchCategoryAndProducts();
   }, [categoryName, subName]);
 
+  // ----------------- Wishlist functions -----------------
   const toggleWishlist = (product) => {
-    let updatedWishlist;
-    if (wishlist.find((p) => p._id === product._id)) {
-      updatedWishlist = wishlist.filter((p) => p._id !== product._id);
-    } else {
-      updatedWishlist = [...wishlist, product];
-    }
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+    const updated = wishlist.some((p) => p._id === product._id)
+      ? wishlist.filter((p) => p._id !== product._id)
+      : [...wishlist, product];
+
+    setWishlist(updated);
+    localStorage.setItem("wishlist", JSON.stringify(updated));
     window.dispatchEvent(new Event("storage"));
   };
 
-  const isInWishlist = (product) => {
-    return wishlist.some((p) => p._id === product._id);
-  };
+  const isInWishlist = (product) => wishlist.some((p) => p._id === product._id);
 
+  // ----------------- Cart functions -----------------
   const handleAddToCart = (product) => {
     setSelectedProduct(product);
     setShowCartPopup(true);
-
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cart.push(product);
-    localStorage.setItem("cart", JSON.stringify(cart));
+    addToCart(product, 1);
   };
 
   const handleContinueShopping = () => {
@@ -113,83 +137,119 @@ export default function CategoryPage() {
 
   return (
     <div className="category-page">
-      {/* CATEGORY HEADER */}
+      {/* Category Header */}
       <div className="category-header-row">
         <h2 className="category-heading">{category?.name}</h2>
-
         <div className="subcategory-row">
-          {category?.subcategories?.map((sub) => (
-            <div
-              key={sub._id}
-              className={`subcategory-circle ${
-                subName === sub.name ? "active" : ""
-              }`}
-              onClick={() =>
-                navigate(`/category/${category.name}/${sub.name}`)
-              }
-            >
-              <img
-                src={
-                  sub.image
-                    ? `http://localhost:8000${sub.image}`
-                    : "https://via.placeholder.com/60?text=No+Image"
-                }
-                alt={sub.name}
-                className="subcategory-image"
-              />
-              <p className="subcategory-name">{sub.name}</p>
-            </div>
-          ))}
+          {category?.subcategories?.map((sub) => {
+            const subNameLower = typeof sub.name === "string" ? sub.name.toLowerCase() : "";
+
+            return (
+              <div
+                key={sub._id}
+                className={`subcategory-circle ${subNameLower === (subName || "").toLowerCase() ? "active" : ""}`}
+                onClick={() => {
+                  const existsAsMainCategory = allCategories.some(
+                    (c) =>
+                      typeof c.name === "string" &&
+                      c.name.toLowerCase() === subNameLower
+                  );
+                  if (existsAsMainCategory) {
+                    navigate(`/category/${sub.name}`);
+                  } else {
+                    navigate(`/category/${category.name}/${sub.name}`);
+                  }
+                }}
+              >
+                <img
+                  src={
+                    sub.image
+                      ? `http://localhost:8000${sub.image}`
+                      : "https://placeholder.co/60x60?text=No+Image"
+                  }
+                  alt={sub.name}
+                  className="subcategory-image"
+                />
+                <p className="subcategory-name">{sub.name}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* PRODUCTS GRID */}
-     <div className="products-grid">
-  {products.map((p) => (
-    <div key={p._id} className="product-card">
-      {/* 👉 image + hover button wrapper */}
-      <div className="product-image-wrapper">
-        <img
-          src={
-            p.images && p.images.length > 0
-              ? `http://localhost:8000${p.images[0]}`
-              : "https://via.placeholder.com/150"
-          }
-          alt={p.name}
-          className="product-image"
-          onClick={() => navigate(`/product/${p._id}`)}
+      {/* SEARCH SIDEBAR */}
+      {searchSidebarOpen && (
+        <SearchSidebar
+          open={searchSidebarOpen}
+          onClose={() => setSearchSidebarOpen(false)}
+          setFilteredProducts={setFilteredProducts}
         />
+      )}
 
-        {/* Ye button hover pe center me show hoga */}
-        <button
-          className="image-add-btn"
-          onClick={(e) => {
-            e.stopPropagation(); // image click navigation ko rokne ke liye
-            handleAddToCart(p);
-          }}
-        >
-          Add to Cart
-        </button>
+      {/* Products Grid */}
+      <div className="products-grid">
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((p) => {
+            const subCategoryLower =
+              typeof p.subCategory === "string" ? p.subCategory.toLowerCase() : "";
+            const isStitch = subCategoryLower === "stitch" || (p.generalSizes && p.generalSizes.length > 0);
+
+            return (
+              <div key={p._id} className="product-card">
+                <div className="product-image-wrapper">
+                  <img
+                    src={
+                      p.images?.length > 0
+                        ? `http://localhost:8000${p.images[0]}`
+                        : "https://placeholder.co/150x150?text=No+Image"
+                    }
+                    alt={p.name}
+                    className="product-image"
+                    onClick={() => navigate(`/product/${p._id}`)}
+                    style={{ cursor: "pointer" }}
+                  />
+                  <button
+                    className="image-add-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (isStitch) {
+                        navigate(`/product/${p._id}`);
+                      } else {
+                        handleAddToCart(p);
+                      }
+                    }}
+                  >
+                    {isStitch ? "View Details" : "Add to Cart"}
+                  </button>
+                </div>
+
+                <div className="product-info">
+                  <p
+                    className="product-name"
+                    onClick={() => navigate(`/product/${p._id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {p.name}
+                  </p>
+                  <h4 className="product-subcategory">{p.subCategory || "-"}</h4>
+                  <h4 className="product-price">RS: {p.minPrice}</h4>
+                  <button
+                    className="heart-btn"
+                    onClick={() => toggleWishlist(p)}
+                    style={{ color: isInWishlist(p) ? "red" : "black" }}
+                  >
+                    <AiOutlineHeart />
+                  </button>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p>No products found.</p>
+        )}
       </div>
 
-      <h3 className="product-name">{p.name}</h3>
-
-      <div className="product-price-row">
-        <p className="product-price">RS: {p.price}</p>
-        <button
-          className="heart-btn"
-          onClick={() => toggleWishlist(p)}
-          style={{ color: isInWishlist(p) ? "red" : "black" }}
-        >
-          <AiOutlineHeart />
-        </button>
-      </div>
-    </div>
-  ))}
-</div>
-
-
-      {/* CART POPUP */}
+      {/* Cart Popup */}
       {showCartPopup && selectedProduct && (
         <div
           className="cart-popup-overlay"
@@ -200,18 +260,14 @@ export default function CategoryPage() {
           }}
         >
           <div className="cart-popup">
-            <button
-              className="cart-popup-close"
-              onClick={handleContinueShopping}
-            >
+            <button className="cart-popup-close" onClick={handleContinueShopping}>
               &times;
             </button>
 
             <div className="cart-popup-top">
               <img
                 src={
-                  selectedProduct.images &&
-                  selectedProduct.images.length > 0
+                  selectedProduct.images?.length > 0
                     ? `http://localhost:8000${selectedProduct.images[0]}`
                     : "https://via.placeholder.com/150"
                 }
@@ -231,10 +287,7 @@ export default function CategoryPage() {
               >
                 Continue Shopping
               </button>
-              <button
-                className="cart-popup-btn primary"
-                onClick={handleViewCart}
-              >
+              <button className="cart-popup-btn primary" onClick={handleViewCart}>
                 View Cart
               </button>
             </div>

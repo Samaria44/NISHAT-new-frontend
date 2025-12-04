@@ -1,86 +1,50 @@
-/* ====== USERS PAGE WRAPPER ====== */
-.user-table-container {
-  margin-left: 270px;           /* match sidebar width */
-  /* margin-top: 80px;             space for fixed header */
+/* ====== USER LOGIN PAGE ====== */
+.user-login-page {
+  margin-left: 279px;
   margin-right: 24px;
+  margin-top: 32px;
   margin-bottom: 32px;
+  padding: 22px 24px;
   background: #ffffff;
-  padding: 22px 24px 26px;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
   font-family: "Poppins", sans-serif;
 }
 
-/* ====== HEADER ====== */
-.user-header {
+.user-login-header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
-.user-title {
+.user-login-header h2 {
   font-size: 20px;
-  font-weight: 600;
   color: #111827;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-weight: 600;
+  margin: 0;
 }
 
-.user-title .count {
-  font-size: 12px;
-  font-weight: 500;
-  color: #6b7280;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: #f3f4f6;
-}
-
-/* Add button (if used later) */
-.add-btn {
-  background-color: #111111;
-  color: #ffffff;
-  padding: 9px 16px;
-  border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease,
-    box-shadow 0.15s ease;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.15);
-}
-
-.add-btn:hover {
-  background-color: #000000;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
-}
-
-/* ====== TABLE BASE ====== */
-.user-table {
+.user-login-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 6px;
   border-radius: 14px;
   overflow: hidden;
   background: #ffffff;
 }
 
-.user-table thead {
+.user-login-table thead {
   background: #f9fafb;
 }
 
-.user-table th,
-.user-table td {
+.user-login-table th,
+.user-login-table td {
   text-align: left;
-  padding: 10px 12px;
+  padding: 12px 14px;
   font-size: 13px;
-  vertical-align: middle;
 }
 
-.user-table thead th {
+.user-login-table thead th {
   font-weight: 600;
   color: #6b7280;
   text-transform: uppercase;
@@ -89,183 +53,67 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.user-table tbody tr {
+.user-login-table tbody tr {
   border-bottom: 1px solid #e5e7eb;
-  transition: background-color 0.18s ease;
+  transition: background-color 0.18s ease, transform 0.1s ease;
 }
 
-.user-table tbody tr:last-child {
+.user-login-table tbody tr:last-child {
   border-bottom: none;
 }
 
-.user-table tbody tr:hover {
+.user-login-table tbody tr:hover {
   background-color: #f9fafb;
 }
 
-/* ====== ACTION ICONS ====== */
-.edit,
-.delete {
+.user-login-table td svg {
   cursor: pointer;
-  margin-right: 10px;
-  font-size: 17px;
-  transition: color 0.18s ease, transform 0.12s ease;
+  color: #6b7280;
+  transition: color 0.18s ease, transform 0.08s ease;
+  font-size: 18px;
 }
 
-.edit {
-  color: #3b82f6;
-}
-
-.edit:hover {
-  color: #1d4ed8;
+.user-login-table td svg:hover {
+  color: #111827;
   transform: translateY(-1px);
 }
 
-.delete {
-  color: #9ca3af;
-}
-
-.delete:hover {
-  color: #b91c1c;
-  transform: translateY(-1px);
-}
-
-/* ====== POPUP OVERLAY ====== */
-.popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 23, 42, 0.45);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1100;
-}
-
-/* ====== POPUP FORM CARD ====== */
-.popup-form {
-  background: #ffffff;
-  padding: 22px 24px 20px;
-  border-radius: 16px;
-  width: 380px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.35);
-  animation: popupShow 0.26s ease-out;
-  font-family: "Poppins", sans-serif;
-}
-
-@keyframes popupShow {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.popup-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.popup-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.close-icon {
-  cursor: pointer;
-  font-size: 20px;
-  color: #9ca3af;
-  transition: color 0.18s ease, transform 0.12s ease;
-}
-
-.close-icon:hover {
-  color: #111827;
-  transform: rotate(6deg);
-}
-
-/* INPUTS */
-.popup-form input {
-  width: 100%;
-  padding: 9px 11px;
-  margin-bottom: 10px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.popup-form input:focus {
-  border-color: #111111;
-  box-shadow: 0 0 0 1px #11111110;
-}
-
-/* SAVE BUTTON */
-.save-btn {
-  width: 100%;
-  background-color: #111111;
-  color: #ffffff;
-  border: none;
-  border-radius: 10px;
-  padding: 9px 0;
-  margin-top: 4px;
-  cursor: pointer;
+.no-users {
+  text-align: center;
+  color: #6b7280;
   font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  transition: background 0.2s ease, transform 0.1s ease,
-    box-shadow 0.16s ease;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
-}
-
-.save-btn:hover {
-  background-color: #000000;
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.3);
+  padding: 12px 0;
 }
 
 /* ====== RESPONSIVE ====== */
 @media (max-width: 1024px) {
-  .user-table-container {
+  .user-login-page {
     margin-left: 220px;
     margin-right: 16px;
   }
 }
 
 @media (max-width: 768px) {
-  .user-table-container {
-    margin-left: 0;
-    margin-right: 12px;
+  .user-login-page {
     margin-left: 12px;
-    margin-top: 80px;
-    padding: 18px 14px 20px;
+    margin-right: 12px;
+    padding: 16px 14px;
   }
 
-  .user-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .user-table,
-  .user-table thead,
-  .user-table tbody,
-  .user-table th,
-  .user-table td,
-  .user-table tr {
+  .user-login-table,
+  .user-login-table thead,
+  .user-login-table tbody,
+  .user-login-table th,
+  .user-login-table td,
+  .user-login-table tr {
     display: block;
   }
 
-  .user-table thead {
+  .user-login-table thead {
     display: none;
   }
 
-  .user-table tr {
+  .user-login-table tr {
     background: #ffffff;
     margin-bottom: 10px;
     border-radius: 14px;
@@ -273,25 +121,24 @@
     padding: 8px 8px 6px;
   }
 
-  .user-table td {
+  .user-login-table td {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 8px 10px;
+    padding: 6px 8px;
     border-bottom: 1px dashed #e5e7eb;
   }
 
-  .user-table td:last-child {
+  .user-login-table td:last-child {
     border-bottom: none;
   }
 
-  .user-table td::before {
+  .user-login-table td::before {
     content: attr(data-label);
     font-weight: 600;
     color: #6b7280;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    margin-right: 10px;
+    margin-right: 8px;
   }
 }

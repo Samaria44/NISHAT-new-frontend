@@ -3,6 +3,8 @@ import "./order.css";
 import { FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
+const BACKEND_URL = "http://localhost:8000";
+
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
@@ -10,9 +12,14 @@ export default function Orders() {
   // Fetch all orders
   const getOrders = async () => {
     try {
-      const res = await fetch("http://localhost:8000/orders");
+      const res = await fetch(`${BACKEND_URL}/orders`);
       const data = await res.json();
-      setOrders(data);
+
+      console.log("Orders API response:", data); // ek dafa console check kar lo
+
+      // Ensure it's an array
+      const normalized = Array.isArray(data) ? data : data.orders || [];
+      setOrders(normalized);
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -27,7 +34,7 @@ export default function Orders() {
     if (!window.confirm("Delete this order?")) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/orders/${_id}`, {
+      const res = await fetch(`${BACKEND_URL}/orders/${_id}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -41,7 +48,7 @@ export default function Orders() {
   // Update order status
   const handleStatusChange = async (_id, status) => {
     try {
-      await fetch(`http://localhost:8000/orders/${_id}`, {
+      await fetch(`${BACKEND_URL}/orders/${_id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -57,9 +64,46 @@ export default function Orders() {
     }
   };
 
-  // Navigate to order detail
+  // Navigate to order detail page
   const handleOrderClick = (_id) => {
     navigate(`/dashboard/orderdetail/${_id}`);
+  };
+
+  // Helper to get first product image
+  const renderProductImage = (order) => {
+    if (!order.products || order.products.length === 0) {
+      return "No image";
+    }
+
+    const firstItem = order.products[0];
+
+    // backend se populate hua product object
+    const product = firstItem.product || firstItem;
+
+    const image =
+      (product.images && product.images[0]) ||
+      product.image ||
+      (firstItem.images && firstItem.images[0]) ||
+      firstItem.image;
+
+    const src = image
+      ? image.startsWith("http")
+        ? image
+        : `${BACKEND_URL}${image.startsWith("/") ? "" : "/"}${image}`
+      : "https://placeholder.co/50x50?text=No+Image";
+
+    return (
+      <img
+        src={src}
+        alt={product.name || "Product"}
+        style={{
+          width: "50px",
+          height: "50px",
+          borderRadius: "6px",
+          objectFit: "cover",
+        }}
+      />
+    );
   };
 
   return (
@@ -100,31 +144,15 @@ export default function Orders() {
                 >
                   {order._id.slice(-6)}
                 </td>
-                <td>{order.date}</td>
+                <td>
+                  {order.createdAt
+                    ? new Date(order.createdAt).toLocaleDateString()
+                    : "-"}
+                </td>
                 <td>{order.customer}</td>
                 <td>{order.email}</td>
                 <td>{order.phone}</td>
-                <td>
-                  {order.products && order.products.length > 0 && order.products[0].image ? (
-                    <img
-                      src={
-                        order.products[0].image.startsWith("http")
-                          ? order.products[0].image
-                          : `http://localhost:8000${order.products[0].image}`
-                      }
-                      alt={order.products[0].name || "Product"}
-                      style={{
-                        width: "50px",
-                        height: "50px",
-                        borderRadius: "6px",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    "No image"
-                  )}
-                </td>
-
+                <td>{renderProductImage(order)}</td>
                 <td>
                   <select
                     value={order.status || "Pending"}
@@ -139,7 +167,6 @@ export default function Orders() {
                     <option>Cancelled</option>
                   </select>
                 </td>
-
                 <td>
                   <FiTrash2
                     className="delete"

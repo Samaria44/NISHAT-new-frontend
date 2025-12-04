@@ -100,6 +100,20 @@ export const CategoryProvider = ({ children }) => {
     }
   };
 
+  const updateCategoryImage = async (catId, file) => {
+    try {
+      if (!file) throw new Error("No file selected");
+      const formData = new FormData();
+      formData.append("image", file);
+      await axios.put(`${API_URL}/${catId}/image`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      fetchCategories();
+    } catch (err) {
+      alert(err.response?.data?.message || err.message);
+    }
+  };
+
   return (
     <CategoryContext.Provider
       value={{
@@ -111,6 +125,7 @@ export const CategoryProvider = ({ children }) => {
         updateSubcategory,
         deleteSubcategory,
         updateSubcategoryImage,
+        updateCategoryImage,
       }}
     >
       {children}

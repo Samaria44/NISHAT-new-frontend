@@ -1,49 +1,31 @@
-import { useState, useEffect } from "react";
-import {FiTrash2} from "react-icons/fi";
+import { FiTrash2 } from "react-icons/fi";
 import { useCart } from "../components/context/CartContext";
 import { useNavigate } from "react-router-dom";
 import "./cart.css";
 
 export default function Cart() {
   const navigate = useNavigate();
+  const { cartItems, updateQuantity, removeFromCart } = useCart();
+
   const handleCheckout = () => navigate("/checkout");
-  // Load cart from localStorage
-  const [cartItems, setCartItems] = useState([]);
 
-  useEffect(() => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCartItems(cart);
-  }, []);
-
-  // Increase quantity
   const handleIncrease = (index) => {
-    const updatedCart = [...cartItems];
-    updatedCart[index].quantity = (updatedCart[index].quantity || 1) + 1;
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    const item = cartItems[index];
+    updateQuantity(item._id, (Number(item.quantity) || 1) + 1);
   };
 
-  // Decrease quantity
   const handleDecrease = (index) => {
-    const updatedCart = [...cartItems];
-    updatedCart[index].quantity = Math.max(
-      (updatedCart[index].quantity || 1) - 1,
-      1
-    );
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    const item = cartItems[index];
+    updateQuantity(item._id, Math.max((Number(item.quantity) || 1) - 1, 1));
   };
 
-  // Remove product
   const handleRemove = (index) => {
-    const updatedCart = cartItems.filter((_, i) => i !== index);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    const item = cartItems[index];
+    removeFromCart(item._id);
   };
 
-  // Calculate subtotal
   const subtotal = cartItems.reduce(
-    (acc, item) => acc + (item.price || 0) * (item.quantity || 1),
+    (acc, item) => acc + Number(item.price) * Number(item.quantity),
     0
   );
 
@@ -53,63 +35,67 @@ export default function Cart() {
   return (
     <div className="cart-page">
       <div className="heading">
-        {" "}
         <h2>Shopping Cart</h2>
       </div>
 
-      <table className="cart-table">
-        <thead className="cart-head">
-          <tr>
-            <th className="cart-th">Product</th>
-            <th className="cart-th">Price</th>
-            <th className="cart-th">Quantity</th>
-            <th className="cart-th">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {cartItems.map((item, index) => (
-            <tr key={index}>
-              <td data-label="Product" className="cart-product-cell">
-                <img
-                  src={
-                    item.image
-                      ? `http://localhost:8000${item.image}`
-                      : "https://via.placeholder.com/60"
-                  }
-                  alt={item.name}
-                  className="cart-product-img"
-                />
-                <span>{item.name}</span>
-                {/* Trash icon below image & name */}
-                <button
-                  className="cart-remove-btn-inline"
-                  onClick={() => handleRemove(index)}
-                >
-                  <FiTrash2 />
-                </button>
-              </td>
-
-              <td data-label="Price" className="cart-price-cell">
-                RS: {item.price}
-              </td>
-
-              <td data-label="Quantity" className="cart-quantity-cell">
-                <div className="cart-quantity-btns">
-                  <button onClick={() => handleDecrease(index)}>-</button>
-                  <span>{item.quantity || 1}</span>
-                  <button onClick={() => handleIncrease(index)}>+</button>
-                </div>
-              </td>
-              <td data-label="Total" className="cart-total-cell">
-                RS: {(item.price || 0) * (item.quantity || 1)}
-              </td>
-              <td data-label="Remove" className="cart-remove-cell">
-               
-              </td>
+      <div className="cart-table-wrapper">
+        <table className="cart-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {cartItems.map((item, index) => (
+              <tr key={item._id || index}>
+                <td data-label="Product" className="cart-product-cell">
+                  <img
+                    src={
+                      item.images?.length
+                        ? `http://localhost:8000${item.images[0]}`
+                        : "https://placehold.co/80x120?text=No+Image"
+                    }
+                    alt={item.name}
+                    className="cart-product-img"
+                  />
+
+                  <div className="cart-product-info">
+                    <span className="cart-product-name">{item.name}</span>
+                    {item.size && (
+                      <span className="cart-product-size">Size: {item.size}</span>
+                    )}
+
+                    <button
+                      className="cart-remove-btn-inline"
+                      onClick={() => handleRemove(index)}
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </div>
+                </td>
+
+                <td data-label="Price">RS: {item.price}</td>
+
+                <td data-label="Quantity">
+                  <div className="cart-quantity-btns">
+                    <button onClick={() => handleDecrease(index)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => handleIncrease(index)}>+</button>
+                  </div>
+                </td>
+
+                <td data-label="Total">
+                  RS: {Number(item.price) * Number(item.quantity)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="cart-subtotal">
         <h3>Subtotal: RS: {subtotal}</h3>

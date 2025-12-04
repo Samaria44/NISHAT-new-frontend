@@ -1,31 +1,31 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import "./product.css";
 import { FiEdit2, FiTrash2, FiX, FiImage } from "react-icons/fi";
 import { CategoryContext } from "../context/CategoryContext";
 
 const BACKEND_URL = "http://localhost:8000";
+const ALL_SIZES = ["S", "M", "L", "XL"];
 
 export default function ProductUpload() {
   const { categories } = useContext(CategoryContext);
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
-
-  // Multiple image previews (form ke liye)
   const [previews, setPreviews] = useState([]);
 
   const [formData, setFormData] = useState({
     name: "",
-    price: "",
     description: "",
     category: "",
     subCategory: "",
-    size: "",
-    images: [], // array of File objects when creating/updating
+    size: [], // ✅ product-level sizes
+    images: [],
+    batches: [
+      { batchName: "Batch 1", price: "", stock: "" }, // no size per batch
+    ],
   });
 
-  // Fetch products on mount
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -39,57 +39,81 @@ export default function ProductUpload() {
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
+  // ================= Handle Inputs =================
+  const handleChange = (e, batchIndex = null, field = null) => {
+    const { name, value, files, options } = e.target;
 
-    // Handle multiple images (form)
+    // Images
     if (name === "images" && files && files.length > 0) {
       const fileArray = Array.from(files);
-
-      setFormData((prev) => ({
-        ...prev,
-        images: fileArray,
-      }));
-
-      // Make new previews from selected files
+      setFormData((prev) => ({ ...prev, images: fileArray }));
       const previewUrls = fileArray.map((file) => URL.createObjectURL(file));
       setPreviews(previewUrls);
-    } else if (name === "category") {
-      setFormData((prev) => ({
-        ...prev,
-        category: value,
-        subCategory: "",
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      return;
     }
+
+    // Batches
+    if (batchIndex !== null && field) {
+      setFormData((prev) => {
+        const newBatches = [...prev.batches];
+        newBatches[batchIndex][field] = value;
+        return { ...prev, batches: newBatches };
+      });
+      return;
+    }
+
+    // Size multi-select
+    if (name === "size") {
+      const selected = Array.from(options)
+        .filter((opt) => opt.selected)
+        .map((opt) => opt.value);
+
+      setFormData((prev) => ({ ...prev, size: selected }));
+      return;
+    }
+
+    // Category change resets subcategory
+    if (name === "category") {
+      setFormData((prev) => ({ ...prev, category: value, subCategory: "" }));
+      return;
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🔹 Form preview se ek image remove karne ka function
+  // ================= Batch Management =================
+  const addBatch = () => {
+    setFormData((prev) => ({
+      ...prev,
+      batches: [
+        ...prev.batches,
+        { batchName: `Batch ${prev.batches.length + 1}`, price: "", stock: "" },
+      ],
+    }));
+  };
+
+  const removeBatch = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      batches: prev.batches.filter((_, i) => i !== index),
+    }));
+  };
+
+  // ================= Image Handlers =================
   const handleRemoveImage = (indexToRemove) => {
     setPreviews((prev) => prev.filter((_, idx) => idx !== indexToRemove));
-
     setFormData((prev) => ({
       ...prev,
       images: prev.images.filter((_, idx) => idx !== indexToRemove),
     }));
   };
 
-  // 🔹 Table ke andar se ek single image delete karne ka function
   const handleDeleteSingleImage = async (productId, imageIndex) => {
-    const confirmDelete = window.confirm("Delete this image only?");
-    if (!confirmDelete) return;
-
+    if (!window.confirm("Delete this image only?")) return;
     try {
-      // ⚠️ Apne backend ka route yahan match karna:
       await axios.delete(
         `${BACKEND_URL}/products/${productId}/images/${imageIndex}`
       );
-
-      // UI refresh
       fetchProducts();
     } catch (error) {
       console.error("Error deleting image:", error);
@@ -97,27 +121,29 @@ export default function ProductUpload() {
     }
   };
 
+  // ================= Submit =================
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.price) {
-      alert("Name and Price are required.");
+    if (!formData.name || formData.batches.length === 0) {
+      alert("Product name and at least one batch required.");
       return;
     }
 
-    const uploadData = new FormData();
+    // if (formData.size.length === 0) {
+    //   alert("Please select at least one size.");
+    //   return;
+    // }
 
-    // Non-file fields
+    const uploadData = new FormData();
     uploadData.append("name", formData.name);
-    uploadData.append("price", formData.price);
     uploadData.append("description", formData.description);
     uploadData.append("category", formData.category);
     uploadData.append("subCategory", formData.subCategory);
-    uploadData.append("size", formData.size);
 
-    // Multiple images
-    formData.images.forEach((file) => {
-      uploadData.append("images", file);
-    });
+    uploadData.append("size", JSON.stringify(formData.size)); // product-level sizes
+
+    formData.images.forEach((file) => uploadData.append("images", file));
+    uploadData.append("batches", JSON.stringify(formData.batches));
 
     try {
       if (editingProductId) {
@@ -135,7 +161,6 @@ export default function ProductUpload() {
         });
         alert("Product uploaded successfully!");
       }
-
       resetForm();
       fetchProducts();
     } catch (error) {
@@ -151,26 +176,27 @@ export default function ProductUpload() {
     }
   };
 
+  // ================= Edit / Delete / Reset =================
   const handleEdit = (product) => {
     setFormData({
       name: product.name || "",
-      price: product.price || "",
       description: product.description || "",
       category: product.category || "",
       subCategory: product.subCategory || "",
-      size: product.size || "",
-      images: [], // We'll select new ones if we want to update
+      size: product.generalSizes || [],
+      images: [],
+      batches:
+        product.batches && product.batches.length > 0
+          ? product.batches.map((b) => ({ ...b }))
+          : [{ batchName: "Batch 1", price: "", stock: "" }],
     });
 
-    // Existing images from backend – show as previews
     if (product.images && product.images.length > 0) {
       const serverPreviews = product.images.map(
-        (imgPath) => `${BACKEND_URL}${imgPath}`
+        (img) => `${BACKEND_URL}${img}`
       );
       setPreviews(serverPreviews);
-    } else {
-      setPreviews([]);
-    }
+    } else setPreviews([]);
 
     setEditingProductId(product._id);
     setShowForm(true);
@@ -192,12 +218,12 @@ export default function ProductUpload() {
     setShowForm(false);
     setFormData({
       name: "",
-      price: "",
       description: "",
       category: "",
       subCategory: "",
-      size: "",
+      size: [],
       images: [],
+      batches: [{ batchName: "Batch 1", price: "", stock: "" }],
     });
     setPreviews([]);
     setEditingProductId(null);
@@ -206,6 +232,7 @@ export default function ProductUpload() {
   const filteredSubcategories =
     categories.find((c) => c.name === formData.category)?.subcategories || [];
 
+  // ================= Render =================
   return (
     <div className="products-page">
       <div className="products-header">
@@ -213,73 +240,89 @@ export default function ProductUpload() {
         <button onClick={() => setShowForm(true)}>+ Add Product</button>
       </div>
 
-      {/* Products Table */}
-      <table>
+      {/* Table */}
+      {/* Table */}
+      <table className="admin-products-table">
         <thead>
           <tr>
             <th>Images</th>
             <th>Name</th>
             <th>Category</th>
             <th>Subcategory</th>
-            <th>Price</th>
-            <th>Size</th>
+            <th>Sizes</th>
+            <th>Batches / Variants</th>
+            <th>Price</th> {/* ✅ Added Price column */}
             <th>Description</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {products.map((p) => (
-            <tr key={p._id}>
-              <td>
-                {/* Show all images as small thumbnails WITH cross */}
-                {p.images && p.images.length > 0 ? (
-                  <div className="thumbs-row">
-                    {p.images.map((img, index) => (
-                      <div key={index} className="thumb-item">
-                        <img
-                          src={`${BACKEND_URL}${img}`}
-                          alt={`${p.name} ${index + 1}`}
-                          width={40}
-                          style={{
-                            marginRight: "4px",
-                            borderRadius: "4px",
-                            display: "block",
-                          }}
-                        />
-                        <button
-                          type="button"
-                          className="thumb-remove-btn"
-                          onClick={() =>
-                            handleDeleteSingleImage(p._id, index)
-                          }
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <FiImage />
-                )}
-              </td>
-              <td>{p.name}</td>
-              <td>{p.category}</td>
-              <td>{p.subCategory}</td>
-              <td>{p.price}</td>
-              <td>{p.size}</td>
-              <td className="description-cell">{p.description}</td>
-              <td className="actions">
-                <FiEdit2
-                  onClick={() => handleEdit(p)}
-                  className="edit-icon"
-                />
-                <FiTrash2
-                  onClick={() => handleDelete(p._id)}
-                  className="delete-icon"
-                />
-              </td>
-            </tr>
-          ))}
+          {products.map((p) => {
+            // Compute minimum price if batches exist
+            const minPrice =
+              p.batches && p.batches.length > 0
+                ? Math.min(...p.batches.map((b) => Number(b.price) || Infinity))
+                : p.price || "-";
+
+            return (
+              <tr key={p._id}>
+                <td>
+                  {p.images && p.images.length > 0 ? (
+                    <div className="thumbs-row">
+                      {p.images.map((img, index) => (
+                        <div key={index} className="thumb-item">
+                          <img src={`${BACKEND_URL}${img}`} alt="" width={40} />
+                          <button
+                            className="pro-btn"
+                            onClick={() =>
+                              handleDeleteSingleImage(p._id, index)
+                            }
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <FiImage />
+                  )}
+                </td>
+                <td>{p.name}</td>
+                <td>{p.category}</td>
+                <td>{p.subCategory}</td>
+                <td>
+                  {p.generalSizes && p.generalSizes.length > 0
+                    ? p.generalSizes.join(", ")
+                    : "—"}
+                </td>
+                <td>
+                  {p.batches && p.batches.length > 0 ? (
+                    <ul>
+                      {p.batches.map((b, idx) => (
+                        <li key={idx}>
+                          {b.batchName} — {b.stock} pcs @ Rs {b.price}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    "No batches"
+                  )}
+                </td>
+                <td>Rs {minPrice}</td> {/* ✅ Display min price */}
+                <td>{p.description}</td>
+                <td className="actions">
+                  <FiEdit2
+                    onClick={() => handleEdit(p)}
+                    className="edit-icon"
+                  />
+                  <FiTrash2
+                    onClick={() => handleDelete(p._id)}
+                    className="delete-icon"
+                  />
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
@@ -288,15 +331,14 @@ export default function ProductUpload() {
         <div className="popup-overlay">
           <div className="popup-form">
             <FiX className="close-btn" onClick={resetForm} />
-
             <form onSubmit={handleSubmit}>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 placeholder="Product Name"
-                required
                 onChange={handleChange}
+                required
               />
 
               <select
@@ -317,7 +359,7 @@ export default function ProductUpload() {
                 name="subCategory"
                 value={formData.subCategory}
                 onChange={handleChange}
-                required
+                // required
               >
                 <option value="">Select Subcategory</option>
                 {filteredSubcategories.map((sub) => (
@@ -327,35 +369,37 @@ export default function ProductUpload() {
                 ))}
               </select>
 
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                placeholder="Price"
-                required
-                onChange={handleChange}
-              />
-
-              <input
-                type="text"
-                name="size"
-                value={formData.size}
-                placeholder="Size"
-                required
-                onChange={handleChange}
-              />
+              <label>Sizes</label>
+              <div className="sizes-checkbox">
+                {ALL_SIZES.map((s) => (
+                  <label key={s}>
+                    <input
+                      type="checkbox"
+                      checked={formData.size.includes(s)}
+                      onChange={() => {
+                        setFormData((prev) => {
+                          const newSizes = prev.size.includes(s)
+                            ? prev.size.filter((item) => item !== s)
+                            : [...prev.size, s];
+                          return { ...prev, size: newSizes };
+                        });
+                      }}
+                    />
+                    {s}
+                  </label>
+                ))}
+              </div>
 
               <textarea
                 name="description"
                 value={formData.description}
-                placeholder="Description"
+                placeholder="Description (Supports HTML)"
                 onChange={handleChange}
+                rows={6}
+                style={{ whiteSpace: "pre-wrap" }}
               />
 
-              {/* Multiple image input */}
-              <label className="file-label">
-                Product Images (you can select multiple)
-              </label>
+              <label>Product Images</label>
               <input
                 type="file"
                 name="images"
@@ -364,20 +408,13 @@ export default function ProductUpload() {
                 onChange={handleChange}
               />
 
-              {/* Show all previews with delete cross (form) */}
               {previews.length > 0 && (
                 <div className="preview-wrapper">
                   {previews.map((src, idx) => (
                     <div key={idx} className="preview-item">
-                      <img
-                        src={src}
-                        alt={`Preview ${idx + 1}`}
-                        width={80}
-                        style={{ borderRadius: "6px" }}
-                      />
+                      <img src={src} alt="" width={80} />
                       <button
                         type="button"
-                        className="preview-remove-btn"
                         onClick={() => handleRemoveImage(idx)}
                       >
                         ✕
@@ -386,6 +423,43 @@ export default function ProductUpload() {
                   ))}
                 </div>
               )}
+
+              <div className="batch-section">
+                <h4>Batches / Variants</h4>
+                {formData.batches.map((batch, idx) => (
+                  <div key={idx} className="batch-row">
+                    <input
+                      type="text"
+                      placeholder="Batch Name"
+                      value={batch.batchName}
+                      onChange={(e) => handleChange(e, idx, "batchName")}
+                      required
+                    />
+                    <input
+                      type="number"
+                      placeholder="Price"
+                      value={batch.price}
+                      onChange={(e) => handleChange(e, idx, "price")}
+                      required
+                    />
+                    <input
+                      type="number"
+                      placeholder="Stock"
+                      value={batch.stock}
+                      onChange={(e) => handleChange(e, idx, "stock")}
+                      required
+                    />
+                    {idx > 0 && (
+                      <button type="button" onClick={() => removeBatch(idx)}>
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button type="button" onClick={addBatch}>
+                  + Add Batch
+                </button>
+              </div>
 
               <button type="submit">
                 {editingProductId ? "Update Product" : "Save Product"}

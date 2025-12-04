@@ -12,7 +12,7 @@
 }
 
 .left-text h2 {
-  font-size: clamp(24px, 5vw, 50px);
+  font-size: clamp(24px, 2vw, 50px);
   font-weight: 800;
   color: #b68944;
   margin: 0;
@@ -121,3 +121,8 @@
     flex: 0 0 calc(50% - 10px); /* Mobile: 2 cards per row */
   }
 }
+ @media (max-width: 480px) {
+  .left-text h2 {
+    font-size: clamp(14px, 4vw, 36px);
+  }
+ }

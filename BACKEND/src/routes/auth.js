@@ -5,6 +5,9 @@ const { verifySignUp, authJwt } = require("../middleware");
 const authController = require("../controllers/auth.controller");
 
 
+// Get all users (protected route)
+router.get("/", authJwt.verifyToken, authController.getAllUsers);
+
 // Signup & Signin
 router.post("/signup", [verifySignUp.checkDuplicateEmail, verifySignUp.checkRolesExisted], authController.signup);
 router.post("/signin", authController.signin);

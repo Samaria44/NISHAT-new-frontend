@@ -1,0 +1,105 @@
+/* Wrapper */
+.contact-admin-wrapper {
+  padding: 24px;
+  margin-left: 258px; /* same as your inline style */
+  font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f7fb;
+  min-height: 100vh;
+}
+
+/* Title */
+.contact-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #111827;
+}
+
+/* Table container */
+.contact-table-container {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  overflow-x: auto;
+}
+
+/* Table */
+.contact-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+/* Head */
+.contact-table thead {
+  background: #f9fafb;
+}
+
+.contact-table th {
+  text-align: left;
+  padding: 12px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Body rows */
+.contact-table td {
+  padding: 10px 10px;
+  font-size: 14px;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: top;
+}
+
+/* Zebra rows + hover */
+.contact-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.contact-table tbody tr:hover {
+  background: #eef2ff;
+}
+
+/* Message cell wrap */
+.contact-message-cell {
+  max-width: 260px;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Empty state */
+.contact-empty {
+  text-align: center;
+  padding: 20px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Delete button */
+.contact-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #807e7e;
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 999px;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.contact-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  transform: scale(1.05);
+}
+
+.contact-delete-btn:active {
+  transform: scale(0.96);
+}

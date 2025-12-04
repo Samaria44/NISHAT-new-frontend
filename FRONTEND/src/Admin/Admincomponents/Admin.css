@@ -93,7 +93,7 @@
   min-width: 240px;
   max-width: 320px;
   border-radius: 16px;
-  padding: 18px 18px 16px;
+  padding: 0px 18px 16px;
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
   display: flex;
   flex-direction: column;
@@ -114,9 +114,7 @@
 }
 
 /* Specific card colors */
-.product-card {
-  background: #ffffff;
-}
+
 .product-card::before {
   background: linear-gradient(135deg, #f97316, #fb923c);
 }
@@ -175,4 +173,15 @@
   .card {
     min-width: 100%;
   }
+}
+.top-selling-card {
+  border-left: 4px solid #16a34a; /* green */
+}
+
+.out-of-stock-card {
+  border-left: 4px solid #dc2626; /* red */
+}
+
+.low-stock-card {
+  border-left: 4px solid #f59e0b; /* amber */
 }

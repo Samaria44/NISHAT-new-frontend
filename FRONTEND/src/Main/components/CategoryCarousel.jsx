@@ -1,46 +1,23 @@
-//D:\samaria\NISHAT\FRONTEND\my-react-app\src\Main\components\CategoryCarousel.jsx
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+// src/Main/components/CategoryCarousel.jsx
+import { useEffect, useState, useRef, useContext } from "react";
+import { SpecialSaleContext } from "../../Admin/context/SpecialSaleContext";
 import "./Categorycarousel.css";
-import img1 from "../images/img1.webp";
-import img2 from "../images/img2.webp";
-import img3 from "../images/img3.webp";
-import img4 from "../images/img4.webp";
-import img5 from "../images/img5.webp";
-import img6 from "../images/img6.webp";
-import img7 from "../images/img7.webp";
 
 export default function CategoryCarousel() {
-  const navigate = useNavigate();
   const trackRef = useRef(null);
+  const startX = useRef(0);
+  const isDragging = useRef(false);
 
-
-
-const categories = [
-  { img: img1, name: "BAGS" },
-  { img: img2, name: "SHOES" },
-  { img: img3, name: "WINTER SPOTLIGHT" },
-  { img: img4, name: "AURA" },
-  { img: img5, name: "MEN" },
-  { img: img6, name: "Embroidered Pret" },
-  { img: img7, name: "SEASON SHIFT" },
-];
-
-
-
-
-
-
-  // Duplicate categories for seamless infinite loop
-  const loopedCategories = [...categories, ...categories];
+  const { specialSales, loading, bannerText } = useContext(SpecialSaleContext);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [cardsToShow, setCardsToShow] = useState(6); // Desktop default
+  const [cardsToShow, setCardsToShow] = useState(6);
 
-  // Responsive: adjust cards per view
+  // --- Responsive ---
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) setCardsToShow(3);
+      if (window.innerWidth <= 480) setCardsToShow(2);
+      else if (window.innerWidth <= 768) setCardsToShow(3);
       else setCardsToShow(6);
     };
     handleResize();
@@ -48,88 +25,105 @@ const categories = [
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Auto-scroll
+  // --- Auto scroll ---
   useEffect(() => {
+    if (!specialSales || specialSales.length === 0) return;
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => prev + 1);
     }, 3000);
-    return () => clearInterval(interval);
-  }, []);
 
-  // Transform carousel and handle infinite loop
+    return () => clearInterval(interval);
+  }, [specialSales]);
+
+  // --- Transform carousel ---
   useEffect(() => {
-    if (!trackRef.current) return;
+    if (!trackRef.current || !specialSales || specialSales.length === 0) return;
+
     const track = trackRef.current;
     const cardWidth = track.offsetWidth / cardsToShow;
+    const len = specialSales.length;
 
-    track.style.transition = "transform 0.8s ease";
+    track.style.transition = "transform 0.5s ease-in-out";
     track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
 
-    // Reset to start seamlessly
-    if (currentIndex >= categories.length) {
+    // Seamless reset
+    if (currentIndex >= len) {
       setTimeout(() => {
         track.style.transition = "none";
         setCurrentIndex(0);
         track.style.transform = `translateX(0px)`;
-      }, 800); // match transition duration
+      }, 500);
+    } else if (currentIndex < 0) {
+      setTimeout(() => {
+        track.style.transition = "none";
+        setCurrentIndex(len - 1);
+        track.style.transform = `translateX(-${(len - 1) * cardWidth}px)`;
+      }, 500);
     }
-  }, [currentIndex, cardsToShow, categories.length]);
+  }, [currentIndex, cardsToShow, specialSales]);
 
-  // Mobile swipe support
-  const startX = useRef(0);
-  const isDragging = useRef(false);
-
+  // --- Swipe support ---
   const handleTouchStart = (e) => {
     startX.current = e.touches[0].clientX;
     isDragging.current = true;
   };
 
-  const handleTouchMove = (e) => {
-    if (!isDragging.current) return;
+  const handleTouchEnd = (e) => {
+    if (!isDragging.current || !specialSales || specialSales.length === 0)
+      return;
+    const diff = e.changedTouches[0].clientX - startX.current;
+    isDragging.current = false;
+
+    if (diff > 50) setCurrentIndex((prev) => prev - 1);
+    else if (diff < -50) setCurrentIndex((prev) => prev + 1);
   };
 
-  const handleTouchEnd = (e) => {
-    isDragging.current = false;
-    const diff = e.changedTouches[0].clientX - startX.current;
-    if (diff > 50) setCurrentIndex((prev) => prev - 1);
-    if (diff < -50) setCurrentIndex((prev) => prev + 1);
-  };
+  // --- Render ---
+  if (loading || !specialSales) return <div>Loading...</div>;
+  if (specialSales.length === 0) return <div>No special sales available</div>;
+
+  // Duplicate for seamless loop
+  const loopedItems = [...specialSales, ...specialSales];
 
   return (
     <div className="big-container">
-      {/* Left Text fixed on left */}
+      {/* single banner text for all products */}
       <div className="left-text">
-        <h2>WINTER</h2>
-        <h1>2025</h1>
+        <h2>{bannerText || "SPECIAL SALE"}</h2>
       </div>
 
       <div
         className="carousel-wrapper"
         onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         <div className="carousel-track" ref={trackRef}>
-  {loopedCategories.map((item, i) => (
-  <div
-  key={i}
-  className="circle-card"
-  onClick={() => navigate(`/category/${item.name}`)} >
-    <div className="circle-image">
-      <img src={item.img} alt={item.name} />
-    </div>
-    <p className="circle-name">{item.name}</p>
-  </div>
-))}
-
-        </div>
-
-        <div className="dots-container">
-          {categories.map((_, i) => (
-            <span
-              key={i}
-              className={`dot ${i === currentIndex % categories.length ? "active-dot" : ""}`}
-            ></span>
+          {loopedItems.map((item, i) => (
+            <div
+              key={item._id + "-" + i}
+              className="circle-card"
+              onClick={() =>
+                item.navigateTo && (window.location.href = item.navigateTo)
+              }
+            >
+              <div className="circle-image">
+                <img
+                  src={
+                    item.image
+                      ? `http://localhost:8000${item.image}`
+                      : "https://placeholder.co/200x200?text=No+Image"
+                  }
+                  alt={item.name}
+                />
+                {item.discount > 0 && (
+                  <div className="sale-discount-badge">
+                    {item.discount}% OFF
+                  </div>
+                )}
+              </div>
+              <p className="circle-name">{item.name}</p>
+            </div>
           ))}
         </div>
       </div>

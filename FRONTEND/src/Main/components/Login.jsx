@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { FiX } from "react-icons/fi";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInterceptor";
 import "./Login.css";
 
-const BACKEND_URL = "http://localhost:8000/auth"; // your backend API
+const BACKEND_URL = "http://localhost:8000/auth"; // backend API
 
 const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
-  const [view, setView] = useState("login"); 
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [view, setView] = useState("login");
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -19,7 +19,7 @@ const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
     if (!form.email || !form.password) return alert("Enter email & password");
     try {
       setLoading(true);
-      const res = await axios.post(`${BACKEND_URL}/signin`, {
+      const res = await axiosInstance.post(`/auth/signin`, {
         email: form.email,
         password: form.password,
       });
@@ -28,7 +28,7 @@ const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
       localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("user", JSON.stringify(res.data));
       alert("Login successful!");
-      onLoginSuccess?.(); // callback to update UI
+      onLoginSuccess?.();
       onClose();
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -39,19 +39,19 @@ const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
 
   // SIGNUP
   const handleSignup = async () => {
-    if (!form.name || !form.email || !form.password)
+    if (!form.firstName || !form.lastName || !form.email || !form.password)
       return alert("All fields are required!");
     try {
       setLoading(true);
-      await axios.post(`${BACKEND_URL}/signup`, {
-        firstName: form.name.split(" ")[0] || "",
-        lastName: form.name.split(" ")[1] || "",
+      await axiosInstance.post(`/auth/signup`, {
+        firstName: form.firstName,
+        lastName: form.lastName,
         email: form.email,
         password: form.password,
       });
       alert("Account created successfully! Please login.");
       setView("login");
-      setForm({ name: "", email: "", password: "" });
+      setForm({ firstName: "", lastName: "", email: "", password: "" });
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
     } finally {
@@ -64,7 +64,7 @@ const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
     if (!form.email) return alert("Enter your email");
     try {
       setLoading(true);
-      await axios.post(`${BACKEND_URL}/forgot-password`, { email: form.email });
+      await axiosInstance.post(`/auth/forgot-password`, { email: form.email });
       alert("Password reset link sent! Check your email.");
       setView("login");
     } catch (err) {
@@ -122,10 +122,18 @@ const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
             <div>
               <input
                 type="text"
-                name="name"
-                placeholder="Full Name"
+                name="firstName"
+                placeholder="First Name"
                 className="input"
-                value={form.name}
+                value={form.firstName}
+                onChange={handleChange}
+              />
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                className="input"
+                value={form.lastName}
                 onChange={handleChange}
               />
               <input

@@ -69,6 +69,14 @@
 .icon-wrapper {
   position: relative;
 }
+.iconss{
+  gap: 15px;
+  display: flex;
+  stroke-width: 2;
+  color: #000;
+ 
+  cursor: pointer;
+}
 .badge {
   position: absolute;
   top: -6px;
@@ -151,7 +159,7 @@ font-size: 14px;
 }
 
 .sidebar1.open {
-  right: 0;
+  right: 153px;
 }
 
 .sidebar1-header {

@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
+import "./utils/axiosInterceptor"; // Initialize axios interceptor for token refresh
 
 import Home from "./Main/pages/Home";
 import AppLayout from "./Main/components/Applayout";
@@ -11,7 +12,11 @@ import Orders from "./Admin/Admincomponents/Order";
 import Users from "./Admin/Admincomponents/Users";
 import OrderDetail from "./Admin/Admincomponents/Orderdetail";
 import AdminCategory from "./Admin/Admincomponents/Admincategory";
+import AdminSpecialSale from "./Admin/Admincomponents/AdminSpecialSale";
+import AdminCarousel from "./Admin/Admincomponents/AdminCarousel";
 import { CategoryProvider } from "./Admin/context/CategoryContext";
+import { SpecialSaleProvider } from "./Admin/context/SpecialSaleContext";
+import { CarouselProvider } from "./Admin/context/CarouselContext";
 import CategoryPage from "./Main/pages/CategoryPage";
 import CartProvider from "./Main/components/context/CartContext";
 import Cart from "./Main/pages/cart";
@@ -26,7 +31,10 @@ import Contact from "./Main/pages/contact";
 import ContactAdmin from "./Admin/Admincomponents/Users";
 import AboutUs from "./Main/pages/Aboutus";
 import PrivacyPolicy from "./Main/components/privacypolicy";
-import UserLogin from "./Admin/Admincomponents/user-login"; // rename component to PascalCase
+import UserLogin from "./Admin/Admincomponents/user-login"; 
+import SearchSidebar from "./Main/components/Filters";
+import InventoryDashboard from "./Admin/Adminpages/InventoryDashboard";
+import AdminUsers from "./Admin/Admincomponents/AdminUsers";
 
 function App() {
   const router = createBrowserRouter([
@@ -39,13 +47,14 @@ function App() {
         { path: "category/:categoryName", element: <CategoryPage /> },
         { path: "category/:categoryName/:subName", element: <CategoryPage /> },
         { path: "cart", element: <Cart /> },
-        { path: "checkout", element: <Checkout /> },
+    
         { path: "thank-you", element: <ThankYou /> },
         { path: "wishlist", element: <Wishlist /> },
         { path: "product/:id", element: <ProductDetail /> },
         { path: "contact", element: <Contact /> },
         { path: "about-us", element: <AboutUs /> },
         { path: "privacy-policy", element: <PrivacyPolicy /> },
+        {path:"Filter", element:<SearchSidebar />},
         {
           path: "user",
           element: (
@@ -55,8 +64,9 @@ function App() {
           ),
         },
       ],
+      
     },
-
+   { path: "checkout", element: <Checkout /> },
     { path: "/login", element: <Login /> },
 
     // Admin routes
@@ -66,24 +76,34 @@ function App() {
     },
     {
       path: "/dashboard",
+  
+      
       element: <AdminLayout />,
       children: [
         { path: "products", element: <ProductUpload /> },
         { path: "category", element: <AdminCategory /> },
+        { path: "specialsales", element: <AdminSpecialSale /> },
+        { path: "carousel", element: <AdminCarousel /> },
         { path: "orders", element: <Orders /> },
         { path: "users", element: <ContactAdmin /> },
-        { path: "users-login", element: <UserLogin /> }, // relative path
+        // { path: "users-login", element: < UserLogin /> }, 
+        { path: "admin-users", element: <AdminUsers /> },
         { path: "orderdetail/:id", element: <OrderDetail /> },
         { path: "newsletter", element: <Newsletter /> },
+        {path: "inventory", element: <InventoryDashboard /> },
       ],
     },
   ]);
 
   return (
     <CategoryProvider>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
+      <SpecialSaleProvider>
+        <CarouselProvider>
+          <CartProvider>
+            <RouterProvider router={router} />
+          </CartProvider>
+        </CarouselProvider>
+      </SpecialSaleProvider>
     </CategoryProvider>
   );
 }

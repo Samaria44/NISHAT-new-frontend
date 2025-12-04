@@ -88,3 +88,16 @@ exports.updateSubcategoryImage = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.updateCategoryImage = async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+    const category = await CategoryService.updateCategoryImage(
+      req.params.id,
+      req.file
+    );
+    res.json({ message: "Category image updated", category });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

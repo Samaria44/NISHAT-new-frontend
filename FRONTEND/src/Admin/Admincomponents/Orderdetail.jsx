@@ -36,6 +36,8 @@ export default function OrderDetail() {
       <p><strong>Date:</strong> {order.date}</p>
       <p><strong>Status:</strong> {order.status}</p>
       <p><strong>Address:</strong> {order.address}</p>
+      {order.city && <p><strong>City:</strong> {order.city}</p>}
+      {order.postal && <p><strong>Postal Code:</strong> {order.postal}</p>}
 
       {order.products && order.products.length > 0 && (
         <table className="orderdetail-table">
@@ -49,25 +51,38 @@ export default function OrderDetail() {
             </tr>
           </thead>
           <tbody>
-            {order.products.map((product, idx) => (
-              <tr key={idx}>
-                <td>
-                  <img
-                    src={
-                      product.image.startsWith("http")
-                        ? product.image
-                        : `http://localhost:8000${product.image}`
-                    }
-                    alt={product.name}
-                    width={60}
-                  />
-                </td>
-                <td>{product.name}</td>
-                <td>{product.size}</td>
-                <td>{product.qty}</td>
-                <td>Rs {product.price * product.qty}</td>
-              </tr>
-            ))}
+            {order.products.map((p, idx) => {
+              // p may be of shape { product: {...}, qty, size } when populated
+              const product = p.product || p; // fallback if not populated
+              const qty = p.qty || p.quantity || 1;
+              // prefer `product.image`, then `product.images[0]`, otherwise blank
+              const imageCandidate =
+                product && (product.image || (product.images && product.images[0]))
+                  ? product.image || (product.images && product.images[0])
+                  : "";
+
+              const imageSrc = imageCandidate
+                ? imageCandidate.startsWith("http")
+                  ? imageCandidate
+                  : `http://localhost:8000${imageCandidate}`
+                : "https://placeholder.co/60x60?text=No+Image";
+              const price = (Number(product.price) || 0) * qty;
+              return (
+                <tr key={idx}>
+                  <td>
+                    <img
+                      src={imageSrc}
+                      alt={product.name || "product"}
+                      width={60}
+                    />
+                  </td>
+                  <td>{product.name}</td>
+                  <td>{p.size || product.size}</td>
+                  <td>{qty}</td>
+                  <td>Rs {price}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

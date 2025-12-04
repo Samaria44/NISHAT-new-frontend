@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
+import { useCart } from "../components/context/CartContext";
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import axios from "axios";
 import { AiOutlineHeart, AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
@@ -9,6 +10,7 @@ import SubDetail from "./subdetail";
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -20,6 +22,7 @@ export default function ProductDetail() {
   );
   const [quantity, setQuantity] = useState(1);
   const [descOpen, setDescOpen] = useState(false);
+  const [selectedSize, setSelectedSize] = useState("");
 
   const thumbsRef = useRef(null);
 
@@ -28,15 +31,24 @@ export default function ProductDetail() {
       try {
         setLoading(true);
         const res = await axios.get(`http://localhost:8000/products/${id}`);
-        setProduct(res.data);
+        const prod = res.data;
+
+        // Compute minimum price if batches exist
+        if (prod.batches && prod.batches.length > 0) {
+          prod.minPrice = Math.min(...prod.batches.map((b) => b.price || Infinity));
+        } else {
+          prod.minPrice = prod.price || "-";
+        }
+
+        setProduct(prod);
 
         // Fetch related products from same category
-        if (res.data.category) {
+        if (prod.category) {
           const relatedRes = await axios.get(
-            `http://localhost:8000/products?category=${res.data.category}`
+            `http://localhost:8000/products?category=${prod.category}`
           );
           setRelatedProducts(
-            relatedRes.data.filter((p) => p._id !== res.data._id)
+            relatedRes.data.filter((p) => p._id !== prod._id)
           );
         }
       } catch (err) {
@@ -49,17 +61,19 @@ export default function ProductDetail() {
     fetchProduct();
   }, [id]);
 
+  if (loading) return <div className="pd-page">Loading...</div>;
+  if (error || !product) return <div className="pd-page">{error}</div>;
+
   const imagesArray =
     product?.images?.map((img) => `http://localhost:8000${img}`) ||
     (product?.image ? [`http://localhost:8000${product.image}`] : []);
 
-  const isInWishlist = (prod) =>
-    wishlist.some((p) => p._id === (prod?._id || id));
+  const isInWishlist = () =>
+    wishlist.some((p) => p._id === product._id);
 
   const toggleWishlist = () => {
-    if (!product) return;
     let updatedWishlist;
-    if (isInWishlist(product)) {
+    if (isInWishlist()) {
       updatedWishlist = wishlist.filter((p) => p._id !== product._id);
     } else {
       updatedWishlist = [...wishlist, product];
@@ -68,14 +82,26 @@ export default function ProductDetail() {
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
     window.dispatchEvent(new Event("storage"));
   };
+const handleAddToCart = () => {
+  if (!product) return;
 
-  const handleAddToCart = () => {
-    if (!product) return;
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    cart.push({ ...product, quantity });
-    localStorage.setItem("cart", JSON.stringify(cart));
-    navigate("/cart");
-  };
+  // Determine price based on selected batch/size
+  let batchPrice = product.price || 0;
+
+  if (product.batches && product.batches.length > 0) {
+    if (selectedSize) {
+      const selectedBatch = product.batches.find(b => b.size === selectedSize);
+      batchPrice = selectedBatch ? Number(selectedBatch.price) : Number(product.batches[0].price);
+    } else {
+      batchPrice = Number(product.batches[0].price);
+    }
+  }
+
+  // Add to cart
+  addToCart({ ...product, price: batchPrice }, quantity, selectedSize);
+  navigate("/cart");
+};
+
 
   const prevImage = () =>
     setMainImageIndex((prev) =>
@@ -95,9 +121,6 @@ export default function ProductDetail() {
       behavior: "smooth",
     });
   };
-
-  if (loading) return <div className="pd-page">Loading...</div>;
-  if (error || !product) return <div className="pd-page">{error}</div>;
 
   return (
     <>
@@ -139,28 +162,32 @@ export default function ProductDetail() {
         {/* RIGHT: details */}
         <div className="pd-right">
           <h2 className="pd-title">{product.name}</h2>
-          <p className="pd-price">Rs. {product.price}</p>
-          {product.sku && (
-            <p>
-              <strong>SKU:</strong> {product.sku}
-            </p>
-          )}
-          {product.installment && (
-            <p>
-              <strong>Installment:</strong> {product.installment}
-            </p>
+          <p className="pd-price">Rs. {product.minPrice}</p>
+
+          {/* SIZE SELECTOR */}
+          {product.generalSizes && product.generalSizes.length > 1 && (
+            <div className="pd-size-selector">
+              <select
+                className="size-selector-dropdown"
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+              >
+                <option value="">Select Size</option>
+                {product.generalSizes.map((size, idx) => (
+                  <option key={idx} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
 
           {/* QUANTITY + CART + WISHLIST */}
           <div className="pd-actions">
             <div className="quantity-selector">
+              <button onClick={() => setQuantity((q) => Math.max(1, q - 1))}>−</button>
               <span>{quantity}</span>
               <button onClick={() => setQuantity((q) => q + 1)}>+</button>
-              <button
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              >
-                −
-              </button>
             </div>
 
             <button className="pd-add-cart-btn" onClick={handleAddToCart}>
@@ -170,7 +197,7 @@ export default function ProductDetail() {
             <button
               className="pd-wishlist-btn"
               onClick={toggleWishlist}
-              style={{ color: isInWishlist(product) ? "red" : "black" }}
+              style={{ color: isInWishlist() ? "red" : "black" }}
             >
               <AiOutlineHeart />
             </button>
@@ -194,28 +221,13 @@ export default function ProductDetail() {
 
           {/* SOCIAL SHARE */}
           <div className="pd-social-share">
-            <a
-              href="https://www.nishat.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#3b5998", marginRight: "10px" }}
-            >
+            <a href="https://www.nishat.com" target="_blank" rel="noopener noreferrer" style={{ color: "#3b5998", marginRight: "10px" }}>
               <FaFacebookF size={24} style={{ cursor: "pointer" }} />
             </a>
-            <a
-              href="https://www.nishat.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#C13584", marginRight: "10px" }}
-            >
+            <a href="https://www.nishat.com" target="_blank" rel="noopener noreferrer" style={{ color: "#C13584", marginRight: "10px" }}>
               <FaInstagram size={24} style={{ cursor: "pointer" }} />
             </a>
-            <a
-              href="https://www.nishat.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#25D366" }}
-            >
+            <a href="https://www.nishat.com" target="_blank" rel="noopener noreferrer" style={{ color: "#25D366" }}>
               <FaWhatsapp size={24} style={{ cursor: "pointer" }} />
             </a>
           </div>
@@ -223,7 +235,7 @@ export default function ProductDetail() {
       </div>
 
       {/* SUBDETAIL: Related Products */}
-      <SubDetail />
+      <SubDetail relatedProducts={relatedProducts} />
     </>
   );
 }

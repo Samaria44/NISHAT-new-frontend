@@ -1,0 +1,102 @@
+.search-sidebar {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 400px;
+  height: 100%;
+  background: #fff;
+  box-shadow: -3px 0 8px rgba(0,0,0,0.2);
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-sidebar.open {
+  right: 0;
+}
+
+.search-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.close-icon {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.search-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.search-input-wrapper {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.search-input-wrapper input {
+  width: 89%;
+  padding: 10px 35px 10px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.search-input-wrapper .search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.filters label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: 600;
+}
+
+.filters select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.search-results {
+  margin-top: 20px;
+}
+
+.search-result-item {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.search-result-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.search-result-item p {
+  margin: 2px 0;
+}
+
+.search-all-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}

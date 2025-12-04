@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FiTrash2 } from "react-icons/fi";
-
-
+import "./NewsletterAdmin.css";
 
 export default function NewsletterAdmin() {
   const [subscribers, setSubscribers] = useState([]);
@@ -30,40 +29,44 @@ export default function NewsletterAdmin() {
   }, []);
 
   return (
-    <div style={{ padding: "20px", marginLeft: "258px" }}>
-      <h2>Newsletter Subscribers</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Date</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {subscribers.map((s) => (
-            <tr key={s._id}>
-              <td>{s.email}</td>
-              <td>{new Date(s.date).toLocaleString()}</td>
-              <td>
-                <button
-                  onClick={() => deleteSubscriber(s._id)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "red",
-                    fontSize: "16px",
-                  }}
-                  title="Delete"
-                >
-                  <FiTrash2 />
-                </button>
-              </td>
+    <div className="newsletter-admin-wrapper">
+      <h2 className="newsletter-title">Newsletter Subscribers</h2>
+      <div className="newsletter-table-container">
+        <table className="newsletter-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Date</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {subscribers.length === 0 ? (
+              <tr>
+                <td colSpan={3} className="newsletter-empty">
+                  No subscribers yet.
+                </td>
+              </tr>
+            ) : (
+              subscribers.map((s) => (
+                <tr key={s._id}>
+                  <td>{s.email}</td>
+                  <td>{new Date(s.date).toLocaleString()}</td>
+                  <td>
+                    <button
+                      onClick={() => deleteSubscriber(s._id)}
+                      className="newsletter-delete-btn"
+                      title="Delete"
+                    >
+                      <FiTrash2 />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

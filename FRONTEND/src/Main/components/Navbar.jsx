@@ -1,7 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import SearchSidebar from "./Filters.jsx"; // Make sure Filters.jsx exports default
 import {
   FiSearch,
   FiUser,
@@ -14,37 +15,33 @@ import {
 
 import { CategoryContext } from "../../Admin/context/CategoryContext";
 import { useCart } from "./context/CartContext";
-
-// ✔ Correct Import
 import UserSidebar from "./Login.jsx";
 
-export default function Navbar() {
+export default function Navbar({ onSearchClick }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loginSidebarOpen, setLoginSidebarOpen] = useState(false);
+  const [searchSidebarOpen, setSearchSidebarOpen] = useState(false);
 
-  const { categories } = useContext(CategoryContext);
+  const { categories = [] } = useContext(CategoryContext); // default empty array
   const navigate = useNavigate();
 
-  const { cartItems } = useCart();
-  const cartCount = cartItems.reduce((acc, i) => acc + (i.qty || 1), 0);
+  const { cartItems = [] } = useCart(); // default empty array
+  const cartCount = cartItems.reduce(
+    (acc, i) => acc + (Number(i.qty || i.quantity) || 1),
+    0
+  );
 
-  const [wishCount, setWishCount] = useState(0);
-
-  useEffect(() => {
-    const update = () => {
-      const wish = JSON.parse(localStorage.getItem("wishlist")) || [];
-      setWishCount(wish.length);
-    };
-    update();
-    window.addEventListener("storage", update);
-    return () => window.removeEventListener("storage", update);
-  }, []);
+  const [wishCount, setWishCount] = useState(
+    JSON.parse(localStorage.getItem("wishlist"))?.length || 0
+  );
 
   return (
     <header className="navbar">
       {/* TOP BAR */}
       <div className="top-bar">
-        <p>The Wait is Over — Winter Has Arrived. <a href="#">Shop Now!</a></p>
+        <p>
+          The Wait is Over — Winter Has Arrived. <a href="/category/winter">Shop Now!</a>
+        </p>
       </div>
 
       {/* MAIN NAVBAR */}
@@ -60,31 +57,36 @@ export default function Navbar() {
         </div>
 
         <div className="logo">nishat</div>
+<div className="iconss">
+        <FiSearch
+          className="icon"
+          onClick={() => setSearchSidebarOpen(true)}
+        />
 
-        <div className="right-icons">
-          <FiSearch className="icon" />
+        <SearchSidebar
+          open={searchSidebarOpen}
+          onClose={() => setSearchSidebarOpen(false)}
+        />
 
-          {/* ✔ Login Sidebar Trigger */}
-          <FiUser
-            className="icon hide-mobile"
-            onClick={() => setLoginSidebarOpen(true)}
-            style={{ cursor: "pointer" }}
-          />
+        <FiUser
+          className="icon hide-mobile"
+          onClick={() => setLoginSidebarOpen(true)}
+          style={{ cursor: "pointer" }}
+        />
 
-          <div className="icon-wrapper" onClick={() => navigate("/wishlist")}>
-            <FiHeart className="icon" />
-            {wishCount > 0 && <span className="badge">{wishCount}</span>}
-          </div>
+        <div className="icon-wrapper" onClick={() => navigate("/wishlist")}>
+          <FiHeart className="icon" />
+          {wishCount > 0 && <span className="badge">{wishCount}</span>}
+        </div>
 
-          <FiTruck className="icon hide-mobile" />
+        <FiTruck className="icon hide-mobile" />
 
-          <div className="icon-wrapper" onClick={() => navigate("/cart")}>
-            <FiShoppingCart className="icon" />
-            {cartCount > 0 && <span className="badge">{cartCount}</span>}
-          </div>
+        <div className="icon-wrapper" onClick={() => navigate("/cart")}>
+          <FiShoppingCart className="icon" />
+          {cartCount > 0 && <span className="badge">{cartCount}</span>}
         </div>
       </div>
-
+</div>
       {/* DESKTOP MENU */}
       <nav className="menu">
         {categories.map((cat) => (
@@ -94,8 +96,7 @@ export default function Navbar() {
             onClick={() => navigate(`/category/${cat.name}`)}
           >
             {cat.name}
-
-            {cat.subcategories.length > 0 && (
+            {cat.subcategories?.length > 0 && (
               <div className="submenu">
                 {cat.subcategories.map((sub) => (
                   <div
@@ -121,7 +122,6 @@ export default function Navbar() {
           <h4>MENU</h4>
           <FiX className="close-icon" onClick={() => setSidebarOpen(false)} />
         </div>
-
         <div className="sidebar1-links">
           {categories.map((cat) => (
             <div key={cat._id} className="mobile-menu-category">
@@ -131,8 +131,7 @@ export default function Navbar() {
               >
                 {cat.name}
               </p>
-
-              {cat.subcategories.length > 0 && (
+              {cat.subcategories?.length > 0 && (
                 <div className="mobile-sub-list">
                   {cat.subcategories.map((sub) => (
                     <p
@@ -149,15 +148,11 @@ export default function Navbar() {
             </div>
           ))}
         </div>
-
         <div className="sidebar1-footer">
           <p onClick={() => navigate("/wishlist")}>
             Wishlist {wishCount > 0 && `(${wishCount})`}
           </p>
-
-          {/* ✔ Login Sidebar Trigger */}
           <p onClick={() => setLoginSidebarOpen(true)}>Login / Register</p>
-
           <div className="contact">
             <p>Need help?</p>
             <p>042-38103311</p>
@@ -171,7 +166,7 @@ export default function Navbar() {
         <div className="overlay" onClick={() => setSidebarOpen(false)}></div>
       )}
 
-      {/* ✔ RIGHT LOGIN SIDEBAR */}
+      {/* RIGHT LOGIN SIDEBAR */}
       <UserSidebar
         open={loginSidebarOpen}
         onClose={() => setLoginSidebarOpen(false)}
