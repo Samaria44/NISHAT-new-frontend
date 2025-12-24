@@ -11,7 +11,7 @@ export const CarouselProvider = ({ children }) => {
   const getCarouselImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8000/carousel");
+      const response = await axios.get("https://nishat-api.vercel.app/carousel");
       setCarouselImages(response.data);
     } catch (error) {
       console.error("Error fetching carousel images:", error);
@@ -23,7 +23,7 @@ export const CarouselProvider = ({ children }) => {
   // Get active carousel images (for frontend display)
   const getActiveCarouselImages = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/carousel/active");
+      const response = await axios.get("https://nishat-api.vercel.app/carousel/active");
       setCarouselImages(response.data);
     } catch (error) {
       console.error("Error fetching active carousel images:", error);
@@ -34,7 +34,7 @@ export const CarouselProvider = ({ children }) => {
   const addCarouselImage = async (carouselData) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/carousel",
+        "https://nishat-api.vercel.app/carousel",
         carouselData
       );
       setCarouselImages([...carouselImages, response.data]);
@@ -49,7 +49,7 @@ export const CarouselProvider = ({ children }) => {
   const updateCarouselImage = async (id, updateData) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/carousel/${id}`,
+        `https://nishat-api.vercel.app/carousel/${id}`,
         updateData
       );
       setCarouselImages(
@@ -65,7 +65,7 @@ export const CarouselProvider = ({ children }) => {
   // Delete carousel image
   const deleteCarouselImage = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/carousel/${id}`);
+      await axios.delete(`https://nishat-api.vercel.app/carousel/${id}`);
       setCarouselImages(carouselImages.filter((img) => img._id !== id));
     } catch (error) {
       console.error("Error deleting carousel image:", error);
@@ -80,7 +80,7 @@ export const CarouselProvider = ({ children }) => {
       formData.append("image", imageFile);
 
       const response = await axios.put(
-        `http://localhost:8000/carousel/${id}/image`,
+        `https://nishat-api.vercel.app/carousel/${id}/image`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

@@ -4,7 +4,7 @@ import "./product.css";
 import { FiEdit2, FiTrash2, FiX, FiImage } from "react-icons/fi";
 import { CategoryContext } from "../context/CategoryContext";
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "https://nishat-api.vercel.app";
 const ALL_SIZES = ["S", "M", "L", "XL"];
 
 export default function ProductUpload() {

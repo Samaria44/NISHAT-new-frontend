@@ -90,13 +90,13 @@ export default function AdminSpecialSale() {
       }
 
       if (editingId) {
-        await fetch(`http://localhost:8000/specialsale/${editingId}`, {
+        await fetch(`https://nishat-api.vercel.app/specialsale/${editingId}`, {
           method: "PUT",
           body: formData,
         });
         alert("Special sale updated");
       } else {
-        await fetch("http://localhost:8000/specialsale", {
+        await fetch("https://nishat-api.vercel.app/specialsale", {
           method: "POST",
           body: formData,
         });
@@ -127,7 +127,7 @@ export default function AdminSpecialSale() {
     if (!window.confirm("Are you sure you want to delete this sale?")) return;
 
     try {
-      await fetch(`http://localhost:8000/specialsale/${id}`, {
+      await fetch(`https://nishat-api.vercel.app/specialsale/${id}`, {
         method: "DELETE",
       });
       alert("Special sale deleted");
@@ -248,7 +248,7 @@ export default function AdminSpecialSale() {
                     <img
                       src={
                         item.image
-                          ? `http://localhost:8000${item.image}`
+                          ? `https://nishat-api.vercel.app${item.image}`
                           : "https://via.placeholder.com/50"
                       }
                       alt={item.name}

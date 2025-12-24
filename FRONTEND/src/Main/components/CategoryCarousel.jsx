@@ -111,7 +111,7 @@ export default function CategoryCarousel() {
                 <img
                   src={
                     item.image
-                      ? `http://localhost:8000${item.image}`
+                      ? `https://nishat-api.vercel.app${item.image}`
                       : "https://placeholder.co/200x200?text=No+Image"
                   }
                   alt={item.name}

@@ -25,13 +25,13 @@ export default function SubDetail() {
       try {
         setLoading(true);
         // Fetch product details
-        const productRes = await axios.get(`http://localhost:8000/products/${id}`);
+        const productRes = await axios.get(`https://nishat-api.vercel.app/products/${id}`);
         const currentProduct = productRes.data;
         setProduct(currentProduct);
 
         // Fetch related products from same category
         if (currentProduct.category) {
-          const allProductsRes = await axios.get("http://localhost:8000/products");
+          const allProductsRes = await axios.get("https://nishat-api.vercel.app/products");
           const allProducts = allProductsRes.data;
 
           const filteredProducts = allProducts
@@ -119,7 +119,7 @@ export default function SubDetail() {
                   <img
                     src={
                       p.images && p.images.length > 0
-                        ? `http://localhost:8000${p.images[0]}`
+                        ? `https://nishat-api.vercel.app${p.images[0]}`
                         : "https://placeholder.co/150x150?text=No+Image"
                     }
                     alt={p.name}
@@ -177,7 +177,7 @@ export default function SubDetail() {
               <img
                 src={
                   selectedProduct.images && selectedProduct.images.length > 0
-                    ? `http://localhost:8000${selectedProduct.images[0]}`
+                    ? `https://nishat-api.vercel.app${selectedProduct.images[0]}`
                     : "https://via.placeholder.com/150"
                 }
                 alt={selectedProduct.name}

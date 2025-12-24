@@ -9,7 +9,7 @@ import "../Admincomponents/Admin.css";
 import Slidebar from "../Admincomponents/AdminSlidebar";
 import BasicBars from "../Admincomponents/chart";
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "https://nishat-api.vercel.app";
 
 export default function Admin() {
   const navigate = useNavigate();

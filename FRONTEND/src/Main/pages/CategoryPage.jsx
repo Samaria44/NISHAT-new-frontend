@@ -34,7 +34,7 @@ export default function CategoryPage() {
         setLoading(true);
 
         const { data: categoriesFromApi } = await axios.get(
-          "http://localhost:8000/categories"
+          "https://nishat-api.vercel.app/categories"
         );
         setAllCategories(categoriesFromApi);
 
@@ -56,7 +56,7 @@ export default function CategoryPage() {
 
         // Fetch all products
         const { data: allProducts } = await axios.get(
-          "http://localhost:8000/products"
+          "https://nishat-api.vercel.app/products"
         );
 
         let categoryProducts = allProducts.filter(
@@ -164,7 +164,7 @@ export default function CategoryPage() {
                 <img
                   src={
                     sub.image
-                      ? `http://localhost:8000${sub.image}`
+                      ? `https://nishat-api.vercel.app${sub.image}`
                       : "https://placeholder.co/60x60?text=No+Image"
                   }
                   alt={sub.name}
@@ -200,7 +200,7 @@ export default function CategoryPage() {
                   <img
                     src={
                       p.images?.length > 0
-                        ? `http://localhost:8000${p.images[0]}`
+                        ? `https://nishat-api.vercel.app${p.images[0]}`
                         : "https://placeholder.co/150x150?text=No+Image"
                     }
                     alt={p.name}
@@ -268,7 +268,7 @@ export default function CategoryPage() {
               <img
                 src={
                   selectedProduct.images?.length > 0
-                    ? `http://localhost:8000${selectedProduct.images[0]}`
+                    ? `https://nishat-api.vercel.app${selectedProduct.images[0]}`
                     : "https://via.placeholder.com/150"
                 }
                 alt={selectedProduct.name}

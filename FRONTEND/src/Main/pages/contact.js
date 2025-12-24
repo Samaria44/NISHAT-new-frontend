@@ -21,7 +21,7 @@ export default function Contact() {
     e.preventDefault();
     setErrorMsg("");
     try {
-      const res = await axios.post("http://localhost:8000/contact", formData);
+      const res = await axios.post("https://nishat-api.vercel.app/contact", formData);
       setSubmitted(true);
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (err) {

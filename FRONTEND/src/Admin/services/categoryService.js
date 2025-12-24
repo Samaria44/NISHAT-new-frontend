@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:8000/categories";
+const API = "https://nishat-api.vercel.app/categories";
 
 // CATEGORY CRUD
 export const getCategories = async () => {

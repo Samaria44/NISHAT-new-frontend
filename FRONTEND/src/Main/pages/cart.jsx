@@ -56,7 +56,7 @@ export default function Cart() {
                   <img
                     src={
                       item.images?.length
-                        ? `http://localhost:8000${item.images[0]}`
+                        ? `https://nishat-api.vercel.app${item.images[0]}`
                         : "https://placehold.co/80x120?text=No+Image"
                     }
                     alt={item.name}

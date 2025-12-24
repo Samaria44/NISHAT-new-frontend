@@ -99,7 +99,7 @@ export default function Checkout() {
   };
 
   try {
-    const res = await fetch("http://localhost:8000/orders", {
+    const res = await fetch("https://nishat-api.vercel.app/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
@@ -310,7 +310,7 @@ export default function Checkout() {
                 className="ck-summary-img"
                 src={
                   item.images && item.images.length > 0
-                    ? `http://localhost:8000${item.images[0]}`
+                    ? `https://nishat-api.vercel.app${item.images[0]}`
                     : "https://via.placeholder.com/80"
                 }
                 alt={item.name}

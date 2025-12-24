@@ -8,7 +8,7 @@ export default function ContactAdmin() {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/contact");
+      const res = await axios.get("https://nishat-api.vercel.app/contact");
       setMessages(res.data);
     } catch (err) {
       console.error(err);
@@ -17,7 +17,7 @@ export default function ContactAdmin() {
 
   const deleteMessage = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/contact/${id}`);
+      await axios.delete(`https://nishat-api.vercel.app/contact/${id}`);
       fetchMessages();
     } catch (err) {
       console.error(err);

@@ -68,7 +68,7 @@ export default function AdminCategory() {
                   <img
                     src={
                       cat.image
-                        ? `http://localhost:8000${cat.image}`
+                        ? `https://nishat-api.vercel.app${cat.image}`
                         : "https://via.placeholder.com/80x80?text=No+Image"
                     }
                     alt={cat.name}
@@ -119,7 +119,7 @@ export default function AdminCategory() {
                       <img
                         src={
                           sub.image
-                            ? `http://localhost:8000${sub.image}`
+                            ? `https://nishat-api.vercel.app${sub.image}`
                             : "https://via.placeholder.com/50x50?text=No+Image"
                         }
                         alt={sub.name}

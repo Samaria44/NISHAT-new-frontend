@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const CategoryContext = createContext();
 
-const API_URL = "http://localhost:8000/categories";
+const API_URL = "https://nishat-api.vercel.app/categories";
 
 export const CategoryProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);

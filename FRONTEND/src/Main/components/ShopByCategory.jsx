@@ -86,7 +86,7 @@ export default function ShopByCategory() {
               <img 
                 src={
                   cat.image
-                    ? `http://localhost:8000${cat.image}`
+                    ? `https://nishat-api.vercel.app${cat.image}`
                     : "https://placeholder.co/300x300?text=No+Image"
                 }
                 alt={cat.name} 
