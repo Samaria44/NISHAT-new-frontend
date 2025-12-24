@@ -6,7 +6,8 @@ const User = db.user;
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+        // await mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+               await mongoose.connect(`mongodb+srv://samariatajamul_db_user:NC9m8WPtoa30qLyD@cluster0.s0qmlbq.mongodb.net/nishat_db`, {
             //useNewUrlParser: true,
             //useUnifiedTopology: true
         })
