@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = "http://localhost:8000";
+const BACKEND_URL = "https://nishat-api.vercel.app";
 
 // Create an axios instance
 const axiosInstance = axios.create({
