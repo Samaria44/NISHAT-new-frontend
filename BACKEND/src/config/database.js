@@ -6,16 +6,17 @@ const User = db.user;
 
 const connectDB = async () => {
     try {
-        // await mongoose.connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
-               await mongoose.connect(`mongodb+srv://samariatajamul_db_user:NC9m8WPtoa30qLyD@cluster0.s0qmlbq.mongodb.net/nishat_db`, {
-            //useNewUrlParser: true,
-            //useUnifiedTopology: true
-        })
-            .then(() => {
-                console.log("Successfully connect to MongoDB.");
-                initial();
-                initialUser();
-            })
+        await mongoose.connect(`mongodb+srv://samariatajamul_db_user:NC9m8WPtoa30qLyD@cluster0.s0qmlbq.mongodb.net/nishat_db`, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 30000,
+            socketTimeoutMS: 45000,
+            maxPoolSize: 10
+        });
+        
+        console.log("Successfully connect to MongoDB.");
+        await initial();
+        await initialUser();
         console.log('MongoDB connected');
     } catch (error) {
         console.error('MongoDB connection error:', error);
@@ -42,38 +43,6 @@ async function initial() {
     } catch (err) {
         console.error("Error initializing roles:", err);
     }
-    // Role.estimatedDocumentCount((err, count) => {
-    //     if (!err && count === 0) {
-    //         new Role({
-    //             name: "user"
-    //         }).save(err => {
-    //             if (err) {
-    //                 console.log("error", err);
-    //             }
-    //             console.log("added 'user' to roles collection");
-    //         });
-
-    //         new Role({
-    //             name: "moderator"
-    //         }).save(err => {
-    //             if (err) {
-    //                 console.log("error", err);
-    //             }
-
-    //             console.log("added 'moderator' to roles collection");
-    //         });
-
-    //         new Role({
-    //             name: "admin"
-    //         }).save(err => {
-    //             if (err) {
-    //                 console.log("error", err);
-    //             }
-
-    //             console.log("added 'admin' to roles collection");
-    //         });
-    //     }
-    // });
 }
 
 
