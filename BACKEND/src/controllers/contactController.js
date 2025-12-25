@@ -1,7 +1,7 @@
-import * as contactService from "../services/contact.js";
+const contactService = require("../services/contact.js");
 
 // Add new message
-export const addContact = async (req, res) => {
+exports.addContact = async (req, res) => {
   try {
     const savedMessage = await contactService.addMessage(req.body);
     res.status(201).json({ message: "Message sent successfully", data: savedMessage });
@@ -12,7 +12,7 @@ export const addContact = async (req, res) => {
 };
 
 // Get all messages (Admin)
-export const getContacts = async (req, res) => {
+exports.getContacts = async (req, res) => {
   try {
     const messages = await contactService.getMessages();
     res.status(200).json(messages);
@@ -23,7 +23,7 @@ export const getContacts = async (req, res) => {
 };
 
 // Delete a message (Admin)
-export const deleteContact = async (req, res) => {
+exports.deleteContact = async (req, res) => {
   try {
     await contactService.deleteMessage(req.params.id);
     res.status(200).json({ message: "Deleted successfully" });

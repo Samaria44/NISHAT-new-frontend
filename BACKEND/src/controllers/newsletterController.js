@@ -1,7 +1,7 @@
-import * as newsletterService from "../services/newsletter.js";
+const newsletterService = require("../services/newsletter.js");
 
 // Add new subscriber
-export const subscribe = async (req, res) => {
+exports.subscribe = async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ message: "Email is required" });
 
@@ -14,7 +14,7 @@ export const subscribe = async (req, res) => {
 };
 
 // Get all subscribers (Admin)
-export const getSubscribers = async (req, res) => {
+exports.getSubscribers = async (req, res) => {
   try {
     const subscribers = await newsletterService.getAllSubscribers();
     res.status(200).json(subscribers);
@@ -24,7 +24,7 @@ export const getSubscribers = async (req, res) => {
 };
 
 // Delete subscriber (Admin)
-export const removeSubscriber = async (req, res) => {
+exports.removeSubscriber = async (req, res) => {
   try {
     await newsletterService.deleteSubscriber(req.params.id);
     res.status(200).json({ message: "Deleted successfully" });
