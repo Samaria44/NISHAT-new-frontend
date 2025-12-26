@@ -35,7 +35,7 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
       if (selectedCategory) params.category = selectedCategory;
       if (selectedSub) params.subCategory = selectedSub;
 
-      const res = await axios.get("https://nishat-api.vercel.app/products", { params });
+      const res = await axios.get("http://localhost:8000/products", { params });
       const products = res.data.map((p) => {
         const minPrice =
           p.batches && p.batches.length > 0
@@ -45,7 +45,7 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
           ...p,
           img:
             p.images && p.images.length > 0
-              ? `https://nishat-api.vercel.app${p.images[0]}`
+              ? `http://localhost:8000${p.images[0]}`
               : "https://via.placeholder.com/150?text=No+Image",
           price: minPrice,
         };

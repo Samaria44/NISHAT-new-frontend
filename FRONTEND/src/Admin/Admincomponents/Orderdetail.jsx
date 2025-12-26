@@ -10,7 +10,10 @@ export default function OrderDetail() {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`https://nishat-api.vercel.app/orders/${id}`);
+        const res = await fetch(`
+http://localhost:8000
+
+/orders/${id}`);
         if (!res.ok) throw new Error("Order not found");
         const data = await res.json();
         setOrder(data);
@@ -64,7 +67,10 @@ export default function OrderDetail() {
               const imageSrc = imageCandidate
                 ? imageCandidate.startsWith("http")
                   ? imageCandidate
-                  : `https://nishat-api.vercel.app${imageCandidate}`
+                  : `
+http://localhost:8000
+
+${imageCandidate}`
                 : "https://placeholder.co/60x60?text=No+Image";
               const price = (Number(product.price) || 0) * qty;
               return (

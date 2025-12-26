@@ -8,7 +8,7 @@ export default function NewsletterAdmin() {
 
   const fetchSubscribers = async () => {
     try {
-      const res = await axios.get("https://nishat-api.vercel.app/newsletter");
+      const res = await axios.get("http://localhost:8000/newsletter");
       setSubscribers(res.data);
     } catch (err) {
       console.error(err);
@@ -17,7 +17,7 @@ export default function NewsletterAdmin() {
 
   const deleteSubscriber = async (id) => {
     try {
-      await axios.delete(`https://nishat-api.vercel.app/newsletter/${id}`);
+      await axios.delete(`http://localhost:8000/newsletter/${id}`);
       fetchSubscribers();
     } catch (err) {
       console.error(err);

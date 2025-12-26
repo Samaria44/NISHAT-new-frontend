@@ -28,7 +28,10 @@ export default function Wishlist() {
         {wishlist.map((p) => (
           <div key={p._id} className="wishlist-card" >
             <img 
-              src={p.image ? `https://nishat-api.vercel.app${p.image}` : "https://placeholder.co/150x150?text=No+Image"}
+              src={p.image ? `
+http://localhost:8000
+
+${p.image}` : "https://placeholder.co/150x150?text=No+Image"}
               alt={p.name}
               className="wishlist-image"
             />

@@ -4,8 +4,8 @@ import axios from "axios";
 
 export const SpecialSaleContext = createContext();
 
-const BACKEND_URL = "https://nishat-api.vercel.app/specialsale";
-const BANNER_URL = "https://nishat-api.vercel.app/specialsale/banner";
+const BACKEND_URL = "http://localhost:8000/specialsale";
+const BANNER_URL = "http://localhost:8000/specialsale/banner";
 
 export const SpecialSaleProvider = ({ children }) => {
   const [specialSales, setSpecialSales] = useState([]);
@@ -76,4 +76,4 @@ export const SpecialSaleProvider = ({ children }) => {
       {children}
     </SpecialSaleContext.Provider>
   );
-}
+};

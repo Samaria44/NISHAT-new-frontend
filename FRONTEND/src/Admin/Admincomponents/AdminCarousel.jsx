@@ -107,7 +107,10 @@ export default function AdminCarousel() {
       displayOrder: carousel.displayOrder,
     });
     setImagePreview(
-      carousel.image ? `https://nishat-api.vercel.app/${carousel.image}` : null
+      carousel.image ? `
+http://localhost:8000
+
+/${carousel.image}` : null
     );
     setImageFile(null);
     setEditingId(carousel._id);
@@ -279,7 +282,10 @@ export default function AdminCarousel() {
                   <img
                     src={
                       carousel.image
-                        ? `https://nishat-api.vercel.app/${carousel.image}`
+                        ? `
+http://localhost:8000
+
+/${carousel.image}`
                         : "https://via.placeholder.com/80x50?text=No+Image"
                     }
                     alt={carousel.title}

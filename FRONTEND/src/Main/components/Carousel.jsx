@@ -21,7 +21,10 @@ export default function Carousel() {
 
   // Convert backend carousel images to slide format
   const dynamicSlides = carouselImages.map((carousel) => ({
-    img: carousel.image ? `https://nishat-api.vercel.app/${carousel.image}` : image1,
+    img: carousel.image ? `
+http://localhost:8000
+
+/${carousel.image}` : image1,
     path: carousel.path,
     title: carousel.title,
   }));

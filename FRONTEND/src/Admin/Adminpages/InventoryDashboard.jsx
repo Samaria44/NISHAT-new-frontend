@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./InAdmin.css";
 
-const BACKEND_URL = "https://nishat-api.vercel.app";
+const BACKEND_URL = "http://localhost:8000";
 
 export default function InventoryDashboard() {
   const [products, setProducts] = useState([]);

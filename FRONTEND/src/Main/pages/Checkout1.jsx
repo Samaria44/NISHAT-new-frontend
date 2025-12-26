@@ -108,7 +108,10 @@ export default function Checkout() {
     };
 
     try {
-      const res = await fetch("https://nishat-api.vercel.app/orders", {
+      const res = await fetch("
+http://localhost:8000
+
+/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
@@ -321,9 +324,15 @@ export default function Checkout() {
           {cartItems.map((item, i) => {
             const imgSrc =
               item.images && item.images.length > 0
-                ? `https://nishat-api.vercel.app${item.images[0]}`
+                ? `
+http://localhost:8000
+
+${item.images[0]}`
                 : item.image
-                ? `https://nishat-api.vercel.app${item.image}`
+                ? `
+http://localhost:8000
+
+${item.image}`
                 : "https://placeholder.co/80x80?text=No+Image";
 
             return (

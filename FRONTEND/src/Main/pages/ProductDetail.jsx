@@ -30,7 +30,10 @@ export default function ProductDetail() {
     async function fetchProduct() {
       try {
         setLoading(true);
-        const res = await axios.get(`https://nishat-api.vercel.app/products/${id}`);
+        const res = await axios.get(`
+http://localhost:8000
+
+/products/${id}`);
         const prod = res.data;
 
         // Compute minimum price if batches exist
@@ -45,7 +48,10 @@ export default function ProductDetail() {
         // Fetch related products from same category
         if (prod.category) {
           const relatedRes = await axios.get(
-            `https://nishat-api.vercel.app/products?category=${prod.category}`
+            `
+http://localhost:8000
+
+/products?category=${prod.category}`
           );
           setRelatedProducts(
             relatedRes.data.filter((p) => p._id !== prod._id)
@@ -65,8 +71,14 @@ export default function ProductDetail() {
   if (error || !product) return <div className="pd-page">{error}</div>;
 
   const imagesArray =
-    product?.images?.map((img) => `https://nishat-api.vercel.app${img}`) ||
-    (product?.image ? [`https://nishat-api.vercel.app${product.image}`] : []);
+    product?.images?.map((img) => `
+http://localhost:8000
+
+${img}`) ||
+    (product?.image ? [`
+http://localhost:8000
+
+${product.image}`] : []);
 
   const isInWishlist = () =>
     wishlist.some((p) => p._id === product._id);
