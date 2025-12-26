@@ -44,12 +44,17 @@ export default function Admin() {
       const orders = await orderRes.json();
       const contacts = await contactRes.json();
 
-      setTotalProducts(products.length);
-      setTotalOrders(orders.length);
-      setTotalUsers(contacts.length);
+      // Ensure we have arrays, fallback to empty arrays if not
+      const productsArray = Array.isArray(products) ? products : [];
+      const ordersArray = Array.isArray(orders) ? orders : [];
+      const contactsArray = Array.isArray(contacts) ? contacts : [];
+
+      setTotalProducts(productsArray.length);
+      setTotalOrders(ordersArray.length);
+      setTotalUsers(contactsArray.length);
 
       // 🔹 INVENTORY LOGIC
-      const productsWithStock = products.map((p) => {
+      const productsWithStock = productsArray.map((p) => {
         const totalStock = (p.batches || []).reduce(
           (acc, b) => acc + (Number(b.stock) || 0),
           0
@@ -74,6 +79,13 @@ export default function Admin() {
       setLowStockCount(lowStock.length);
     } catch (error) {
       console.error("Error loading counts:", error);
+      // Set fallback values to prevent UI crashes
+      setTotalProducts(0);
+      setTotalOrders(0);
+      setTotalUsers(0);
+      setTopSellingCount(0);
+      setOutOfStockCount(0);
+      setLowStockCount(0);
     }
   };
 

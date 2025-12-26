@@ -1,14 +1,20 @@
-import Contact from "../models/contactModel.js";
+const Contact = require("../models/contactModel.js");
 
-export const addMessage = async (data) => {
+const addMessage = async (data) => {
   const contact = new Contact(data);
   return await contact.save();
 };
 
-export const getMessages = async () => {
+const getMessages = async () => {
   return await Contact.find().sort({ date: -1 });
 };
 
-export const deleteMessage = async (id) => {
+const deleteMessage = async (id) => {
   return await Contact.findByIdAndDelete(id);
+};
+
+module.exports = {
+  addMessage,
+  getMessages,
+  deleteMessage,
 };

@@ -31,11 +31,10 @@ app.use("/categories", categoryRoutes);
 app.use("/newsletter", newsletterRoutes);
 app.use("/contact", contactRoutes);
 app.use("/auth", authRoutes);
-app.use ("/Admin" , adminRoutes);
+app.use("/Admin" , adminRoutes);
+app.use("/specialsale/banner", saletextRoutes);
 app.use("/specialsale", specialSaleRoutes);
 app.use("/carousel", carouselRoutes);
-
-app.use("/specialsale/banner", saletextRoutes);
 
 app.use("/inventory", inventoryRoutes);
 

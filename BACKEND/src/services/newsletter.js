@@ -1,6 +1,6 @@
-import Newsletter from "../models/newsletterModel.js";
+const Newsletter = require("../models/newsletterModel.js");
 
-export const addSubscriber = async (email) => {
+const addSubscriber = async (email) => {
   const exists = await Newsletter.findOne({ email });
   if (exists) throw new Error("Already subscribed");
 
@@ -8,10 +8,16 @@ export const addSubscriber = async (email) => {
   return await subscriber.save();
 };
 
-export const getAllSubscribers = async () => {
+const getAllSubscribers = async () => {
   return await Newsletter.find().sort({ date: -1 });
 };
 
-export const deleteSubscriber = async (id) => {
+const deleteSubscriber = async (id) => {
   return await Newsletter.findByIdAndDelete(id);
+};
+
+module.exports = {
+  addSubscriber,
+  getAllSubscribers,
+  deleteSubscriber,
 };
