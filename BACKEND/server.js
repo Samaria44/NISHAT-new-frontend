@@ -5,6 +5,8 @@ const connectDB = require("./src/config/database");
 
 const PORT = process.env.PORT || 8000;
 
+
+
 // Connect to MongoDB first, then start the server
 connectDB()
   .then(() => {

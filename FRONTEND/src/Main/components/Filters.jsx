@@ -66,8 +66,10 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
     else if (selectedCategory) path = `/category/${selectedCategory}`;
     if (searchQuery.trim()) path += `?query=${encodeURIComponent(searchQuery.trim())}`;
 
-    // Update main grid before navigation
-    setFilteredProducts(searchResults);
+    // Update main grid before navigation (if function is provided)
+    if (setFilteredProducts && typeof setFilteredProducts === 'function') {
+      setFilteredProducts(searchResults);
+    }
 
     navigate(path);
     onClose();

@@ -1,11 +1,22 @@
 // controllers/orderController.js
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
+const nodemailer = require("nodemailer");
+
+
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER ,
+//     pass: process.env.EMAIL_PASS 
+//   },
+// });
+
 // Get all orders
 exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate("products.product") // YAHAN SIRF YE populate
+      .populate("products.product") //populate
       .sort({ createdAt: -1 });
 
     res.json(orders);
@@ -37,12 +48,87 @@ exports.addOrder = async (req, res) => {
     const newOrder = new Order(req.body);
     const savedOrder = await newOrder.save();
 
-    res
-      .status(201)
-      .json({ message: "Order placed successfully", order: savedOrder });
+    console.log("✅ Order saved successfully:", savedOrder._id);
+
+    // Try to send email, but don't fail the order if email fails
+    try {
+      // Check if email configuration is available
+      if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.log("⚠️ Email credentials not configured, skipping email");
+      } else {
+        // Populate product details for email
+        const populatedOrder = await Order.findById(savedOrder._id).populate("products.product");
+
+        console.log("📧 Preparing email for:", populatedOrder.email);
+
+        // 🧾 Email Items
+        const itemsHTML = populatedOrder.products
+          .map(
+            (item) => `
+            <li>
+              <strong>${item.product?.name || 'Product'}</strong>
+              <br/>Qty: ${item.qty || 1}
+              ${item.size ? `<br/>Size: ${item.size}` : ""}
+              <br/>Price: Rs ${item.product?.batches && item.product.batches.length > 0 
+                ? Math.min(...item.product.batches.map(b => b.price))
+                : item.product?.price || 0}
+              <br/>Total: Rs ${((item.product?.batches && item.product.batches.length > 0 
+                ? Math.min(...item.product.batches.map(b => b.price))
+                : item.product?.price || 0) * (item.qty || 1))}
+            </li>
+          `
+          )
+          .join("");
+
+        // 📩 SEND CONFIRMATION EMAIL
+        await transporter.sendMail({
+          from: `"ZAVARO" <${process.env.EMAIL_USER}>`,
+          to: populatedOrder.email, // ✅ customer email
+          subject: `Order Confirmation - ${populatedOrder._id}`,
+          html: `
+            <h2>Thank you for your order, ${populatedOrder.customer} 💙</h2>
+            <p>Your order has been successfully placed.</p>
+
+            <h3>Order Details</h3>
+            <ul>${itemsHTML}</ul>
+
+            <p><b>Total:</b> Rs ${populatedOrder.totalAmount}</p>
+            <p><b>Payment Method:</b> ${
+              populatedOrder.paymentMethod === "cod"
+                ? "Cash on Delivery"
+                : "Online Payment"
+            }</p>
+
+            <h3>Delivery Address</h3>
+            <p>${populatedOrder.address}</p>
+            <p>${populatedOrder.city || ""}</p>
+            <p>Phone: ${populatedOrder.phone}</p>
+
+            <br/>
+            <p>We will contact you soon 📦</p>
+            <p><b>ZAVARO Team</b></p>
+          `,
+        });
+
+        console.log("✅ Email sent successfully to:", populatedOrder.email);
+      }
+    } catch (emailError) {
+      console.error("⚠️ Email failed but order saved:", emailError.message);
+      // Don't fail the order, just log the email error
+    }
+
+    res.status(201).json({
+      message: "Order placed successfully",
+      order: savedOrder,
+      emailSent: !!process.env.EMAIL_USER && !!process.env.EMAIL_PASS
+    });
+
   } catch (err) {
-    console.error(" Order Save Error:", err);
-    res.status(500).json({ message: err.message });
+    console.error("❌ Order Save Error:", err);
+    res.status(500).json({ 
+      message: "Failed to place order", 
+      error: err.message 
+    });
   }
 };
 
