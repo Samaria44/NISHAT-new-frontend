@@ -1,12 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function ThankYou() {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [productsWithDetails, setProductsWithDetails] = useState([]);
 
   // Receive order safely
-  const order = state?.order;
+  const order = state?.order?.order;
+
+  // Fetch product details
+  useEffect(() => {
+    if (order?.products) {
+      const fetchProductDetails = async () => {
+        const products = await Promise.all(
+          order.products.map(async (productItem) => {
+            try {
+              const response = await axios.get(`http://localhost:8000/products/${productItem.product}`);
+              const fullProduct = response.data;
+              
+              // Calculate price
+              let productPrice = 0;
+              if (fullProduct.batches && fullProduct.batches.length > 0) {
+                productPrice = Math.min(...fullProduct.batches.map((b) => b.price || Infinity));
+              } else if (fullProduct.price) {
+                productPrice = fullProduct.price;
+              }
+              
+              return {
+                ...productItem,
+                name: fullProduct.name,
+                price: productPrice
+              };
+            } catch (error) {
+              console.error("Error fetching product:", error);
+              return {
+                ...productItem,
+                name: "Product",
+                price: 0
+              };
+            }
+          })
+        );
+        setProductsWithDetails(products);
+      };
+      
+      fetchProductDetails();
+    }
+  }, [order]);
 
   // If no order data → redirect
   if (!order) {
@@ -85,12 +127,11 @@ export default function ThankYou() {
         <h4>Order Summary</h4>
 
         <div>
-          {(order.products || []).map((product, i) => {
-            const productPrice = product.price || product.product?.price || 0;
+          {productsWithDetails.map((product, i) => {
+            const productPrice = product.price || 0;
             const qty = product.qty || 1;
             const itemTotal = productPrice * qty;
-            const productName =
-              product.name || product.product?.name || "Product";
+            const productName = product.name || "Product";
 
             return (
               <div

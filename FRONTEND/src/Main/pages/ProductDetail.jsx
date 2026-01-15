@@ -247,7 +247,7 @@ const handleAddToCart = () => {
       </div>
 
       {/* SUBDETAIL: Related Products */}
-      <SubDetail relatedProducts={relatedProducts} />
+      <SubDetail product={product} relatedProducts={relatedProducts} />
     </>
   );
 }

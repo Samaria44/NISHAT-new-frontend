@@ -5,55 +5,15 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { useCart } from "../components/context/CartContext";
 import "./CategoryPage.css"; 
 
-export default function SubDetail() {
-  const { id } = useParams();
+export default function SubDetail({ product, relatedProducts }) {
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState(null);
-  const [relatedProducts, setRelatedProducts] = useState([]);
   const [wishlist, setWishlist] = useState(
     JSON.parse(localStorage.getItem("wishlist")) || []
   );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
-  useEffect(() => {
-    async function fetchProductAndRelated() {
-      try {
-        setLoading(true);
-        // Fetch product details
-        const productRes = await axios.get(`http://localhost:8000/products/${id}`);
-        const currentProduct = productRes.data;
-        setProduct(currentProduct);
-
-        // Fetch related products from same category
-        if (currentProduct.category) {
-          const allProductsRes = await axios.get("http://localhost:8000/products");
-          const allProducts = allProductsRes.data;
-
-          const filteredProducts = allProducts
-            .filter(
-              (p) =>
-                p.category &&
-                p.category.toLowerCase() === currentProduct.category.toLowerCase() &&
-                p._id !== currentProduct._id // exclude current product
-            );
-
-          setRelatedProducts(filteredProducts);
-        }
-      } catch (err) {
-        console.error(err);
-        setError("Server error while fetching product");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProductAndRelated();
-  }, [id]);
 
   const toggleWishlist = (product) => {
     let updatedWishlist;
@@ -91,19 +51,10 @@ export default function SubDetail() {
     navigate("/cart");
   };
 
-  if (loading) return <div className="category-page">Loading...</div>;
-  if (error) return <div className="category-page">{error}</div>;
-  if (!product) return <div className="category-page">Product not found</div>;
-
   return (
     <div className="category-page">
-      {/* Product Header */}
-      
-
-      {/* Product Details */}
-   
       {/* Related Products */}
-      {relatedProducts.length > 0 && (
+      {relatedProducts && relatedProducts.length > 0 && (
         <div>
           <h2 className="category-heading" style={{ marginTop: "50px",marginBottom: "20px", color: "#080808ff" ,marginLeft:"732px"}}>
             You May Also Like
@@ -140,7 +91,12 @@ ${p.images[0]}`
                 </div>
                 <h3 className="product-name">{p.name}</h3>
                 <div className="product-price-row">
-                  <p className="product-price">RS: {p.price}</p>
+                  <p className="product-price">
+                    RS: {p.batches && p.batches.length > 0 
+                      ? Math.min(...p.batches.map((b) => b.price || Infinity))
+                      : p.price || "-"
+                    }
+                  </p>
                   <button
                     className="heart-btn"
                     onClick={(e) => {

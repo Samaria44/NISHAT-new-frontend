@@ -84,7 +84,7 @@ export default function CategoryCarousel() {
   if (specialSales.length === 0) return <div>No special sales available</div>;
 
   // Duplicate for seamless loop
-  const loopedItems = [...specialSales, ...specialSales];
+  const loopedItems = [...specialSales];
 
   return (
     <div className="big-container">
