@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { SpecialSaleContext } from "../context/SpecialSaleContext";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import "./AdminSpecialSale.css";
+import axiosInstance from "../../utils/axiosInterceptor";
 
 export default function AdminSpecialSale() {
   const {
@@ -90,15 +91,13 @@ export default function AdminSpecialSale() {
       }
 
       if (editingId) {
-        await fetch(`http://localhost:8000/specialsale/${editingId}`, {
-          method: "PUT",
-          body: formData,
+        await axiosInstance.put(`/specialsale/${editingId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
         alert("Special sale updated");
       } else {
-        await fetch("http://localhost:8000/specialsale", {
-          method: "POST",
-          body: formData,
+        await axiosInstance.post("/specialsale", formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
         alert("Special sale created");
       }
@@ -127,12 +126,7 @@ export default function AdminSpecialSale() {
     if (!window.confirm("Are you sure you want to delete this sale?")) return;
 
     try {
-      await fetch(`
-http://localhost:8000
-
-/specialsale/${id}`, {
-        method: "DELETE",
-      });
+      await axiosInstance.delete(`/specialsale/${id}`);
       alert("Special sale deleted");
       fetchSpecialSales && fetchSpecialSales();
     } catch (err) {

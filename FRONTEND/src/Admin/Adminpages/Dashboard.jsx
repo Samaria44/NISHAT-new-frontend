@@ -8,8 +8,7 @@ import { useNavigate } from "react-router-dom";
 import "../Admincomponents/Admin.css";
 import Slidebar from "../Admincomponents/AdminSlidebar";
 import BasicBars from "../Admincomponents/chart";
-
-const BACKEND_URL = "http://localhost:8000";
+import axiosInstance from "../../utils/axiosInterceptor";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -35,14 +34,14 @@ export default function Admin() {
   const loadCounts = async () => {
     try {
       const [productRes, orderRes, contactRes] = await Promise.all([
-        fetch(`${BACKEND_URL}/products`),
-        fetch(`${BACKEND_URL}/orders`),
-        fetch(`${BACKEND_URL}/contact`),
+        axiosInstance.get('/products'),
+        axiosInstance.get('/orders'),
+        axiosInstance.get('/contact'),
       ]);
 
-      const products = await productRes.json();
-      const orders = await orderRes.json();
-      const contacts = await contactRes.json();
+      const products = productRes.data;
+      const orders = orderRes.data;
+      const contacts = contactRes.data;
 
       // Ensure we have arrays, fallback to empty arrays if not
       const productsArray = Array.isArray(products) ? products : [];

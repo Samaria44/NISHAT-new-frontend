@@ -3,6 +3,7 @@ import { useCart } from "../components/context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
 import "./checkout.css";
+import axiosInstance from "../../utils/axiosInterceptor";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -108,18 +109,8 @@ export default function Checkout() {
     };
 
     try {
-      const res = await fetch("
-http://localhost:8000
-
-/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!res.ok) throw new Error("Failed to place order");
-
-      const data = await res.json();
+      const res = await axiosInstance.post("/orders", orderData);
+      const data = res.data;
       console.log("ORDER DATA:", data);
 
       alert(

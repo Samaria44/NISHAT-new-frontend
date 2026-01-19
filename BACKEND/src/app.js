@@ -15,7 +15,7 @@ const carouselRoutes = require("./routes/carousel.routes.js");
 const saletextRoutes = require("./routes/saletext.routes.js");
 const inventoryRoutes = require("./routes/inventory.routes");
 const adminRoutes = require("./routes/adminRoutes");
-
+// const testEmailRoutes = require("./routes/testEmail.routes");
 const app = express();
 
 app.use(cors());
@@ -38,6 +38,5 @@ app.use("/specialsale", specialSaleRoutes);
 app.use("/carousel", carouselRoutes);
 
 app.use("/inventory", inventoryRoutes);
-
 
 module.exports = app;

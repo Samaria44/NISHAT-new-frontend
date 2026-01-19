@@ -4,13 +4,13 @@ const Product = require("../models/productModel");
 const nodemailer = require("nodemailer");
 
 
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: process.env.EMAIL_USER ,
-//     pass: process.env.EMAIL_PASS 
-//   },
-// });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+});
 
 // Get all orders
 exports.getAllOrders = async (req, res) => {
@@ -38,7 +38,7 @@ exports.getOrderById = async (req, res) => {
     console.error("Get order by id error:", err);
     res.status(500).json({ message: err.message });
   }
-};
+};    
 
 // Add new order
 exports.addOrder = async (req, res) => {
@@ -48,21 +48,23 @@ exports.addOrder = async (req, res) => {
     const newOrder = new Order(req.body);
     const savedOrder = await newOrder.save();
 
-    console.log("✅ Order saved successfully:", savedOrder._id);
+    console.log(" Order saved successfully:", savedOrder._id);
 
     // Try to send email, but don't fail the order if email fails
     try {
       // Check if email configuration is available
       if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.log("⚠️ Email credentials not configured, skipping email");
+        console.log(" Email credentials not configured, skipping email");
+      } else if (!savedOrder.email) {
+        console.log(" Customer email not provided, skipping email");
       } else {
         // Populate product details for email
-        const populatedOrder = await Order.findById(savedOrder._id).populate("products.product");
+        const populatedOrderWithEmail = await Order.findById(savedOrder._id).populate("products.product");
 
-        console.log("📧 Preparing email for:", populatedOrder.email);
+        console.log(" Preparing email for:", populatedOrderWithEmail.email);
 
-        // 🧾 Email Items
-        const itemsHTML = populatedOrder.products
+        //  Email Items
+        const itemsHTML = populatedOrderWithEmail.products
           .map(
             (item) => `
             <li>
@@ -80,40 +82,40 @@ exports.addOrder = async (req, res) => {
           )
           .join("");
 
-        // 📩 SEND CONFIRMATION EMAIL
+        //  SEND CONFIRMATION EMAIL
         await transporter.sendMail({
-          from: `"ZAVARO" <${process.env.EMAIL_USER}>`,
-          to: populatedOrder.email, // ✅ customer email
-          subject: `Order Confirmation - ${populatedOrder._id}`,
+          from: `"Nishat" <${process.env.EMAIL_USER}>`,
+          to: populatedOrderWithEmail.email, //  customer email
+          subject: `Order Confirmation - ${populatedOrderWithEmail._id}`,
           html: `
-            <h2>Thank you for your order, ${populatedOrder.customer} 💙</h2>
+            <h2>Thank you for your order, ${populatedOrderWithEmail.customer} 💙</h2>
             <p>Your order has been successfully placed.</p>
 
             <h3>Order Details</h3>
             <ul>${itemsHTML}</ul>
 
-            <p><b>Total:</b> Rs ${populatedOrder.totalAmount}</p>
+            <p><b>Total:</b> Rs ${populatedOrderWithEmail.totalAmount}</p>
             <p><b>Payment Method:</b> ${
-              populatedOrder.paymentMethod === "cod"
+              populatedOrderWithEmail.paymentMethod === "cod"
                 ? "Cash on Delivery"
                 : "Online Payment"
             }</p>
 
             <h3>Delivery Address</h3>
-            <p>${populatedOrder.address}</p>
-            <p>${populatedOrder.city || ""}</p>
-            <p>Phone: ${populatedOrder.phone}</p>
+            <p>${populatedOrderWithEmail.address}</p>
+            <p>${populatedOrderWithEmail.city || ""}</p>
+            <p>Phone: ${populatedOrderWithEmail.phone}</p>
 
             <br/>
-            <p>We will contact you soon 📦</p>
-            <p><b>ZAVARO Team</b></p>
+            <p>We will contact you soon </p>
+            <p><b>Nishat Team</b></p>
           `,
         });
 
-        console.log("✅ Email sent successfully to:", populatedOrder.email);
+        console.log("Email sent successfully to:", populatedOrderWithEmail.email);
       }
     } catch (emailError) {
-      console.error("⚠️ Email failed but order saved:", emailError.message);
+      console.error(" Email failed but order saved:", emailError.message);
       // Don't fail the order, just log the email error
     }
 
@@ -124,7 +126,7 @@ exports.addOrder = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("❌ Order Save Error:", err);
+    console.error(" Order Save Error:", err);
     res.status(500).json({ 
       message: "Failed to place order", 
       error: err.message 

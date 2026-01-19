@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./orderdetail.css";
+import axiosInstance from "../../utils/axiosInterceptor";
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -10,13 +11,8 @@ export default function OrderDetail() {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`
-http://localhost:8000
-
-/orders/${id}`);
-        if (!res.ok) throw new Error("Order not found");
-        const data = await res.json();
-        setOrder(data);
+        const res = await axiosInstance.get(`/orders/${id}`);
+        setOrder(res.data);
       } catch (error) {
         console.error("Error fetching order:", error);
       }
@@ -67,10 +63,7 @@ http://localhost:8000
               const imageSrc = imageCandidate
                 ? imageCandidate.startsWith("http")
                   ? imageCandidate
-                  : `
-http://localhost:8000
-
-${imageCandidate}`
+                  : `http://localhost:8000${imageCandidate}`
                 : "https://placeholder.co/60x60?text=No+Image";
               const price = (Number(product.price) || 0) * qty;
               return (

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./order.css";
 import { FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-
-const BACKEND_URL = "http://localhost:8000";
+import axiosInstance from "../../utils/axiosInterceptor";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -12,8 +11,8 @@ export default function Orders() {
   // Fetch all orders
   const getOrders = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/orders`);
-      const data = await res.json();
+      const res = await axiosInstance.get('/orders');
+      const data = res.data;
 
       console.log("Orders API response:", data); // ek dafa console check kar lo
 
@@ -34,11 +33,8 @@ export default function Orders() {
     if (!window.confirm("Delete this order?")) return;
 
     try {
-      const res = await fetch(`${BACKEND_URL}/orders/${_id}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      console.log(data.message);
+      const res = await axiosInstance.delete(`/orders/${_id}`);
+      console.log(res.data.message);
       setOrders((prev) => prev.filter((o) => o._id !== _id));
     } catch (error) {
       console.error("Error deleting order:", error);
@@ -48,11 +44,7 @@ export default function Orders() {
   // Update order status
   const handleStatusChange = async (_id, status) => {
     try {
-      await fetch(`${BACKEND_URL}/orders/${_id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
-      });
+      await axiosInstance.patch(`/orders/${_id}`, { status });
 
       setOrders((prev) =>
         prev.map((order) =>
@@ -89,7 +81,7 @@ export default function Orders() {
     const src = image
       ? image.startsWith("http")
         ? image
-        : `${BACKEND_URL}${image.startsWith("/") ? "" : "/"}${image}`
+        : `http://localhost:8000${image.startsWith("/") ? "" : "/"}${image}`
       : "https://placeholder.co/50x50?text=No+Image";
 
     return (
