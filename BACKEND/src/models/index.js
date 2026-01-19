@@ -21,6 +21,6 @@ const RefreshToken = require("./RefreshToken");
 module.exports = {
   user: User,
   role: Role,
-  RefreshToken,   // ✅ make sure key matches
+  refreshToken: RefreshToken,   // ✅ make sure key matches
   ROLES: ["user", "admin", "moderator"],
 };

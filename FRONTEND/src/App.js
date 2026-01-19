@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import "./utils/axiosInterceptor"; // Initialize axios interceptor for token refresh
+import { AuthProvider } from "./contexts/AuthContext";
 
 import Home from "./Main/pages/Home";
 import AppLayout from "./Main/components/Applayout";
@@ -24,7 +25,7 @@ import ThankYou from "./Main/pages/ThankYou";
 import Wishlist from "./Main/components/Wishlist";
 import User from "./Main/pages/User";
 import ProductDetail from "./Main/pages/ProductDetail";
-import ProtectedRoute from "./Main/components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./Main/components/Login";
 import Newsletter from "./Admin/Admincomponents/NewsletterAdmin";
 import Contact from "./Main/pages/contact";
@@ -58,7 +59,7 @@ function App() {
         {
           path: "user",
           element: (
-            <ProtectedRoute>
+            <ProtectedRoute requiredRoles={['user']}>
               <User />
             </ProtectedRoute>
           ),
@@ -76,9 +77,11 @@ function App() {
     },
     {
       path: "/dashboard",
-  
-      
-      element: <AdminLayout />,
+      element: (
+        <ProtectedRoute requiredRoles={['admin']}>
+          <AdminLayout />
+        </ProtectedRoute>
+      ),
       children: [
         { path: "products", element: <ProductUpload /> },
         { path: "category", element: <AdminCategory /> },
@@ -96,15 +99,17 @@ function App() {
   ]);
 
   return (
-    <CategoryProvider>
-      <SpecialSaleProvider>
-        <CarouselProvider>
-          <CartProvider>
-            <RouterProvider router={router} />
-          </CartProvider>
-        </CarouselProvider>
-      </SpecialSaleProvider>
-    </CategoryProvider>
+    <AuthProvider>
+      <CategoryProvider>
+        <SpecialSaleProvider>
+          <CarouselProvider>
+            <CartProvider>
+              <RouterProvider router={router} />
+            </CartProvider>
+          </CarouselProvider>
+        </SpecialSaleProvider>
+      </CategoryProvider>
+    </AuthProvider>
   );
 }
 

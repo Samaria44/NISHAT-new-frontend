@@ -6,7 +6,7 @@ const User = db.user;
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(`mongodb+srv://samariatajamul_db_user:NC9m8WPtoa30qLyD@cluster0.s0qmlbq.mongodb.net/nishat_db`, {
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/zavaro', {
             serverSelectionTimeoutMS: 30000,
             socketTimeoutMS: 45000,
             maxPoolSize: 10
