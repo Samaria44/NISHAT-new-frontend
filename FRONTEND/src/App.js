@@ -27,6 +27,7 @@ import User from "./Main/pages/User";
 import ProductDetail from "./Main/pages/ProductDetail";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./Main/components/Login";
+import Unauthorized from "./components/Unauthorized";
 import Newsletter from "./Admin/Admincomponents/NewsletterAdmin";
 import Contact from "./Main/pages/contact";
 import ContactAdmin from "./Admin/Admincomponents/Users";
@@ -69,6 +70,7 @@ function App() {
     },
    { path: "checkout", element: <Checkout /> },
     { path: "/login", element: <Login /> },
+    { path: "/unauthorized", element: <Unauthorized /> },
 
     // Admin routes
     {

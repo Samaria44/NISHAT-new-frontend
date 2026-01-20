@@ -9,9 +9,11 @@ import "../Admincomponents/Admin.css";
 import Slidebar from "../Admincomponents/AdminSlidebar";
 import BasicBars from "../Admincomponents/chart";
 import axiosInstance from "../../utils/axiosInterceptor";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Admin() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [totalProducts, setTotalProducts] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
@@ -21,14 +23,6 @@ export default function Admin() {
   const [topSellingCount, setTopSellingCount] = useState(0);
   const [outOfStockCount, setOutOfStockCount] = useState(0);
   const [lowStockCount, setLowStockCount] = useState(0);
-
-  // ✅ Check authentication
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      navigate("/dashboard/login");
-    }
-  }, [navigate]);
 
   // ✅ Fetch data from backend (counts + inventory summary)
   const loadCounts = async () => {
@@ -94,9 +88,22 @@ export default function Admin() {
   }, []);
 
   // ✅ Logout function
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    navigate("/dashboard/login");
+  const handleLogout = async () => {
+    console.log('Logout button clicked');
+    try {
+      console.log('Calling AuthContext logout...');
+      await logout(); // Use AuthContext logout function
+      console.log('AuthContext logout completed, redirecting to /dashboard/login');
+      window.location.href = '/dashboard/login';
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Fallback: clear localStorage manually and redirect
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      console.log('Fallback: redirecting to /dashboard/login');
+      window.location.href = '/dashboard/login';
+    }
   };
 
   // 🔹 Navigate helpers for cards

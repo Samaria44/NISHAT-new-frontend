@@ -27,6 +27,7 @@ export default function AdminUsers() {
           <tr>
             <th>Full Name</th>
             <th>Email</th>
+            <th>Role</th>
           
           </tr>
         </thead>
@@ -36,7 +37,12 @@ export default function AdminUsers() {
             <tr key={u._id}>
               <td>{u.firstName} {u.lastName}</td>
               <td>{u.email}</td>
-          
+              <td>
+                {u.roles && u.roles.length > 0 
+                  ? u.roles.map(role => role.name || role).join(', ')
+                  : 'No Role'
+                }
+              </td>
             </tr>
           ))}
         </tbody>
