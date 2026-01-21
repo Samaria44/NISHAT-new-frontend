@@ -13,9 +13,10 @@ export const CategoryProvider = ({ children }) => {
   const fetchCategories = async () => {
     try {
       const { data } = await axios.get(API_URL);
-      setCategories(data);
+      setCategories(Array.isArray(data) ? data : []);
     } catch (err) {
-      alert(err.response?.data?.message || err.message);
+      console.error("Error fetching categories:", err);
+      setCategories([]);
     }
   };
 

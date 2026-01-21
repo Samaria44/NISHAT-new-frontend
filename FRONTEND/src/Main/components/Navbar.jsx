@@ -3,6 +3,7 @@ import "./Navbar.css";
 import { useNavigate } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
 import SearchSidebar from "./Filters.jsx"; // Make sure Filters.jsx exports default
+import { safeMap } from "../../utils/arrayUtils";
 import {
   FiSearch,
   FiUser,
@@ -87,7 +88,7 @@ export default function Navbar({ onSearchClick }) {
 </div>
       {/* DESKTOP MENU */}
       <nav className="menu">
-        {(categories || []).map((cat) => (
+        {safeMap(categories, (cat) => (
           <div
             key={cat._id}
             className="menu-item"
@@ -96,7 +97,7 @@ export default function Navbar({ onSearchClick }) {
             {cat.name}
             {cat.subcategories?.length > 0 && (
               <div className="submenu">
-                {(cat.subcategories || []).map((sub) => (
+                {safeMap(cat.subcategories, (sub) => (
                   <div
                     key={sub._id}
                     className="submenu-item"
@@ -121,7 +122,7 @@ export default function Navbar({ onSearchClick }) {
           <FiX className="close-icon" onClick={() => setSidebarOpen(false)} />
         </div>
         <div className="sidebar1-links">
-          {(categories || []).map((cat) => (
+          {safeMap(categories, (cat) => (
             <div key={cat._id} className="mobile-menu-category">
               <p
                 className="mobile-cat-title"
@@ -131,7 +132,7 @@ export default function Navbar({ onSearchClick }) {
               </p>
               {cat.subcategories?.length > 0 && (
                 <div className="mobile-sub-list">
-                  {(cat.subcategories || []).map((sub) => (
+                  {safeMap(cat.subcategories, (sub) => (
                     <p
                       key={sub._id}
                       onClick={() =>

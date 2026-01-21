@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 
 export default function ThankYou() {
   const navigate = useNavigate();
@@ -15,15 +16,15 @@ export default function ThankYou() {
     if (order?.products) {
       const fetchProductDetails = async () => {
         const products = await Promise.all(
-          order.products.map(async (productItem) => {
+          (Array.isArray(order.products) ? order.products : []).map(async (productItem) => {
             try {
-              const response = await axios.get(`http://localhost:8000/products/${productItem.product}`);
+              const response = await axios.get(`${API_BASE_URL}/products/${productItem.product}`);
               const fullProduct = response.data;
               
               // Calculate price
               let productPrice = 0;
               if (fullProduct.batches && fullProduct.batches.length > 0) {
-                productPrice = Math.min(...fullProduct.batches.map((b) => b.price || Infinity));
+                productPrice = Math.min(...(Array.isArray(fullProduct.batches) ? fullProduct.batches : []).map((b) => b.price || Infinity));
               } else if (fullProduct.price) {
                 productPrice = fullProduct.price;
               }
@@ -127,7 +128,7 @@ export default function ThankYou() {
         <h4>Order Summary</h4>
 
         <div>
-          {productsWithDetails.map((product, i) => {
+          {(Array.isArray(productsWithDetails) ? productsWithDetails : []).map((product, i) => {
             const productPrice = product.price || 0;
             const qty = product.qty || 1;
             const itemTotal = productPrice * qty;
