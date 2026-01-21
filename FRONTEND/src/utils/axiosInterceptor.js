@@ -1,10 +1,9 @@
 import axios from "axios";
-
-const BACKEND_URL = "http://localhost:8000";
+import { API_BASE_URL } from "../config/api";
 
 // Create an axios instance
 const axiosInstance = axios.create({
-  baseURL: BACKEND_URL,
+  baseURL: API_BASE_URL,
 });
 
 // Flag to prevent infinite loops during token refresh
@@ -69,7 +68,7 @@ axiosInstance.interceptors.response.use(
           throw new Error("No refresh token available");
         }
 
-        const response = await axios.post(`${BACKEND_URL}/auth/refresh-token`, {
+        const response = await axios.post(`${API_BASE_URL}/auth/refresh-token`, {
           refreshToken,
         });
 

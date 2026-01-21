@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import { SiVisa } from "react-icons/si";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 import "./Footer.css";
 
 export default function Footer() {
@@ -23,7 +24,7 @@ export default function Footer() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8000/newsletter", { email });
+      const res = await axios.post(`${API_BASE_URL}/newsletter`, { email });
       setMessage(res.data.message); // Success message
       setEmail(""); // clear input
     } catch (err) {

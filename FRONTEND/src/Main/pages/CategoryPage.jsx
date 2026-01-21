@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 import { useCart } from "../components/context/CartContext";
 import { AiOutlineHeart } from "react-icons/ai";
 
@@ -33,7 +34,7 @@ export default function CategoryPage() {
         setLoading(true);
 
         const { data: categoriesFromApi } = await axios.get(
-          "http://localhost:8000/categories"
+          `${API_BASE_URL}/categories`
         );
         setAllCategories(categoriesFromApi);
 
@@ -54,7 +55,7 @@ export default function CategoryPage() {
 
         // Fetch all products
         const { data: allProducts } = await axios.get(
-          "http://localhost:8000/products"
+          `${API_BASE_URL}/products`
         );
 
         let categoryProducts = allProducts.filter(

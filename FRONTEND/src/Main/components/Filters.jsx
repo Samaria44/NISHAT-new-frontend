@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useCallback } from "react";
 import { FiX, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 import { CategoryContext } from "../../Admin/context/CategoryContext";
 import "./filter.css";
 
@@ -29,7 +30,7 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
       if (selectedCategory) params.category = selectedCategory;
       if (selectedSub) params.subCategory = selectedSub;
 
-      const res = await axios.get("http://localhost:8000/products", { params });
+      const res = await axios.get(`${API_BASE_URL}/products`, { params });
       const products = res.data.map((p) => {
         const minPrice =
           p.batches && p.batches.length > 0
@@ -39,7 +40,7 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
           ...p,
           img:
             p.images && p.images.length > 0
-              ? `http://localhost:8000${p.images[0]}`
+              ? `${API_BASE_URL}${p.images[0]}`
               : "https://via.placeholder.com/150?text=No+Image",
           price: minPrice,
         };

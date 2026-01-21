@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from "react-icons/fa";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 import "./contact.css";
 
 export default function Contact() {
@@ -21,7 +22,7 @@ export default function Contact() {
     e.preventDefault();
     setErrorMsg("");
     try {
-      await axios.post("http://localhost:8000/contact", formData);
+      await axios.post(`${API_BASE_URL}/contact`, formData);
       setSubmitted(true);
       setFormData({ name: "", email: "", phone: "", message: "" });
     } catch (err) {
