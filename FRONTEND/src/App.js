@@ -10,7 +10,6 @@ import Checkout from "./Main/pages/Checkout";
 import ProductUpload from "./Admin/Admincomponents/ProductUpload";
 import AdminLogin from "./Admin/Admincomponents/adminlogin";
 import Orders from "./Admin/Admincomponents/Order";
-import Users from "./Admin/Admincomponents/Users";
 import OrderDetail from "./Admin/Admincomponents/Orderdetail";
 import AdminCategory from "./Admin/Admincomponents/Admincategory";
 import AdminSpecialSale from "./Admin/Admincomponents/AdminSpecialSale";
@@ -33,7 +32,7 @@ import Contact from "./Main/pages/contact";
 import ContactAdmin from "./Admin/Admincomponents/Users";
 import AboutUs from "./Main/pages/Aboutus";
 import PrivacyPolicy from "./Main/components/privacypolicy";
-import UserLogin from "./Admin/Admincomponents/user-login"; 
+ 
 import SearchSidebar from "./Main/components/Filters";
 import InventoryDashboard from "./Admin/Adminpages/InventoryDashboard";
 import AdminUsers from "./Admin/Admincomponents/AdminUsers";

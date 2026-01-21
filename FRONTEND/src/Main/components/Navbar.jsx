@@ -31,9 +31,7 @@ export default function Navbar({ onSearchClick }) {
     0
   );
 
-  const [wishCount, setWishCount] = useState(
-    JSON.parse(localStorage.getItem("wishlist"))?.length || 0
-  );
+  const wishCount = JSON.parse(localStorage.getItem("wishlist"))?.length || 0;
 
   return (
     <header className="navbar">

@@ -125,15 +125,7 @@ const handleAddToCart = () => {
       prev === imagesArray.length - 1 ? 0 : prev + 1
     );
 
-  const scrollThumbs = (direction) => {
-    if (!thumbsRef.current) return;
-    const scrollAmount = 100;
-    thumbsRef.current.scrollBy({
-      top: direction === "up" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
-  };
-
+  
   return (
     <>
       <div className="pd-page">

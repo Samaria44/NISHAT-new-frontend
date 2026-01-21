@@ -1,6 +1,5 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useCart } from "../components/context/CartContext";
 import "./CategoryPage.css"; 

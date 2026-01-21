@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
 import "./wishlist.css";
 
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState([]);
-  const navigate = useNavigate();
-
+  
   useEffect(() => {
     const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     setWishlist(storedWishlist);

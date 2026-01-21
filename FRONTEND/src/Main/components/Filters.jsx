@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { FiX, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -19,9 +19,9 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
   useEffect(() => {
     const debounce = setTimeout(() => fetchSidebarResults(), 300);
     return () => clearTimeout(debounce);
-  }, [searchQuery, selectedCategory, selectedSub]);
+  }, [searchQuery, selectedCategory, selectedSub, fetchSidebarResults]);
 
-  const fetchSidebarResults = async () => {
+  const fetchSidebarResults = useCallback(async () => {
     if (!searchQuery.trim() && !selectedCategory && !selectedSub) {
       setSearchResults([]);
       return;
@@ -57,7 +57,7 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchQuery, selectedCategory, selectedSub, setSearchResults, setLoading]);
 
   const handleSearch = () => {
     // Build navigation path

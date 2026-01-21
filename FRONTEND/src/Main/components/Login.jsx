@@ -3,7 +3,6 @@ import { FiX } from "react-icons/fi";
 import axiosInstance from "../../utils/axiosInterceptor";
 import "./Login.css";
 
-const BACKEND_URL = "http://localhost:8000/auth"; // backend API
 
 const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
   const [view, setView] = useState("login");

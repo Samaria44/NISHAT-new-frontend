@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 import "../Admincomponents/Admin.css";
 import Slidebar from "../Admincomponents/AdminSlidebar";
-import BasicBars from "../Admincomponents/chart";
 import axiosInstance from "../../utils/axiosInterceptor";
 import { useAuth } from "../../contexts/AuthContext";
 

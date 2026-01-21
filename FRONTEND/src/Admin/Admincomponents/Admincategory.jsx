@@ -115,7 +115,6 @@ ${cat.image}`
               {/* SUBCATEGORIES */}
               <td>
                 {cat.subcategories.map((sub) => (
-                  console.log("subcategories:", sub),
                   <div key={sub._id} className="sub-tag">
                     {/* SUBCATEGORY IMAGE */}
                     <div className="sub-image-wrapper">
