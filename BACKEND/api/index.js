@@ -3,6 +3,9 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
+// Import database connection
+const connectDB = require("../src/config/database");
+
 // Import routes
 const authRoutes = require("../src/routes/auth");
 const productRoutes = require("../src/routes/product.routes");
@@ -20,9 +23,30 @@ const app = express();
 
 // Middleware - Configure CORS for production
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://nishat-new-frontend.vercel.app', 'https://nishat-backend-topaz.vercel.app']
-    : ['http://localhost:3000', 'http://localhost:8000'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allowed origins
+    const allowedOrigins = [
+      'https://nishat-new-frontend.vercel.app',
+      'https://nishat-backend-topaz.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:8000'
+    ];
+    
+    if (process.env.NODE_ENV === 'development') {
+      // In development, allow all origins
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-access-token']
@@ -52,5 +76,14 @@ app.use("/specialsale/banner", saletextRoutes);
 app.use("/specialsale", specialSaleRoutes);
 app.use("/carousel", carouselRoutes);
 app.use("/inventory", inventoryRoutes);
+
+// Connect to database before exporting
+connectDB()
+  .then(() => {
+    console.log('✅ Database connected successfully');
+  })
+  .catch((error) => {
+    console.error('❌ Database connection error:', error.message);
+  });
 
 module.exports = app;
