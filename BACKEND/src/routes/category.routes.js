@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
     //   ? path.join(__dirname, "../uploads/subcategories")
     //   : path.join(__dirname, "../uploads/categories");
     const uploadDir = path.join(__dirname, "../uploads/categories");
-    console.log("Upload directory for categories:", uploadDir);
+    // console.log("Upload directory for categories:", uploadDir);
     
     // Create directory if it doesn't exist
     if (!require("fs").existsSync(uploadDir)) {
@@ -29,7 +29,7 @@ const upload = multer({ storage });
 const storageSub = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(__dirname, "../uploads/subcategories");
-    console.log("Upload directory for subcategories:", uploadDir);
+    // console.log("Upload directory for subcategories:", uploadDir);
     
     // Create directory if it doesn't exist
     if (!require("fs").existsSync(uploadDir)) {
