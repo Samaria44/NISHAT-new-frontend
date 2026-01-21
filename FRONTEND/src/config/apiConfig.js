@@ -16,9 +16,8 @@ export const getApiBaseUrl = () => {
     }
   }
   
-  // Default fallback - this will cause errors but prevents placeholder URLs
-  console.warn('⚠️ No valid backend URL configured. Please deploy backend or set REACT_APP_BACKEND_URL');
-  return null;
+  // Default fallback - use the deployed backend URL
+  return "https://nishat-backend-topaz.vercel.app";
 };
 
 export const API_BASE_URL = getApiBaseUrl();

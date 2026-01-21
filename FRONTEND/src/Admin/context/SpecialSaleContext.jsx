@@ -5,8 +5,8 @@ import { API_BASE_URL } from "../../config/api";
 
 export const SpecialSaleContext = createContext();
 
-const BACKEND_URL = `${API_BASE_URL}/specialsale`;
-const BANNER_URL = `${API_BASE_URL}/specialsale/banner`;
+const BACKEND_URL = `${API_BASE_URL.replace(/\/$/, '')}/specialsale`;
+const BANNER_URL = `${API_BASE_URL.replace(/\/$/, '')}/specialsale/banner`;
 
 export const SpecialSaleProvider = ({ children }) => {
   const [specialSales, setSpecialSales] = useState([]);

@@ -4,7 +4,7 @@ import { API_BASE_URL } from "../../config/api";
 
 export const CategoryContext = createContext();
 
-const API_URL = `${API_BASE_URL}/categories`;
+const API_URL = `${API_BASE_URL.replace(/\/$/, '')}/categories`;
 
 export const CategoryProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
