@@ -1,11 +1,12 @@
 // src/Admin/context/SpecialSaleContext.jsx
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 
 export const SpecialSaleContext = createContext();
 
-const BACKEND_URL = "http://localhost:8000/specialsale";
-const BANNER_URL = "http://localhost:8000/specialsale/banner";
+const BACKEND_URL = `${API_BASE_URL}/specialsale`;
+const BANNER_URL = `${API_BASE_URL}/specialsale/banner`;
 
 export const SpecialSaleProvider = ({ children }) => {
   const [specialSales, setSpecialSales] = useState([]);

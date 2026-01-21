@@ -162,10 +162,7 @@ export default function CategoryPage() {
                 <img
                   src={
                     sub.image
-                      ? `
-http://localhost:8000
-
-${sub.image}`
+                      ? `${API_BASE_URL}${sub.image}`
                       : "https://placeholder.co/60x60?text=No+Image"
                   }
                   alt={sub.name}
@@ -201,10 +198,7 @@ ${sub.image}`
                   <img
                     src={
                       p.images?.length > 0
-                        ? `
-http://localhost:8000
-
-${p.images[0]}`
+                        ? `${API_BASE_URL}${p.images[0]}`
                         : "https://placeholder.co/150x150?text=No+Image"
                     }
                     alt={p.name}
@@ -272,10 +266,7 @@ ${p.images[0]}`
               <img
                 src={
                   selectedProduct.images?.length > 0
-                    ? `
-http://localhost:8000
-
-${selectedProduct.images[0]}`
+                    ? `${API_BASE_URL}${selectedProduct.images[0]}`
                     : "https://via.placeholder.com/150"
                 }
                 alt={selectedProduct.name}

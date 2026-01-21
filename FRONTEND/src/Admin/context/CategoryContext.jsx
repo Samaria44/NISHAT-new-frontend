@@ -1,9 +1,10 @@
 import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 
 export const CategoryContext = createContext();
 
-const API_URL = "http://localhost:8000/categories";
+const API_URL = `${API_BASE_URL}/categories`;
 
 export const CategoryProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);

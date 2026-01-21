@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useState } from "react";
+import { API_BASE_URL } from "../../config/api";
 
 export const CarouselContext = createContext();
 
@@ -11,7 +12,7 @@ export const CarouselProvider = ({ children }) => {
   const getCarouselImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8000/carousel");
+      const response = await axios.get(`${API_BASE_URL}/carousel`);
       setCarouselImages(response.data);
     } catch (error) {
       console.error("Error fetching carousel images:", error);
@@ -23,7 +24,7 @@ export const CarouselProvider = ({ children }) => {
   // Get active carousel images (for frontend display)
   const getActiveCarouselImages = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/carousel/active");
+      const response = await axios.get(`${API_BASE_URL}/carousel/active`);
       setCarouselImages(response.data);
     } catch (error) {
       console.error("Error fetching active carousel images:", error);
@@ -34,7 +35,7 @@ export const CarouselProvider = ({ children }) => {
   const addCarouselImage = async (carouselData) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/carousel",
+        `${API_BASE_URL}/carousel`,
         carouselData
       );
       setCarouselImages([...carouselImages, response.data]);
@@ -48,7 +49,7 @@ export const CarouselProvider = ({ children }) => {
   // Delete carousel image
   const deleteCarouselImage = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/carousel/${id}`);
+      await axios.delete(`${API_BASE_URL}/carousel/${id}`);
       setCarouselImages(carouselImages.filter((img) => img._id !== id));
     } catch (error) {
       console.error("Error deleting carousel image:", error);
@@ -59,7 +60,7 @@ export const CarouselProvider = ({ children }) => {
   // Toggle carousel image active status
   const toggleCarouselImage = async (id, isActive) => {
     try {
-      const response = await axios.patch(`http://localhost:8000/carousel/${id}`, {
+      const response = await axios.patch(`${API_BASE_URL}/carousel/${id}`, {
         isActive,
       });
       setCarouselImages(

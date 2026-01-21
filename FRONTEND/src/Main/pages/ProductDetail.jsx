@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { useCart } from "../components/context/CartContext";
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 import axios from "axios";
+import { API_BASE_URL } from "../../config/api";
 import { AiOutlineHeart, AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 import "./ProductDetail.css";
 import SubDetail from "./subdetail";
@@ -30,10 +31,7 @@ export default function ProductDetail() {
     async function fetchProduct() {
       try {
         setLoading(true);
-        const res = await axios.get(`
-http://localhost:8000
-
-/products/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/products/${id}`);
         const prod = res.data;
 
         // Compute minimum price if batches exist
@@ -48,10 +46,7 @@ http://localhost:8000
         // Fetch related products from same category
         if (prod.category) {
           const relatedRes = await axios.get(
-            `
-http://localhost:8000
-
-/products?category=${prod.category}`
+            `${API_BASE_URL}/products?category=${prod.category}`
           );
           setRelatedProducts(
             relatedRes.data.filter((p) => p._id !== prod._id)
@@ -71,14 +66,8 @@ http://localhost:8000
   if (error || !product) return <div className="pd-page">{error}</div>;
 
   const imagesArray =
-    product?.images?.map((img) => `
-http://localhost:8000
-
-${img}`) ||
-    (product?.image ? [`
-http://localhost:8000
-
-${product.image}`] : []);
+    product?.images?.map((img) => `${API_BASE_URL}${img}`) ||
+    (product?.image ? [`${API_BASE_URL}${product.image}`] : []);
 
   const isInWishlist = () =>
     wishlist.some((p) => p._id === product._id);
