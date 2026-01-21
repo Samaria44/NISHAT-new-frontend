@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FiTrash2 } from "react-icons/fi";
+import { API_BASE_URL } from "../../config/api";
 import "./wishlist.css";
 
 export default function Wishlist() {
@@ -26,10 +27,7 @@ export default function Wishlist() {
         {wishlist.map((p) => (
           <div key={p._id} className="wishlist-card" >
             <img 
-              src={p.image ? `
-http://localhost:8000
-
-${p.image}` : "https://placeholder.co/150x150?text=No+Image"}
+              src={p.image ? `${API_BASE_URL}${p.image}` : "https://placeholder.co/150x150?text=No+Image"}
               alt={p.name}
               className="wishlist-image"
             />

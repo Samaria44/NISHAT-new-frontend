@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CarouselContext } from "../../Admin/context/CarouselContext";
+import { API_BASE_URL } from "../../config/api";
 import "./Carousel.css";
 import image1 from "../images/image1.webp";
 import image2 from "../images/image2.webp";
@@ -20,11 +21,8 @@ export default function Carousel() {
   ];
 
   // Convert backend carousel images to slide format
-  const dynamicSlides = carouselImages.map((carousel) => ({
-    img: carousel.image ? `
-http://localhost:8000
-
-/${carousel.image}` : image1,
+  const dynamicSlides = (carouselImages || []).map((carousel) => ({
+    img: carousel.image ? `${API_BASE_URL}/${carousel.image}` : image1,
     path: carousel.path,
     title: carousel.title,
   }));
