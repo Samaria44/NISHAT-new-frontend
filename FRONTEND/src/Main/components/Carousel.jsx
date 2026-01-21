@@ -11,6 +11,8 @@ import image4 from "../images/image4.webp";
 export default function Carousel() {
   const navigate = useNavigate();
   const { carouselImages, loading, getActiveCarouselImages } = useContext(CarouselContext);
+  
+  console.log("Carousel component - carouselImages:", carouselImages, "type:", typeof carouselImages, "isArray:", Array.isArray(carouselImages));
 
   // Fallback to static images if no dynamic images
   const staticSlides = [
@@ -21,7 +23,7 @@ export default function Carousel() {
   ];
 
   // Convert backend carousel images to slide format
-  const dynamicSlides = (carouselImages || []).map((carousel) => ({
+  const dynamicSlides = (Array.isArray(carouselImages) ? carouselImages : []).map((carousel) => ({
     img: carousel.image ? `${API_BASE_URL}/${carousel.image}` : image1,
     path: carousel.path,
     title: carousel.title,

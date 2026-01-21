@@ -13,9 +13,10 @@ export const CarouselProvider = ({ children }) => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/carousel`);
-      setCarouselImages(response.data);
+      setCarouselImages(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching carousel images:", error);
+      setCarouselImages([]);
     } finally {
       setLoading(false);
     }
@@ -25,9 +26,12 @@ export const CarouselProvider = ({ children }) => {
   const getActiveCarouselImages = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/carousel/active`);
-      setCarouselImages(response.data);
+      console.log("Carousel API response:", response.data);
+      const data = Array.isArray(response.data) ? response.data : [];
+      setCarouselImages(data);
     } catch (error) {
       console.error("Error fetching active carousel images:", error);
+      setCarouselImages([]);
     }
   };
 
