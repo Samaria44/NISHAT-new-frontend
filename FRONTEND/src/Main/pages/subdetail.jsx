@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useCart } from "../components/context/CartContext";
+import { API_BASE_URL } from "../../config/api";
 import "./CategoryPage.css"; 
 
 export default function SubDetail({ product, relatedProducts }) {
@@ -69,10 +70,7 @@ export default function SubDetail({ product, relatedProducts }) {
                   <img
                     src={
                       p.images && p.images.length > 0
-                        ? `
-http://localhost:8000
-
-${p.images[0]}`
+                        ? `${API_BASE_URL}${p.images[0]}`
                         : "https://placeholder.co/150x150?text=No+Image"
                     }
                     alt={p.name}
@@ -135,10 +133,7 @@ ${p.images[0]}`
               <img
                 src={
                   selectedProduct.images && selectedProduct.images.length > 0
-                    ? `
-http://localhost:8000
-
-${selectedProduct.images[0]}`
+                    ? `${API_BASE_URL}${selectedProduct.images[0]}`
                     : "https://via.placeholder.com/150"
                 }
                 alt={selectedProduct.name}

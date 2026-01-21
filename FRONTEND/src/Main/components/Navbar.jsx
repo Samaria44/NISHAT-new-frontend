@@ -87,7 +87,7 @@ export default function Navbar({ onSearchClick }) {
 </div>
       {/* DESKTOP MENU */}
       <nav className="menu">
-        {categories.map((cat) => (
+        {(categories || []).map((cat) => (
           <div
             key={cat._id}
             className="menu-item"
@@ -96,7 +96,7 @@ export default function Navbar({ onSearchClick }) {
             {cat.name}
             {cat.subcategories?.length > 0 && (
               <div className="submenu">
-                {cat.subcategories.map((sub) => (
+                {(cat.subcategories || []).map((sub) => (
                   <div
                     key={sub._id}
                     className="submenu-item"
@@ -121,7 +121,7 @@ export default function Navbar({ onSearchClick }) {
           <FiX className="close-icon" onClick={() => setSidebarOpen(false)} />
         </div>
         <div className="sidebar1-links">
-          {categories.map((cat) => (
+          {(categories || []).map((cat) => (
             <div key={cat._id} className="mobile-menu-category">
               <p
                 className="mobile-cat-title"
@@ -131,7 +131,7 @@ export default function Navbar({ onSearchClick }) {
               </p>
               {cat.subcategories?.length > 0 && (
                 <div className="mobile-sub-list">
-                  {cat.subcategories.map((sub) => (
+                  {(cat.subcategories || []).map((sub) => (
                     <p
                       key={sub._id}
                       onClick={() =>
