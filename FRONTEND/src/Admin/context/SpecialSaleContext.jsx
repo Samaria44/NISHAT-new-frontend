@@ -20,10 +20,19 @@ export const SpecialSaleProvider = ({ children }) => {
   const fetchSpecialSales = async () => {
     try {
       setLoading(true);
+      
+      // Check if API is available
+      if (!BACKEND_URL) {
+        console.warn('⚠️ API not available - using empty special sales');
+        setSpecialSales([]);
+        return;
+      }
+      
       const res = await axios.get(BACKEND_URL);
       setSpecialSales(res.data || []);
     } catch (err) {
       console.error("Error fetching special sales:", err);
+      setSpecialSales([]);
     } finally {
       setLoading(false);
     }
@@ -33,10 +42,19 @@ export const SpecialSaleProvider = ({ children }) => {
   const fetchBanner = async () => {
     try {
       setLoadingBanner(true);
+      
+      // Check if API is available
+      if (!BANNER_URL) {
+        console.warn('⚠️ API not available - using empty banner text');
+        setBannerText("");
+        return;
+      }
+      
       const res = await axios.get(BANNER_URL);
       setBannerText(res.data?.banner || "");
     } catch (err) {
       console.error("Error fetching banner:", err);
+      setBannerText("");
     } finally {
       setLoadingBanner(false);
     }

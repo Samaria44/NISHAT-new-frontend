@@ -12,6 +12,13 @@ export const CategoryProvider = ({ children }) => {
   // Fetch all categories
   const fetchCategories = async () => {
     try {
+      // Check if API is available
+      if (!API_URL) {
+        console.warn('⚠️ API not available - using empty categories');
+        setCategories([]);
+        return;
+      }
+      
       const { data } = await axios.get(API_URL);
       setCategories(Array.isArray(data) ? data : []);
     } catch (err) {
