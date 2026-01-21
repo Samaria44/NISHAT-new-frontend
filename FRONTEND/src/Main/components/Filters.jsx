@@ -15,12 +15,6 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
   const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
 
-  // Live search in sidebar only
-  useEffect(() => {
-    const debounce = setTimeout(() => fetchSidebarResults(), 300);
-    return () => clearTimeout(debounce);
-  }, [searchQuery, selectedCategory, selectedSub, fetchSidebarResults]);
-
   const fetchSidebarResults = useCallback(async () => {
     if (!searchQuery.trim() && !selectedCategory && !selectedSub) {
       setSearchResults([]);
@@ -58,6 +52,12 @@ export default function SearchSidebar({ open, onClose, setFilteredProducts }) {
       setLoading(false);
     }
   }, [searchQuery, selectedCategory, selectedSub, setSearchResults, setLoading]);
+
+  // Live search in sidebar only
+  useEffect(() => {
+    const debounce = setTimeout(() => fetchSidebarResults(), 300);
+    return () => clearTimeout(debounce);
+  }, [searchQuery, selectedCategory, selectedSub, fetchSidebarResults]);
 
   const handleSearch = () => {
     // Build navigation path

@@ -13,7 +13,6 @@ export default function CategoryPage() {
   const { addToCart } = useCart();
 
   const [category, setCategory] = useState(null);
-  const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,7 +47,6 @@ export default function CategoryPage() {
         if (!foundCategory) {
           setError("Category not found");
           setCategory(null);
-          setProducts([]);
           setFilteredProducts([]);
           return;
         }
@@ -88,7 +86,6 @@ export default function CategoryPage() {
           return p;
         });
 
-        setProducts(categoryProducts);
         setFilteredProducts(categoryProducts);
       } catch (err) {
         console.error(err);
