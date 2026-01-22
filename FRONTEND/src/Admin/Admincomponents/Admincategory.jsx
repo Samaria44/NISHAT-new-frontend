@@ -3,7 +3,7 @@ import { CategoryContext } from "../context/CategoryContext";
 import { FiEdit, FiTrash, FiSave, FiPlus, FiImage } from "react-icons/fi";
 import "./AdminCategory.css";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
 const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
 
 export default function AdminCategory() {

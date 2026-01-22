@@ -5,7 +5,7 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import "./AdminSpecialSale.css";
 import axiosInstance from "../../utils/axiosInterceptor";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
 const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
 
 export default function AdminSpecialSale() {

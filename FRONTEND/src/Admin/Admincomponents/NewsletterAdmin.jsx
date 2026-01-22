@@ -3,7 +3,7 @@ import axios from "axios";
 import { FiTrash2 } from "react-icons/fi";
 import "./NewsletterAdmin.css";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
 
 export default function NewsletterAdmin() {
   const [subscribers, setSubscribers] = useState([]);

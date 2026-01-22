@@ -12,7 +12,7 @@ export const getApiBaseUrl = () => {
   if (process.env.NODE_ENV === 'production' && customBackendUrl) {
     // Validate that it's not the placeholder
     if (!customBackendUrl.includes('your-backend-url.vercel.app')) {
-      return customBackendUrl;
+      return customBackendUrl.replace(/\/+$/, ""); // Remove trailing slashes
     }
   }
   

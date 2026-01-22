@@ -3,8 +3,9 @@ import axios from "axios";
 import "./product.css";
 import { FiEdit2, FiTrash2, FiX, FiImage } from "react-icons/fi";
 import { CategoryContext } from "../context/CategoryContext";
+import { API_BASE_URL } from "../../../config/api";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const BACKEND_URL = API_BASE_URL;
 const ALL_SIZES = ["S", "M", "L", "XL"];
 
 export default function ProductUpload() {
