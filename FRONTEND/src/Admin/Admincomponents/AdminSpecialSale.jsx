@@ -5,6 +5,9 @@ import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import "./AdminSpecialSale.css";
 import axiosInstance from "../../utils/axiosInterceptor";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
+
 export default function AdminSpecialSale() {
   const {
     specialSales,
@@ -245,11 +248,8 @@ export default function AdminSpecialSale() {
                     <img
                       src={
                         item.image
-                          ? `
-http://localhost:8000
-
-${item.image}`
-                          : "https://via.placeholder.com/50"
+                          ? `${BACKEND_URL}${item.image}`
+                          : `${PLACEHOLDER_IMAGE}/50`
                       }
                       alt={item.name}
                       style={{ width: "50px", borderRadius: "6px" }}

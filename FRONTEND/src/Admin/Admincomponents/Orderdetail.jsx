@@ -3,6 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./orderdetail.css";
 import axiosInstance from "../../utils/axiosInterceptor";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://placeholder.co";
+
 export default function OrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -63,8 +66,8 @@ export default function OrderDetail() {
               const imageSrc = imageCandidate
                 ? imageCandidate.startsWith("http")
                   ? imageCandidate
-                  : `http://localhost:8000${imageCandidate}`
-                : "https://placeholder.co/60x60?text=No+Image";
+                  : `${BACKEND_URL}${imageCandidate}`
+                : `${PLACEHOLDER_IMAGE}/60x60?text=No+Image`;
               const price = (Number(product.price) || 0) * qty;
               return (
                 <tr key={idx}>

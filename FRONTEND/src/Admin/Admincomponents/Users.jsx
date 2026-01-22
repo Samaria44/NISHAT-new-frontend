@@ -3,12 +3,14 @@ import axios from "axios";
 import { FiTrash2 } from "react-icons/fi";
 import "./Admincontact.css"; // 👈 NEW
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+
 export default function ContactAdmin() {
   const [messages, setMessages] = useState([]);
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/contact");
+      const res = await axios.get(`${BACKEND_URL}/contact`);
       setMessages(res.data);
     } catch (err) {
       console.error(err);
@@ -17,7 +19,7 @@ export default function ContactAdmin() {
 
   const deleteMessage = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/contact/${id}`);
+      await axios.delete(`${BACKEND_URL}/contact/${id}`);
       fetchMessages();
     } catch (err) {
       console.error(err);

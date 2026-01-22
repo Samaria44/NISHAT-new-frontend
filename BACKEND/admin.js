@@ -3,12 +3,15 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const db = require('./src/models');
 
+// Hardcode MongoDB URI temporarily
+const MONGODB_URI = 'mongodb+srv://samariatajamul_db_user:NC9m8WPtoa30qLyD@cluster0.s0qmlbq.mongodb.net/nishat_db';
+
 const User = db.user;
 const Role = db.role;
 
 async function addAdmin() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(MONGODB_URI);
     
     // Create admin role if not exists
     const adminRole = await Role.findOneAndUpdate(
@@ -33,7 +36,7 @@ async function addAdmin() {
       { upsert: true, new: true }
     );
     
-    console.log('✅ Admin user added/updated');
+    console.log(' Admin user added/updated');
     console.log('Email: admin@nishat.com');
     console.log('Password: admin123');
     

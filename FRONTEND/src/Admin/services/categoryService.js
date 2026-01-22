@@ -1,9 +1,5 @@
-// import axios from "axios";
-
-// const API = "
-// http://localhost:8000
-
-// /categories";
+// This file contains commented out category service functions
+// Active category management is handled through CategoryContext.jsx
 
 // // CATEGORY CRUD
 // export const getCategories = async () => {

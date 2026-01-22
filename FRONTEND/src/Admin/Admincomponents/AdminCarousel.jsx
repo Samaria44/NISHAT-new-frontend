@@ -3,6 +3,9 @@ import { CarouselContext } from "../context/CarouselContext";
 import { FiImage, FiEdit2, FiTrash2, FiX } from "react-icons/fi";
 import "./AdminCarousel.css";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
+
 export default function AdminCarousel() {
   const {
     carouselImages,
@@ -107,10 +110,7 @@ export default function AdminCarousel() {
       displayOrder: carousel.displayOrder,
     });
     setImagePreview(
-      carousel.image ? `
-http://localhost:8000
-
-/${carousel.image}` : null
+      carousel.image ? `${BACKEND_URL}/${carousel.image}` : null
     );
     setImageFile(null);
     setEditingId(carousel._id);
@@ -282,11 +282,8 @@ http://localhost:8000
                   <img
                     src={
                       carousel.image
-                        ? `
-http://localhost:8000
-
-/${carousel.image}`
-                        : "https://via.placeholder.com/80x50?text=No+Image"
+                        ? `${BACKEND_URL}/${carousel.image}`
+                        : `${PLACEHOLDER_IMAGE}/80x50?text=No+Image`
                     }
                     alt={carousel.title}
                     className="carousel-thumb"

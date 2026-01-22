@@ -3,12 +3,14 @@ import axios from "axios";
 import { FiTrash2 } from "react-icons/fi";
 import "./NewsletterAdmin.css";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+
 export default function NewsletterAdmin() {
   const [subscribers, setSubscribers] = useState([]);
 
   const fetchSubscribers = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/newsletter");
+      const res = await axios.get(`${BACKEND_URL}/newsletter`);
       setSubscribers(res.data);
     } catch (err) {
       console.error(err);
@@ -17,7 +19,7 @@ export default function NewsletterAdmin() {
 
   const deleteSubscriber = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/newsletter/${id}`);
+      await axios.delete(`${BACKEND_URL}/newsletter/${id}`);
       fetchSubscribers();
     } catch (err) {
       console.error(err);

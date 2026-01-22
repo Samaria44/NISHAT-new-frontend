@@ -3,6 +3,9 @@ import { CategoryContext } from "../context/CategoryContext";
 import { FiEdit, FiTrash, FiSave, FiPlus, FiImage } from "react-icons/fi";
 import "./AdminCategory.css";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
+const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
+
 export default function AdminCategory() {
   const {
     categories,
@@ -68,11 +71,8 @@ export default function AdminCategory() {
                   <img
                     src={
                       cat.image
-                        ? `
-http://localhost:8000
-
-${cat.image}`
-                        : "https://via.placeholder.com/80x80?text=No+Image"
+                        ? `${BACKEND_URL}${cat.image}`
+                        : `${PLACEHOLDER_IMAGE}/80x80?text=No+Image`
                     }
                     alt={cat.name}
                     className="cat-image"
@@ -121,11 +121,8 @@ ${cat.image}`
                       <img
                         src={
                           sub.image
-                            ? `
-http://localhost:8000
-
-${sub.image}`
-                            : "https://via.placeholder.com/50x50?text=No+Image"
+                            ? `${BACKEND_URL}${sub.image}`
+                            : `${PLACEHOLDER_IMAGE}/50x50?text=No+Image`
                         }
                         alt={sub.name}
                         className="sub-image"

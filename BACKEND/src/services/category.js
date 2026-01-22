@@ -77,9 +77,15 @@ exports.updateSubcategoryImage = async (categoryId, subId, file) => {
   const sub = category.subcategories.id(subId);
   if (!sub) throw new Error("Subcategory not found");
 
+  // Ensure uploads directory exists
+  const uploadDir = path.join(__dirname, "..", "uploads", "subcategories");
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
   // Delete old image if exists
   if (sub.image) {
-    const oldPath = path.join(__dirname, "..", sub.image); // full path
+    const oldPath = path.join(__dirname, "..", "uploads", "subcategories", path.basename(sub.image));
     if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
   }
 
@@ -95,9 +101,15 @@ exports.updateCategoryImage = async (categoryId, file) => {
   const category = await Category.findById(categoryId);
   if (!category) throw new Error("Category not found");
 
+  // Ensure uploads directory exists
+  const uploadDir = path.join(__dirname, "..", "uploads", "categories");
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
   // Delete old image if exists
   if (category.image) {
-    const oldPath = path.join(__dirname, "..", category.image);
+    const oldPath = path.join(__dirname, "..", "uploads", "categories", path.basename(category.image));
     if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
   }
 
