@@ -3,7 +3,7 @@ import axios from "axios";
 import "./product.css";
 import { FiEdit2, FiTrash2, FiX, FiImage } from "react-icons/fi";
 import { CategoryContext } from "../context/CategoryContext";
-import { API_BASE_URL } from "../../../config/api";
+import { API_BASE_URL } from "../../config/api";
 
 const BACKEND_URL = API_BASE_URL;
 const ALL_SIZES = ["S", "M", "L", "XL"];
