@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInterceptor";
 import { FiTrash2 } from "react-icons/fi";
-import "./Admincontact.css"; // 👈 NEW
-
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
+import "./Admincontact.css";
 
 export default function ContactAdmin() {
   const [messages, setMessages] = useState([]);
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/contact`);
-      setMessages(res.data);
+      // axiosInstance has baseURL — use relative path only
+      const res = await axiosInstance.get("/contact");
+      setMessages(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching contact messages:", err);
     }
   };
 
   const deleteMessage = async (id) => {
     try {
-      await axios.delete(`${BACKEND_URL}/contact/${id}`);
+      await axiosInstance.delete(`/contact/${id}`);
       fetchMessages();
     } catch (err) {
-      console.error(err);
+      console.error("Error deleting contact message:", err);
     }
   };
 
@@ -59,7 +58,13 @@ export default function ContactAdmin() {
                   <td>{m.email}</td>
                   <td>{m.phone}</td>
                   <td className="contact-message-cell">{m.message}</td>
-                  <td>{new Date(m.date).toLocaleString()}</td>
+                  <td>
+                    {m.date
+                      ? new Date(m.date).toLocaleString()
+                      : m.createdAt
+                      ? new Date(m.createdAt).toLocaleString()
+                      : "—"}
+                  </td>
                   <td>
                     <button
                       onClick={() => deleteMessage(m._id)}

@@ -1,144 +1,37 @@
-/* ====== USER LOGIN PAGE ====== */
+/* ===== USER LOGIN (Registered Users) PAGE ===== */
 .user-login-page {
-  margin-left: 279px;
-  margin-right: 24px;
-  margin-top: 32px;
-  margin-bottom: 32px;
-  padding: 22px 24px;
-  background: #ffffff;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(15,23,42,0.07);
   font-family: "Poppins", sans-serif;
 }
+.user-login-header { margin-bottom: 20px; }
+.user-login-header h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 0; }
 
-.user-login-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
+.user-login-table { width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; }
+.user-login-table thead { background: #f8fafc; }
+.user-login-table th {
+  text-align: left; padding: 12px 14px;
+  font-size: 11px; font-weight: 600;
+  color: #64748b; text-transform: uppercase;
+  letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0;
 }
-
-.user-login-header h2 {
-  font-size: 20px;
-  color: #111827;
-  font-weight: 600;
-  margin: 0;
-}
-
-.user-login-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #ffffff;
-}
-
-.user-login-table thead {
-  background: #f9fafb;
-}
-
-.user-login-table th,
 .user-login-table td {
-  text-align: left;
-  padding: 12px 14px;
-  font-size: 13px;
+  padding: 12px 14px; font-size: 13.5px;
+  color: #334155; border-bottom: 1px solid #f1f5f9;
 }
+.user-login-table tbody tr:last-child td { border-bottom: none; }
+.user-login-table tbody tr:hover { background: #f8fafc; }
 
-.user-login-table thead th {
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 11px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.user-login-table tbody tr {
-  border-bottom: 1px solid #e5e7eb;
-  transition: background-color 0.18s ease, transform 0.1s ease;
-}
-
-.user-login-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.user-login-table tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-.user-login-table td svg {
-  cursor: pointer;
-  color: #6b7280;
-  transition: color 0.18s ease, transform 0.08s ease;
-  font-size: 18px;
-}
-
-.user-login-table td svg:hover {
-  color: #111827;
-  transform: translateY(-1px);
-}
-
-.no-users {
-  text-align: center;
-  color: #6b7280;
-  font-size: 14px;
-  padding: 12px 0;
-}
-
-/* ====== RESPONSIVE ====== */
-@media (max-width: 1024px) {
-  .user-login-page {
-    margin-left: 220px;
-    margin-right: 16px;
-  }
-}
+.no-users { text-align: center; color: #94a3b8; font-size: 14px; padding: 40px 0; font-style: italic; }
 
 @media (max-width: 768px) {
-  .user-login-page {
-    margin-left: 12px;
-    margin-right: 12px;
-    padding: 16px 14px;
-  }
-
-  .user-login-table,
-  .user-login-table thead,
-  .user-login-table tbody,
-  .user-login-table th,
-  .user-login-table td,
-  .user-login-table tr {
-    display: block;
-  }
-
-  .user-login-table thead {
-    display: none;
-  }
-
-  .user-login-table tr {
-    background: #ffffff;
-    margin-bottom: 10px;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
-    padding: 8px 8px 6px;
-  }
-
-  .user-login-table td {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 8px;
-    border-bottom: 1px dashed #e5e7eb;
-  }
-
-  .user-login-table td:last-child {
-    border-bottom: none;
-  }
-
-  .user-login-table td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #6b7280;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-right: 8px;
-  }
+  .user-login-page { padding: 16px; }
+  .user-login-table, .user-login-table thead, .user-login-table tbody,
+  .user-login-table th, .user-login-table td, .user-login-table tr { display: block; }
+  .user-login-table thead { display: none; }
+  .user-login-table tr { margin-bottom: 10px; border-radius: 12px; box-shadow: 0 2px 8px rgba(15,23,42,0.06); padding: 10px; }
+  .user-login-table td { padding: 7px 4px; border-bottom: 1px dashed #f1f5f9; }
+  .user-login-table td:last-child { border-bottom: none; }
 }

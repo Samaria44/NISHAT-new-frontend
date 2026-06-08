@@ -1,18 +1,20 @@
-import axios from "axios";
 import { createContext, useState } from "react";
+import axiosInstance from "../../utils/axiosInterceptor";
 import { API_BASE_URL } from "../../config/api";
 
 export const CarouselContext = createContext();
+
+// Absolute URL for image src display only
+const BACKEND_URL = API_BASE_URL.replace(/\/+$/, "");
 
 export const CarouselProvider = ({ children }) => {
   const [carouselImages, setCarouselImages] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Get all carousel images (for admin)
   const getCarouselImages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE_URL.replace(/\/$/, '')}/carousel`);
+      const response = await axiosInstance.get("/carousel");
       setCarouselImages(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching carousel images:", error);
@@ -22,27 +24,21 @@ export const CarouselProvider = ({ children }) => {
     }
   };
 
-  // Get active carousel images (for frontend display)
   const getActiveCarouselImages = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL.replace(/\/$/, '')}/carousel/active`);
+      const response = await axiosInstance.get("/carousel/active");
       console.log("Carousel API response:", response.data);
-      const data = Array.isArray(response.data) ? response.data : [];
-      setCarouselImages(data);
+      setCarouselImages(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching active carousel images:", error);
       setCarouselImages([]);
     }
   };
 
-  // Add carousel image
   const addCarouselImage = async (carouselData) => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/carousel`,
-        carouselData
-      );
-      setCarouselImages([...carouselImages, response.data]);
+      const response = await axiosInstance.post("/carousel", carouselData);
+      setCarouselImages((prev) => [...prev, response.data]);
       return response.data;
     } catch (error) {
       console.error("Error adding carousel image:", error.response?.data || error);
@@ -50,27 +46,53 @@ export const CarouselProvider = ({ children }) => {
     }
   };
 
-  // Delete carousel image
+  const updateCarouselImage = async (id, updateData) => {
+    try {
+      const response = await axiosInstance.put(`/carousel/${id}`, updateData);
+      setCarouselImages((prev) =>
+        prev.map((img) => (img._id === id ? response.data : img))
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating carousel:", error.response?.data || error);
+      throw error;
+    }
+  };
+
+  const uploadCarouselImageFile = async (id, file) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await axiosInstance.put(
+        `/carousel/${id}/image`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+      setCarouselImages((prev) =>
+        prev.map((img) => (img._id === id ? response.data : img))
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error uploading carousel image file:", error.response?.data || error);
+      throw error;
+    }
+  };
+
   const deleteCarouselImage = async (id) => {
     try {
-      await axios.delete(`${API_BASE_URL}/carousel/${id}`);
-      setCarouselImages(carouselImages.filter((img) => img._id !== id));
+      await axiosInstance.delete(`/carousel/${id}`);
+      setCarouselImages((prev) => prev.filter((img) => img._id !== id));
     } catch (error) {
       console.error("Error deleting carousel image:", error);
       throw error;
     }
   };
 
-  // Toggle carousel image active status
-  const toggleCarouselImage = async (id, isActive) => {
+  const toggleCarouselImage = async (id, active) => {
     try {
-      const response = await axios.patch(`${API_BASE_URL}/carousel/${id}`, {
-        isActive,
-      });
-      setCarouselImages(
-        carouselImages.map((img) =>
-          img._id === id ? { ...img, isActive } : img
-        )
+      const response = await axiosInstance.put(`/carousel/${id}`, { active });
+      setCarouselImages((prev) =>
+        prev.map((img) => (img._id === id ? { ...img, active } : img))
       );
       return response.data;
     } catch (error) {
@@ -87,6 +109,8 @@ export const CarouselProvider = ({ children }) => {
         getCarouselImages,
         getActiveCarouselImages,
         addCarouselImage,
+        updateCarouselImage,
+        uploadCarouselImageFile,
         deleteCarouselImage,
         toggleCarouselImage,
       }}

@@ -17,7 +17,7 @@ export default function Orders() {
       const res = await axiosInstance.get('/orders');
       const data = res.data;
 
-      console.log("Orders API response:", data); // ek dafa console check kar lo
+      console.log("Orders API response:", data); 
 
       // Ensure it's an array
       const normalized = Array.isArray(data) ? data : data.orders || [];

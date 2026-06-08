@@ -1,4 +1,6 @@
 // BACKEND/src/controllers/specialSaleController.js
+const path = require("path");
+const fs = require("fs");
 const SpecialSale = require("../models/specialSaleModel");
 
 // Add new special sale
@@ -13,7 +15,7 @@ exports.createSpecialSale = async (req, res) => {
 
     const specialSale = new SpecialSale({
       name,
-      discount,
+      discount: Number(discount) || 0,
       navigateTo,
       image,
     });
@@ -37,18 +39,35 @@ exports.getSpecialSales = async (req, res) => {
   }
 };
 
-// Update special sale
+// Update special sale — explicit field allowlist to prevent mass-assignment
 exports.updateSpecialSale = async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = { ...req.body };
+    const { name, discount, navigateTo, active, displayOrder } = req.body;
+
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (discount !== undefined) updateData.discount = Number(discount);
+    if (navigateTo !== undefined) updateData.navigateTo = navigateTo;
+    if (active !== undefined) updateData.active = active;
+    if (displayOrder !== undefined) updateData.displayOrder = Number(displayOrder);
 
     if (req.file) {
       updateData.image = `/uploads/specialsale/${req.file.filename}`;
+
+      // Delete old image file if there was one
+      const existing = await SpecialSale.findById(id);
+      if (existing && existing.image) {
+        const oldPath = path.join(__dirname, "..", existing.image);
+        fs.unlink(oldPath, (err) => {
+          if (err) console.error("Failed to delete old sale image:", err.message);
+        });
+      }
     }
 
     const updated = await SpecialSale.findByIdAndUpdate(id, updateData, {
       new: true,
+      runValidators: true,
     });
 
     if (!updated) {
@@ -62,7 +81,7 @@ exports.updateSpecialSale = async (req, res) => {
   }
 };
 
-// Delete special sale
+// Delete special sale — also removes image from disk
 exports.deleteSpecialSale = async (req, res) => {
   try {
     const { id } = req.params;
@@ -70,6 +89,14 @@ exports.deleteSpecialSale = async (req, res) => {
     const deleted = await SpecialSale.findByIdAndDelete(id);
     if (!deleted) {
       return res.status(404).json({ message: "Special sale not found" });
+    }
+
+    // Clean up image file
+    if (deleted.image) {
+      const filePath = path.join(__dirname, "..", deleted.image);
+      fs.unlink(filePath, (err) => {
+        if (err) console.error("Failed to delete sale image:", err.message);
+      });
     }
 
     res.status(200).json({ message: "Deleted successfully" });

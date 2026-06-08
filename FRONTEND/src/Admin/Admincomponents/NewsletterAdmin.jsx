@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInterceptor";
 import { FiTrash2 } from "react-icons/fi";
 import "./NewsletterAdmin.css";
-
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
 
 export default function NewsletterAdmin() {
   const [subscribers, setSubscribers] = useState([]);
 
   const fetchSubscribers = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/newsletter`);
-      setSubscribers(res.data);
+      // axiosInstance already has baseURL set — use relative path only
+      const res = await axiosInstance.get("/newsletter");
+      setSubscribers(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching subscribers:", err);
     }
   };
 
   const deleteSubscriber = async (id) => {
     try {
-      await axios.delete(`${BACKEND_URL}/newsletter/${id}`);
+      await axiosInstance.delete(`/newsletter/${id}`);
       fetchSubscribers();
     } catch (err) {
-      console.error(err);
+      console.error("Error deleting subscriber:", err);
     }
   };
 
@@ -53,7 +52,13 @@ export default function NewsletterAdmin() {
               subscribers.map((s) => (
                 <tr key={s._id}>
                   <td>{s.email}</td>
-                  <td>{new Date(s.date).toLocaleString()}</td>
+                  <td>
+                    {s.date
+                      ? new Date(s.date).toLocaleString()
+                      : s.createdAt
+                      ? new Date(s.createdAt).toLocaleString()
+                      : "—"}
+                  </td>
                   <td>
                     <button
                       onClick={() => deleteSubscriber(s._id)}

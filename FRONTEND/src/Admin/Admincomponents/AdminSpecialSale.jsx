@@ -3,7 +3,6 @@ import { useContext, useState, useEffect } from "react";
 import { SpecialSaleContext } from "../context/SpecialSaleContext";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import "./AdminSpecialSale.css";
-import axiosInstance from "../../utils/axiosInterceptor";
 
 const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
 const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
@@ -16,6 +15,9 @@ export default function AdminSpecialSale() {
     loadingBanner,
     updateBanner,
     fetchSpecialSales,
+    createSpecialSale,
+    updateSpecialSale,
+    deleteSpecialSale,
   } = useContext(SpecialSaleContext);
 
   // ===== Banner State =====
@@ -94,14 +96,10 @@ export default function AdminSpecialSale() {
       }
 
       if (editingId) {
-        await axiosInstance.put(`/specialsale/${editingId}`, formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        await updateSpecialSale(editingId, formData);
         alert("Special sale updated");
       } else {
-        await axiosInstance.post("/specialsale", formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        await createSpecialSale(formData);
         alert("Special sale created");
       }
 
@@ -129,7 +127,7 @@ export default function AdminSpecialSale() {
     if (!window.confirm("Are you sure you want to delete this sale?")) return;
 
     try {
-      await axiosInstance.delete(`/specialsale/${id}`);
+      await deleteSpecialSale(id);
       alert("Special sale deleted");
       fetchSpecialSales && fetchSpecialSales();
     } catch (err) {

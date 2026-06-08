@@ -1,13 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const customerController = require('../controllers/customer');
+const customerController = require("../controllers/customer");
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
-router.post('/', customerController.upload.single('profilePicture'), customerController.createCustomer);
-router.get('/', customerController.getCustomers);
-router.put('/:id', customerController.updateCustomer);
-router.delete('/:id', customerController.deleteCustomer);
+// All customer management routes are admin-only
+router.post(
+  "/",
+  [verifyToken, isAdmin],
+  customerController.upload.single("profilePicture"),
+  customerController.createCustomer
+);
+router.get("/", [verifyToken, isAdmin], customerController.getCustomers);
+router.put("/:id", [verifyToken, isAdmin], customerController.updateCustomer);
+router.delete("/:id", [verifyToken, isAdmin], customerController.deleteCustomer);
 
 module.exports = router;
-
-
-//app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);

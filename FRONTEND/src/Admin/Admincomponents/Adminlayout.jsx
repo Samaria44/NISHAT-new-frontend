@@ -1,21 +1,20 @@
 import { Outlet } from "react-router-dom";
-import Slidebar from "../Admincomponents/AdminSlidebar";
-
-import Admin from "../Adminpages/Dashboard";
-import "../Adminpages/Dashboard";
+import Slidebar from "./AdminSlidebar";
+import "./Admin.css";
 
 export default function AdminLayout() {
-  
-  
   return (
-    <div className="admin-layout">
-      <Admin />
-      <div className="admin-main">
-        <Slidebar />
-        <div className="admin-content">
-          <Outlet />
-        </div>
-      </div>
+    <div style={{ display: "flex", minHeight: "100vh", background: "#f1f5f9" }}>
+      <Slidebar />
+      <main style={{
+        marginLeft: "240px",
+        flex: 1,
+        padding: "88px 28px 40px",
+        minHeight: "100vh",
+        fontFamily: "'Poppins', sans-serif",
+      }}>
+        <Outlet />
+      </main>
     </div>
   );
 }

@@ -3,19 +3,15 @@ const router = express.Router();
 const CategoryController = require("../controllers/categoryController");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
-// Multer storage
+// Multer storage for category images
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // const uploadDir = req.baseUrl.includes("sub") 
-    //   ? path.join(__dirname, "../uploads/subcategories")
-    //   : path.join(__dirname, "../uploads/categories");
     const uploadDir = path.join(__dirname, "../uploads/categories");
-    // console.log("Upload directory for categories:", uploadDir);
-    
-    // Create directory if it doesn't exist
-    if (!require("fs").existsSync(uploadDir)) {
-      require("fs").mkdirSync(uploadDir, { recursive: true });
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadDir);
   },
@@ -25,15 +21,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Multer storage
+// Multer storage for subcategory images
 const storageSub = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(__dirname, "../uploads/subcategories");
-    // console.log("Upload directory for subcategories:", uploadDir);
-    
-    // Create directory if it doesn't exist
-    if (!require("fs").existsSync(uploadDir)) {
-      require("fs").mkdirSync(uploadDir, { recursive: true });
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadDir);
   },
@@ -43,17 +36,19 @@ const storageSub = multer.diskStorage({
 });
 const uploadSub = multer({ storage: storageSub });
 
-// Routes
+// Public read
 router.get("/", CategoryController.getCategories);
-router.post("/", CategoryController.addCategory);
-router.put("/:id", CategoryController.updateCategory);
-router.delete("/:id", CategoryController.deleteCategory);
 
-router.post("/:id/sub", CategoryController.addSubcategory);
-router.put("/:id/sub/:subId", CategoryController.updateSubcategory);
-router.delete("/:id/sub/:subId", CategoryController.deleteSubcategory);
+// Admin-only write
+router.post("/", [verifyToken, isAdmin], CategoryController.addCategory);
+router.put("/:id", [verifyToken, isAdmin], CategoryController.updateCategory);
+router.delete("/:id", [verifyToken, isAdmin], CategoryController.deleteCategory);
 
-router.put("/:id/image", upload.single("image"), CategoryController.updateCategoryImage);
-router.put("/:id/sub/:subId/image", uploadSub.single("image"), CategoryController.updateSubcategoryImage);
+router.post("/:id/sub", [verifyToken, isAdmin], CategoryController.addSubcategory);
+router.put("/:id/sub/:subId", [verifyToken, isAdmin], CategoryController.updateSubcategory);
+router.delete("/:id/sub/:subId", [verifyToken, isAdmin], CategoryController.deleteSubcategory);
+
+router.put("/:id/image", [verifyToken, isAdmin], upload.single("image"), CategoryController.updateCategoryImage);
+router.put("/:id/sub/:subId/image", [verifyToken, isAdmin], uploadSub.single("image"), CategoryController.updateSubcategoryImage);
 
 module.exports = router;

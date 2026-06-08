@@ -11,36 +11,22 @@ const UserLogin = () => {
     const fetchUsers = async () => {
       const token = localStorage.getItem("accessToken");
 
-      // If token missing → show message
       if (!token) {
-        setUsers([]);
         setError("You are not logged in.");
         return;
       }
 
       try {
         setLoading(true);
-        const res = await axiosInstance.get("/auth", {
-          headers: { "x-access-token": token },
-        });
-
-        console.log("API Response:", res.data);
-
-        // Handle backend response structure
-        // If res.data is an array → use it
-        // If res.data has users property → use that
-        const userList = Array.isArray(res.data)
-          ? res.data
-          : Array.isArray(res.data.users)
-          ? res.data.users
-          : [];
+        // Backend returns array directly from /admin/users
+        const res = await axiosInstance.get("/admin/users");
+        const userList = Array.isArray(res.data) ? res.data : [];
 
         if (userList.length === 0) {
           setError("No users found.");
         } else {
           setError("");
         }
-
         setUsers(userList);
       } catch (err) {
         console.error("Fetch Users Error:", err);
@@ -74,6 +60,7 @@ const UserLogin = () => {
               <th>First Name</th>
               <th>Last Name</th>
               <th>Email</th>
+              <th>Role</th>
             </tr>
           </thead>
           <tbody>
@@ -82,6 +69,11 @@ const UserLogin = () => {
                 <td data-label="First Name">{user.firstName}</td>
                 <td data-label="Last Name">{user.lastName}</td>
                 <td data-label="Email">{user.email}</td>
+                <td data-label="Role">
+                  {user.roles && user.roles.length > 0
+                    ? user.roles.map((r) => r.name || r).join(", ")
+                    : "—"}
+                </td>
               </tr>
             ))}
           </tbody>

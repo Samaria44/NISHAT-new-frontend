@@ -1,64 +1,58 @@
-//C:\Users\samar\Desktop\GCS\NISHAT-new\BACKEND\src\models\Users.js
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-    firstName: String,
-    lastName: String,
-    // username: {
-    //     type: String,
-    //     required: true,
-    //     unique: true
-    // },
+const userSchema = new mongoose.Schema(
+  {
+    firstName: { type: String },
+    lastName: { type: String },
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     email: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
-    // profilePicture: {
-    //     type: String 
-    // },
     roles: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Role"
-        }
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Role",
+      },
     ],
-    created_at: {
-        type: Date,
-        default: Date.now,
-        required: true
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    last_login: {
+      type: Date,
     },
     created_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        // required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    updated_at: Date,
     updated_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     is_updated: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     deleted_at: Date,
     deleted_by: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     is_deleted: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-} , { timestamps: true });
+  },
+  { timestamps: true } // provides createdAt and updatedAt automatically
+);
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;

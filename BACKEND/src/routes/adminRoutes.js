@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/Users");
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
-//  Fetch all users (for Admin Panel)
-router.get("/users", async (req, res) => {
+// Fetch all users — admin only
+router.get("/users", [verifyToken, isAdmin], async (req, res) => {
   try {
     const users = await User.find()
-      .select("firstName lastName email createdAt roles")
+      .select("firstName lastName email createdAt roles isActive last_login")
       .populate("roles", "name");
     res.json(users);
   } catch (err) {

@@ -45,7 +45,20 @@ exports.addOrder = async (req, res) => {
   try {
     console.log(" New order received body:", JSON.stringify(req.body, null, 2));
 
-    const newOrder = new Order(req.body);
+    // Explicit field extraction to prevent mass-assignment
+    const { customer, email, phone, address, paymentMethod, products, totalAmount, date, city } = req.body;
+
+    const newOrder = new Order({
+      customer,
+      email,
+      phone,
+      address,
+      paymentMethod,
+      products,
+      totalAmount,
+      date,
+      city,
+    });
     const savedOrder = await newOrder.save();
 
     console.log(" Order saved successfully:", savedOrder._id);

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInterceptor";
 import "./product.css";
 import { FiEdit2, FiTrash2, FiX, FiImage } from "react-icons/fi";
 import { CategoryContext } from "../context/CategoryContext";
@@ -33,7 +33,8 @@ export default function ProductUpload() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${BACKEND_URL}/products`);
+      // axiosInstance already has baseURL — use relative path
+      const res = await axiosInstance.get("/products");
       setProducts(res.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -112,7 +113,7 @@ export default function ProductUpload() {
   const handleDeleteSingleImage = async (productId, imageIndex) => {
     if (!window.confirm("Delete this image only?")) return;
     try {
-      await axios.delete(
+      await axiosInstance.delete(
         `${BACKEND_URL}/products/${productId}/images/${imageIndex}`
       );
       fetchProducts();
@@ -148,16 +149,14 @@ export default function ProductUpload() {
 
     try {
       if (editingProductId) {
-        await axios.patch(
+        await axiosInstance.patch(
           `${BACKEND_URL}/products/${editingProductId}`,
           uploadData,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
+          { headers: { "Content-Type": "multipart/form-data" } }
         );
         alert("Product updated successfully!");
       } else {
-        await axios.post(`${BACKEND_URL}/products`, uploadData, {
+        await axiosInstance.post(`${BACKEND_URL}/products`, uploadData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Product uploaded successfully!");
@@ -207,7 +206,7 @@ export default function ProductUpload() {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
-      await axios.delete(`${BACKEND_URL}/products/${id}`);
+      await axiosInstance.delete(`${BACKEND_URL}/products/${id}`);
       fetchProducts();
     } catch (error) {
       console.error("Error deleting product:", error);

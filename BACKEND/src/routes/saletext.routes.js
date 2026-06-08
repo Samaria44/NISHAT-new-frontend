@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const saleTextController = require("../controllers/saletextController");
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
-// GET banner - this will be accessible at /specialsale/banner
+// Public read
 router.get("/", saleTextController.getBanner);
 
-// UPDATE banner - this will be accessible at /specialsale/banner
-router.put("/", saleTextController.updateBanner);
+// Admin-only write
+router.put("/", [verifyToken, isAdmin], saleTextController.updateBanner);
 
 module.exports = router;

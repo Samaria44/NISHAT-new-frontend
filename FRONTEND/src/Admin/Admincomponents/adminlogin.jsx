@@ -45,8 +45,9 @@ export default function AdminLogin() {
       const result = await login(loginForm.Email, loginForm.Password);
       
       if (result.success) {
-        // Check if user has admin role
-        const isAdmin = roles.includes('admin') || roles.includes('ROLE_ADMIN');
+        // Check roles from the returned data — not from stale state
+        const userRoles = result.data?.roles || [];
+        const isAdmin = userRoles.some(r => r === 'admin' || r === 'ROLE_ADMIN');
         if (isAdmin) {
           navigate("/dashboard");
         } else {
@@ -65,7 +66,12 @@ export default function AdminLogin() {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleLogin}>
-        <h2>Admin Login</h2>
+        <div className="login-brand">
+          <div className="login-brand-name">nishat</div>
+          <div className="login-brand-sub">Admin Panel</div>
+        </div>
+
+        <h2>Sign In</h2>
 
         {error && (
           <div className="error-message" style={{ 

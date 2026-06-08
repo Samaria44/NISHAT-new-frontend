@@ -1,34 +1,23 @@
-// src/Admin/context/SpecialSaleContext.jsx
 import { createContext, useState, useEffect } from "react";
-import axios from "axios";
-import { API_BASE_URL } from "../../config/api";
+import axiosInstance from "../../utils/axiosInterceptor";
 
 export const SpecialSaleContext = createContext();
 
-const BACKEND_URL = `${API_BASE_URL.replace(/\/$/, '')}/specialsale`;
-const BANNER_URL = `${API_BASE_URL.replace(/\/$/, '')}/specialsale/banner`;
+// Relative paths — axiosInstance already has baseURL configured
+const SPECIAL_SALE_URL = "/specialsale";
+const BANNER_URL = "/specialsale/banner";
 
 export const SpecialSaleProvider = ({ children }) => {
   const [specialSales, setSpecialSales] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ===== BANNER STATE =====
   const [bannerText, setBannerText] = useState("");
   const [loadingBanner, setLoadingBanner] = useState(true);
 
-  // ===== FETCH SPECIAL SALES =====
   const fetchSpecialSales = async () => {
     try {
       setLoading(true);
-      
-      // Check if API is available
-      if (!BACKEND_URL) {
-        console.warn('⚠️ API not available - using empty special sales');
-        setSpecialSales([]);
-        return;
-      }
-      
-      const res = await axios.get(BACKEND_URL);
+      const res = await axiosInstance.get(SPECIAL_SALE_URL);
       setSpecialSales(res.data || []);
     } catch (err) {
       console.error("Error fetching special sales:", err);
@@ -38,19 +27,10 @@ export const SpecialSaleProvider = ({ children }) => {
     }
   };
 
-  // ===== FETCH BANNER =====
   const fetchBanner = async () => {
     try {
       setLoadingBanner(true);
-      
-      // Check if API is available
-      if (!BANNER_URL) {
-        console.warn('⚠️ API not available - using empty banner text');
-        setBannerText("");
-        return;
-      }
-      
-      const res = await axios.get(BANNER_URL);
+      const res = await axiosInstance.get(BANNER_URL);
       setBannerText(res.data?.banner || "");
     } catch (err) {
       console.error("Error fetching banner:", err);
@@ -60,10 +40,9 @@ export const SpecialSaleProvider = ({ children }) => {
     }
   };
 
-  // ===== UPDATE BANNER (ADMIN USES THIS) =====
   const updateBanner = async (newText) => {
     try {
-      const res = await axios.put(BANNER_URL, { banner: newText });
+      const res = await axiosInstance.put(BANNER_URL, { banner: newText });
       setBannerText(res.data?.banner || newText);
       return res.data;
     } catch (err) {
@@ -72,7 +51,24 @@ export const SpecialSaleProvider = ({ children }) => {
     }
   };
 
-  // initial load
+  const createSpecialSale = async (formData) => {
+    const res = await axiosInstance.post(SPECIAL_SALE_URL, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  };
+
+  const updateSpecialSale = async (id, formData) => {
+    const res = await axiosInstance.put(`${SPECIAL_SALE_URL}/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  };
+
+  const deleteSpecialSale = async (id) => {
+    await axiosInstance.delete(`${SPECIAL_SALE_URL}/${id}`);
+  };
+
   useEffect(() => {
     fetchSpecialSales();
     fetchBanner();
@@ -84,8 +80,9 @@ export const SpecialSaleProvider = ({ children }) => {
         specialSales,
         fetchSpecialSales,
         loading,
-
-        // banner
+        createSpecialSale,
+        updateSpecialSale,
+        deleteSpecialSale,
         bannerText,
         loadingBanner,
         fetchBanner,

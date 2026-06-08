@@ -1,10 +1,14 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const db = require('./src/models');
+require("dotenv").config();
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const db = require("./src/models");
 
-// Hardcode MongoDB URI temporarily
-const MONGODB_URI = 'mongodb+srv://samariatajamul_db_user:NC9m8WPtoa30qLyD@cluster0.s0qmlbq.mongodb.net/nishat_db';
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error("Error: MONGODB_URI environment variable is not set.");
+  process.exit(1);
+}
 
 const User = db.user;
 const Role = db.role;
@@ -12,36 +16,43 @@ const Role = db.role;
 async function addAdmin() {
   try {
     await mongoose.connect(MONGODB_URI);
-    
+
     // Create admin role if not exists
     const adminRole = await Role.findOneAndUpdate(
-      { name: 'admin' },
-      { name: 'admin' },
+      { name: "admin" },
+      { name: "admin" },
       { upsert: true, new: true }
     );
-    
-    // Create admin user
-    const hashedPassword = bcrypt.hashSync('admin123', 8);
-    
-    await User.findOneAndUpdate(
-      { email: 'admin@nishat.com' },
+
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@nishat.com";
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminPassword) {
+      console.error(
+        "Error: ADMIN_PASSWORD environment variable is not set. Refusing to create admin with a default password."
+      );
+      process.exit(1);
+    }
+
+    const hashedPassword = bcrypt.hashSync(adminPassword, 8);
+
+    const adminUser = await User.findOneAndUpdate(
+      { email: adminEmail },
       {
-        email: 'admin@nishat.com',
+        email: adminEmail,
         password: hashedPassword,
-        firstName: 'Admin',
-        lastName: 'User',
+        firstName: "Admin",
+        lastName: "User",
         roles: [adminRole._id],
-        isActive: true
+        isActive: true,
       },
       { upsert: true, new: true }
     );
-    
-    console.log(' Admin user added/updated');
-    console.log('Email: admin@nishat.com');
-    console.log('Password: admin123');
-    
+
+    console.log("Admin user added/updated successfully.");
+    console.log("Email:", adminEmail);
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
   } finally {
     await mongoose.disconnect();
   }

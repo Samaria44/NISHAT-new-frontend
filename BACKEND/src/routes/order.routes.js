@@ -7,13 +7,17 @@ const {
   updateOrder,
   deleteOrder,
 } = require("../controllers/orderController");
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.get("/", getAllOrders);
-router.get("/:id", getOrderById);
+// Admin-only routes
+router.get("/", [verifyToken, isAdmin], getAllOrders);
+router.get("/:id", [verifyToken, isAdmin], getOrderById);
+router.patch("/:id", [verifyToken, isAdmin], updateOrder);
+router.delete("/:id", [verifyToken, isAdmin], deleteOrder);
+
+// Public — customers place orders
 router.post("/", addOrder);
-router.patch("/:id", updateOrder);
-router.delete("/:id", deleteOrder);
 
 module.exports = router;

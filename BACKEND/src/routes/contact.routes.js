@@ -1,11 +1,14 @@
-const express =require ("express");
-const { addContact, getContacts, deleteContact }
- = require("../controllers/contactController.js");
+const express = require("express");
+const { addContact, getContacts, deleteContact } = require("../controllers/contactController.js");
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/", addContact);           // Submit form
-router.get("/", getContacts);           // Admin view all messages
-router.delete("/:id", deleteContact);   // Admin delete
+// Public — anyone can submit the contact form
+router.post("/", addContact);
+
+// Admin only
+router.get("/", [verifyToken, isAdmin], getContacts);
+router.delete("/:id", [verifyToken, isAdmin], deleteContact);
 
 module.exports = router;

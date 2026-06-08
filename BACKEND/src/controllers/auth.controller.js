@@ -105,6 +105,12 @@ exports.signup = async (req, res) => {
       user.roles = foundRoles.map(role => role._id);
     } else {
       const defaultRole = await Role.findOne({ name: "user" });
+      if (!defaultRole) {
+        return res.status(500).json({
+          success: false,
+          message: "Default 'user' role not found. Please initialize roles first."
+        });
+      }
       user.roles = [defaultRole._id];
     }
 
@@ -327,10 +333,24 @@ exports.refreshToken = async (req, res) => {
       });
     }
 
-    const user = await refreshToken.user;
-    
+    const user = await refreshToken.populate("user");
+    const populatedUser = user.user;
+
+    if (!populatedUser) {
+      return res.status(403).json({
+        success: false,
+        message: "User not found for this refresh token!",
+      });
+    }
+
+    // Re-populate roles so the new token carries correct role info
+    await populatedUser.populate("roles", "name");
+
     const newAccessToken = jwt.sign(
-      { id: user._id, roles: user.roles },
+      {
+        id: populatedUser._id,
+        roles: populatedUser.roles.map((r) => r.name),
+      },
       config.secret,
       { expiresIn: config.jwtExpiration }
     );
@@ -343,9 +363,9 @@ exports.refreshToken = async (req, res) => {
       }
     });
   } catch (err) {
-    return res.status(500).send({ 
+    return res.status(500).send({
       success: false,
-      message: err.message 
+      message: err.message
     });
   }
 };

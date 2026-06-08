@@ -2,20 +2,15 @@ const Setting = require("../models/saletextModel");
 
 exports.createSpecialSaletext = async (req, res) => {
   try {
-    const { key, value} = req.body;
-    
+    const { key, value } = req.body;
 
-    if (!value) {
-      return res.status(400).json({ message: "Name is required" });
+    if (!key || !value) {
+      return res.status(400).json({ message: "Key and value are required" });
     }
 
-    const createSpecialSaletext = new this.createSpecialSaletext({
-        key,
-        value,
-    });
-
-    await createSpecialSaletext.save();
-    res.status(201).json(createSpecialSaletext);
+    const newSetting = new Setting({ key, value });
+    await newSetting.save();
+    res.status(201).json(newSetting);
   } catch (err) {
     console.error("Create Special Sale Error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
@@ -39,8 +34,9 @@ exports.updateBanner = async (req, res) => {
   try {
     const { banner } = req.body;
 
+  // Fix typo in error message
     if (typeof banner !== "string") {
-      return res.status(400).json({ error: "Bannear must be a string" });
+      return res.status(400).json({ error: "Banner must be a string" });
     }
 
     const doc = await Setting.findOneAndUpdate(

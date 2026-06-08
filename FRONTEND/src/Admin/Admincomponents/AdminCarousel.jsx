@@ -110,7 +110,7 @@ export default function AdminCarousel() {
       displayOrder: carousel.displayOrder,
     });
     setImagePreview(
-      carousel.image ? `${BACKEND_URL}/${carousel.image}` : null
+      carousel.image ? `${BACKEND_URL}/${carousel.image.replace(/^\//, "")}` : null
     );
     setImageFile(null);
     setEditingId(carousel._id);
@@ -282,7 +282,7 @@ export default function AdminCarousel() {
                   <img
                     src={
                       carousel.image
-                        ? `${BACKEND_URL}/${carousel.image}`
+                        ? `${BACKEND_URL}/${carousel.image.replace(/^\//, "")}`
                         : `${PLACEHOLDER_IMAGE}/80x50?text=No+Image`
                     }
                     alt={carousel.title}

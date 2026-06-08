@@ -1,112 +1,84 @@
-/* ==== MAIN CAROUSEL CONTAINER ==== */
+/* ===== HERO CAROUSEL ===== */
 .carousel-containerr {
   position: relative;
   width: 100%;
-  height: 70vh;
-  max-height: 650px;
+  height: 80vh;
+  max-height: 700px;
+  min-height: 400px;
   overflow: hidden;
+  background: #0f172a;
 }
 
-/* ==== SLIDES ==== */
+/* Slides */
 .slide {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   opacity: 0;
-  transition: opacity 1s ease-in-out;
+  transition: opacity 0.8s ease-in-out;
 }
-
-.slide.active {
-  opacity: 1;
-  z-index: 1;
-}
-
+.slide.active { opacity: 1; z-index: 1; }
 .slide img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
+  display: block;
 }
 
-
-/* ==== ARROWS ==== */
+/* Arrows — hidden until hover */
 .arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: black;
-  color: white;
-  border: none;
-  font-size: 1.8rem;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 6px;
   z-index: 10;
-  transition: 0.3s ease;
+  background: rgba(255,255,255,0.9);
+  color: #0f172a;
+  border: none;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
   opacity: 0;
   pointer-events: none;
+  transition: opacity 0.25s, background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.carousel-containerr:hover .arrow { opacity: 1; pointer-events: auto; }
+.arrow:hover { background: #fff; transform: translateY(-50%) scale(1.05); }
+.arrow.left  { left: 20px; }
+.arrow.right { right: 20px; }
+
+/* Dots */
+.carousel-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+.carousel-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: none;
+}
+.carousel-dot.active {
+  background: #fff;
+  transform: scale(1.4);
 }
 
-.carousel-containerr:hover .arrow {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Left */
-.arrow.left {
-  left: 20px;
-}
-
-/* Right */
-.arrow.right {
-  right: 20px;
-}
-
-.arrow:hover {
-  background: rgba(0, 0, 0, 0.7);
-}
-
-
-/* =========================================================
-   RESPONSIVE FIX (MOBILE + TABLET)
-========================================================= */
-
-/* ---------- TABLETS (768px ↓) ---------- */
+/* Responsive */
 @media (max-width: 768px) {
-  .carousel-containerr {
-    height: 50vh;
-    max-height: 450px;
-  }
-
-  .arrow {
-    font-size: 1.4rem;
-    padding: 6px 10px;
-  }
-
-  .arrow.left {
-    left: 10px;
-  }
-  .arrow.right {
-    right: 10px;
-  }
+  .carousel-containerr { height: 55vh; min-height: 280px; }
+  .arrow { width: 36px; height: 36px; font-size: 1rem; }
+  .arrow.left  { left: 10px; }
+  .arrow.right { right: 10px; }
 }
-
-/* ---------- MOBILE (480px ↓) ---------- */
 @media (max-width: 480px) {
-  .carousel-containerr {
-    height: 40vh;
-    max-height: 350px;
-  }
-
-  .arrow {
-    font-size: 1.2rem;
-    padding: 5px 8px;
-  }
-
-  .arrow.left {
-    left: 6px;
-  }
-  .arrow.right {
-    right: 6px;
-  }
+  .carousel-containerr { height: 45vh; min-height: 220px; }
 }

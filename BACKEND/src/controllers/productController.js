@@ -111,8 +111,15 @@ exports.updateProduct = async (req, res) => {
     }
 
     // Batches
-    if (batches) updatedData.batches = JSON.parse(batches);
-    else updatedData.batches = existing.batches;
+    if (batches) {
+      try {
+        updatedData.batches = JSON.parse(batches);
+      } catch {
+        return res.status(400).json({ message: "Invalid batches JSON" });
+      }
+    } else {
+      updatedData.batches = existing.batches;
+    }
 
     const updated = await Product.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     res.json(updated);
@@ -127,6 +134,17 @@ exports.deleteProduct = async (req, res) => {
   try {
     const deleted = await Product.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Product not found" });
+
+    // Clean up all associated image files from disk
+    if (deleted.images && deleted.images.length > 0) {
+      for (const imagePath of deleted.images) {
+        const fullPath = path.join(__dirname, "..", imagePath);
+        fs.unlink(fullPath, (err) => {
+          if (err) console.error("File delete error:", err.message);
+        });
+      }
+    }
+
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Delete product error:", error);
@@ -178,11 +196,11 @@ exports.getNewArrivals = async (req, res) => {
 // ===================== Out of Stock =====================
 exports.getOutOfStock = async (req, res) => {
   try {
-    const products = await Product.find();
-    const outOfStock = products.filter(
-      (p) => (p.batches || []).reduce((sum, b) => sum + (Number(b.stock) || 0), 0) === 0
-    );
-    res.json(outOfStock);
+    const products = await Product.aggregate([
+      { $addFields: { totalStock: { $sum: "$batches.stock" } } },
+      { $match: { totalStock: 0 } },
+    ]);
+    res.json(products);
   } catch (err) {
     console.error("Get out-of-stock error:", err);
     res.status(500).json({ message: err.message });
@@ -193,12 +211,12 @@ exports.getOutOfStock = async (req, res) => {
 exports.getLowStock = async (req, res) => {
   try {
     const threshold = Number(req.query.threshold) || 5;
-    const products = await Product.find();
-    const lowStock = products.filter((p) => {
-      const totalStock = (p.batches || []).reduce((sum, b) => sum + (Number(b.stock) || 0), 0);
-      return totalStock > 0 && totalStock <= threshold;
-    });
-    res.json(lowStock);
+    const products = await Product.aggregate([
+      { $addFields: { totalStock: { $sum: "$batches.stock" } } },
+      { $match: { totalStock: { $gt: 0, $lte: threshold } } },
+      { $sort: { totalStock: 1 } },
+    ]);
+    res.json(products);
   } catch (err) {
     console.error("Get low-stock error:", err);
     res.status(500).json({ message: err.message });
@@ -208,9 +226,8 @@ exports.getLowStock = async (req, res) => {
 // ===================== Top Selling =====================
 exports.getTopSelling = async (req, res) => {
   try {
-    const products = await Product.find();
-    const sorted = products.sort((a, b) => (b.sold || 0) - (a.sold || 0));
-    res.json(sorted.slice(0, 5));
+    const products = await Product.find().sort({ sold: -1 }).limit(5);
+    res.json(products);
   } catch (err) {
     console.error("Get top-selling error:", err);
     res.status(500).json({ message: err.message });

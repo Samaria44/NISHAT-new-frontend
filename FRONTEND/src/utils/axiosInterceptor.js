@@ -72,16 +72,20 @@ axiosInstance.interceptors.response.use(
           refreshToken,
         });
 
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
-        localStorage.setItem("accessToken", accessToken);
+        const newAccessToken = response.data?.data?.accessToken;
+        const newRefreshToken = response.data?.data?.refreshToken;
+
+        if (!newAccessToken) throw new Error("No access token in refresh response");
+
+        localStorage.setItem("accessToken", newAccessToken);
         if (newRefreshToken) {
           localStorage.setItem("refreshToken", newRefreshToken);
         }
 
-        axiosInstance.defaults.headers.common["x-access-token"] = accessToken;
-        originalRequest.headers["x-access-token"] = accessToken;
+        axiosInstance.defaults.headers.common["x-access-token"] = newAccessToken;
+        originalRequest.headers["x-access-token"] = newAccessToken;
 
-        processQueue(null, accessToken);
+        processQueue(null, newAccessToken);
         return axiosInstance(originalRequest);
       } catch (err) {
         processQueue(err, null);

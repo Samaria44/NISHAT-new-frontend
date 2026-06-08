@@ -56,8 +56,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded images
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+// Serve uploaded images — files live in src/uploads/
+app.use("/uploads", express.static(path.join(__dirname, "../src/uploads")));
 
 // Health check
 app.get("/", (req, res) => {
@@ -71,7 +71,7 @@ app.use("/orders", orderRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/newsletter", newsletterRoutes);
 app.use("/contact", contactRoutes);
-app.use("/Admin", adminRoutes);
+app.use("/admin", adminRoutes);
 app.use("/specialsale/banner", saletextRoutes);
 app.use("/specialsale", specialSaleRoutes);
 app.use("/carousel", carouselRoutes);
@@ -80,10 +80,21 @@ app.use("/inventory", inventoryRoutes);
 // Connect to database before exporting
 connectDB()
   .then(() => {
-    console.log('✅ Database connected successfully');
+    console.log("✅ Database connected successfully");
   })
   .catch((error) => {
-    console.error('❌ Database connection error:', error.message);
+    console.error("❌ Database connection error:", error.message);
   });
+
+// Global error handler — returns JSON instead of HTML for API clients
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
+});
 
 module.exports = app;

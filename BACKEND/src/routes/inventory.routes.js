@@ -6,17 +6,12 @@ const {
   getTopSellingProducts,
   getNewArrivals,
 } = require("../controllers/inventoryController");
+const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 
-// Low stock
-router.get("/low-stock", getLowStockProducts);
-
-// Out of stock
-router.get("/out-of-stock", getOutOfStockProducts);
-
-// Top selling
-router.get("/top-selling", getTopSellingProducts);
-
-// New arrivals
-router.get("/new-arrivals", getNewArrivals);
+// All inventory routes are admin-only
+router.get("/low-stock", [verifyToken, isAdmin], getLowStockProducts);
+router.get("/out-of-stock", [verifyToken, isAdmin], getOutOfStockProducts);
+router.get("/top-selling", [verifyToken, isAdmin], getTopSellingProducts);
+router.get("/new-arrivals", [verifyToken, isAdmin], getNewArrivals);
 
 module.exports = router;

@@ -1,228 +1,141 @@
-/* ====== ORDERS PAGE WRAPPER ====== */
+/* ====== ORDERS PAGE ====== */
 .order-table-container {
-  margin-left: 279px;         /* match sidebar width */
-         /* space for fixed header */
-  margin-right: 24px;
-  margin-bottom: 32px;
   background: #ffffff;
-  padding: 22px 24px;
-  border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  padding: 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.07);
   font-family: "Poppins", sans-serif;
 }
 
-/* ====== HEADER ====== */
 .order-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .order-title {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: #111827;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .order-title .count {
   font-size: 12px;
   font-weight: 500;
-  color: #6b7280;
-  padding: 2px 8px;
+  color: #64748b;
+  padding: 3px 10px;
   border-radius: 999px;
-  background: #f3f4f6;
+  background: #f1f5f9;
 }
 
-/* ====== TABLE BASE ====== */
+/* Table */
 .order-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 6px;
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
-  background: #ffffff;
 }
 
-.order-table thead {
-  background: #f9fafb;
+.order-table thead { background: #f8fafc; }
+
+.order-table th {
+  text-align: left;
+  padding: 12px 14px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 11px;
+  border-bottom: 2px solid #e2e8f0;
 }
 
-.order-table th,
 .order-table td {
   text-align: left;
-  padding: 10px 12px;
-  font-size: 13px;
+  padding: 12px 14px;
+  font-size: 13.5px;
   vertical-align: middle;
-}
-
-.order-table thead th {
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 11px;
-  border-bottom: 1px solid #e5e7eb;
+  color: #334155;
 }
 
 .order-table tbody tr {
-  border-bottom: 1px solid #e5e7eb;
-  transition: background-color 0.18s ease;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
 }
+.order-table tbody tr:last-child { border-bottom: none; }
+.order-table tbody tr:hover { background: #f8fafc; }
 
-.order-table tbody tr:last-child {
-  border-bottom: none;
-}
-
-.order-table tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-/* ====== ORDER ID LINK ====== */
 .order-id-link {
   cursor: pointer;
   font-weight: 600;
-  color: #111827;
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
-    Consolas, "Liberation Mono", "Courier New", monospace;
+  color: #0f172a;
+  font-family: ui-monospace, monospace;
   font-size: 12px;
+  text-decoration: none;
 }
+.order-id-link:hover { text-decoration: underline; color: #f2a73b; }
 
-.order-id-link:hover {
-  text-decoration: underline;
-}
-
-/* ====== STATUS SELECT ====== */
+/* Status select */
 .status {
   border-radius: 999px;
-  padding: 4px 10px;
-  border: 1px solid #d1d5db;
+  padding: 5px 12px;
+  border: 1px solid #e2e8f0;
   font-size: 12px;
+  font-weight: 500;
   outline: none;
-  background: #ffffff;
+  background: #fff;
   cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  transition: all 0.15s;
 }
+.status.pending  { background:#fef9c3; border-color:#fbbf24; color:#92400e; }
+.status.shipped  { background:#dbeafe; border-color:#60a5fa; color:#1e40af; }
+.status.delivered{ background:#dcfce7; border-color:#4ade80; color:#166534; }
+.status.cancelled{ background:#fee2e2; border-color:#f87171; color:#991b1b; }
 
-/* Default */
-.status.pending {
-  background: #fef3c7;
-  border-color: #fbbf24;
-  color: #92400e;
-}
-
-.status.shipped {
-  background: #dbeafe;
-  border-color: #3b82f6;
-  color: #1d4ed8;
-}
-
-.status.delivered {
-  background: #dcfce7;
-  border-color: #22c55e;
-  color: #166534;
-}
-
-.status.cancelled {
-  background: #fee2e2;
-  border-color: #ef4444;
-  color: #991b1b;
-}
-
-/* When no explicit class (fallback) */
-.status option {
-  color: #111827;
-}
-
-/* ====== DELETE ICON ====== */
+/* Delete icon */
 .delete {
   cursor: pointer;
-  font-size: 18px;
-  color: #9ca3af;
-  transition: color 0.18s ease, transform 0.12s ease;
+  font-size: 17px;
+  color: #cbd5e1;
+  transition: color 0.15s, transform 0.1s;
 }
+.delete:hover { color: #ef4444; transform: translateY(-1px); }
 
-.delete:hover {
-  color: #b91c1c;
-  transform: translateY(-1px);
-}
-
-/* ====== "NO ORDERS" ROW ====== */
-.order-table td[colspan] {
-  padding: 14px 12px;
-}
-
-/* ====== RESPONSIVE ====== */
-@media (max-width: 1024px) {
-  .order-table-container {
-    margin-left: 220px;
-    margin-right: 16px;
-  }
-}
-
+/* Responsive */
 @media (max-width: 768px) {
-  .order-table-container {
-    margin-left: 0;
-    margin-top: 80px;
-    margin-right: 12px;
-    margin-left: 12px;
-    padding: 16px 14px;
-  }
-
-  .order-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .order-table,
-  .order-table thead,
-  .order-table tbody,
-  .order-table th,
-  .order-table td,
+  .order-table-container { padding: 16px; border-radius: 12px; }
+  .order-table, .order-table thead, .order-table tbody,
+  .order-table th, .order-table td, .order-table tr { display: block; }
+  .order-table thead { display: none; }
   .order-table tr {
-    display: block;
+    background: #fff;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.06);
+    padding: 10px 12px;
   }
-
-  .order-table thead {
-    display: none;
-  }
-
-  .order-table tr {
-    background: #ffffff;
-    margin-bottom: 10px;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
-    padding: 8px 8px 6px;
-  }
-
   .order-table td {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 10px;
-    border-bottom: 1px dashed #e5e7eb;
+    padding: 8px 4px;
+    border-bottom: 1px dashed #f1f5f9;
+    font-size: 13px;
   }
-
-  .order-table td:last-child {
-    border-bottom: none;
-  }
-
+  .order-table td:last-child { border-bottom: none; }
   .order-table td::before {
     content: attr(data-label);
     font-weight: 600;
-    color: #6b7280;
+    color: #94a3b8;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    margin-right: 10px;
-  }
-
-  .status {
-    margin-left: auto;
+    margin-right: 8px;
   }
 }

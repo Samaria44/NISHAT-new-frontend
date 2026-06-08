@@ -28,9 +28,10 @@ class CarouselService {
   // Delete carousel
   static async deleteCarousel(id) {
     const carousel = await Carousel.findById(id).maxTimeMS(30000);
-    
+
     if (carousel && carousel.image) {
-      const imagePath = path.join(__dirname,  "../uploads", carousel.image);
+      // image is stored as "uploads/carousel/filename.ext" — join from src/
+      const imagePath = path.join(__dirname, "..", carousel.image);
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
@@ -48,14 +49,14 @@ class CarouselService {
 
     // Delete old image if exists
     if (carousel.image) {
-      const oldPath = path.join(__dirname, "../uploads" ,carousel.image);
+      const oldPath = path.join(__dirname, "..", carousel.image);
       if (fs.existsSync(oldPath)) {
         fs.unlinkSync(oldPath);
       }
     }
 
-    // Save new image path (NO leading slash, so easy to join)
-carousel.image = `uploads/carousel/${file.filename}`;
+    // Save new image path — relative, no leading slash, so frontend can safely prepend BACKEND_URL + "/"
+    carousel.image = `uploads/carousel/${file.filename}`;
 return await carousel.save({ maxTimeMS: 30000 });
 
   }

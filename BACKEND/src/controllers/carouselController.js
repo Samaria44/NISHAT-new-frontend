@@ -102,11 +102,11 @@ exports.updateCarouselImage = async (req, res) => {
       req.file
     );
 
-    console.log("Carousel updated with image:", updatedCarousel.image);
-
     if (!updatedCarousel) {
       return res.status(404).json({ error: "Carousel item not found" });
     }
+
+    console.log("Carousel updated with image:", updatedCarousel.image);
 
     res.status(200).json(updatedCarousel);
   } catch (error) {
