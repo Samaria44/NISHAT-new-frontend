@@ -3,6 +3,7 @@ import "./App.css";
 import "./utils/axiosInterceptor"; // Initialize axios interceptor for token refresh
 import { AuthProvider } from "./contexts/AuthContext";
 
+import Dashboard from "./Admin/Adminpages/Dashboard";
 import Home from "./Main/pages/Home";
 import AppLayout from "./Main/components/Applayout";
 import AdminLayout from "./Admin/Admincomponents/Adminlayout";
@@ -84,6 +85,7 @@ function App() {
         </ProtectedRoute>
       ),
       children: [
+        { index: true, element: <Dashboard /> },
         { path: "products", element: <ProductUpload /> },
         { path: "category", element: <AdminCategory /> },
         { path: "specialsales", element: <AdminSpecialSale /> },

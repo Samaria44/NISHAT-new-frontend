@@ -2,139 +2,138 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiBox, FiShoppingBag, FiMessageSquare,
-  FiTrendingUp, FiAlertCircle, FiAlertTriangle
+  FiTrendingUp, FiAlertCircle, FiAlertTriangle,
 } from "react-icons/fi";
-import "../Admincomponents/Admin.css";
-import Slidebar from "../Admincomponents/AdminSlidebar";
 import axiosInstance from "../../utils/axiosInterceptor";
-import { useAuth } from "../../contexts/AuthContext";
+import "../Admincomponents/Admin.css";
 
-export default function Admin() {
+export default function Dashboard() {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
 
   const [stats, setStats] = useState({
-    totalProducts: 0,
-    totalOrders: 0,
-    totalContacts: 0,
+    totalProducts:   0,
+    totalOrders:     0,
+    totalContacts:   0,
     topSellingCount: 0,
     outOfStockCount: 0,
-    lowStockCount: 0,
+    lowStockCount:   0,
   });
 
-  const loadCounts = async () => {
-    try {
-      const [productRes, orderRes, contactRes] = await Promise.all([
-        axiosInstance.get("/products"),
-        axiosInstance.get("/orders"),
-        axiosInstance.get("/contact"),
-      ]);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [productRes, orderRes, contactRes] = await Promise.all([
+          axiosInstance.get("/products"),
+          axiosInstance.get("/orders"),
+          axiosInstance.get("/contact"),
+        ]);
+        const products = Array.isArray(productRes.data) ? productRes.data : [];
+        const orders   = Array.isArray(orderRes.data)   ? orderRes.data   : [];
+        const contacts = Array.isArray(contactRes.data) ? contactRes.data : [];
 
-      const products = Array.isArray(productRes.data) ? productRes.data : [];
-      const orders   = Array.isArray(orderRes.data)   ? orderRes.data   : [];
-      const contacts = Array.isArray(contactRes.data) ? contactRes.data : [];
+        const enriched = products.map((p) => ({
+          ...p,
+          totalStock: (p.batches || []).reduce((a, b) => a + (Number(b.stock) || 0), 0),
+          totalSold:  Number(p.sold) || 0,
+        }));
 
-      const productsWithStock = products.map((p) => {
-        const totalStock = (p.batches || []).reduce((acc, b) => acc + (Number(b.stock) || 0), 0);
-        return { ...p, totalStock, totalSold: Number(p.sold) || 0 };
-      });
+        setStats({
+          totalProducts:   products.length,
+          totalOrders:     orders.length,
+          totalContacts:   contacts.length,
+          topSellingCount: enriched.filter(p => p.totalSold > 0).length,
+          outOfStockCount: enriched.filter(p => p.totalStock === 0).length,
+          lowStockCount:   enriched.filter(p => p.totalStock > 0 && p.totalStock <= 5).length,
+        });
+      } catch (err) {
+        console.error("Dashboard load error:", err);
+      }
+    };
+    load();
+  }, []);
 
-      setStats({
-        totalProducts:   products.length,
-        totalOrders:     orders.length,
-        totalContacts:   contacts.length,
-        topSellingCount: productsWithStock.filter(p => p.totalSold > 0).length,
-        outOfStockCount: productsWithStock.filter(p => p.totalStock === 0).length,
-        lowStockCount:   productsWithStock.filter(p => p.totalStock > 0 && p.totalStock <= 5).length,
-      });
-    } catch (err) {
-      console.error("Error loading dashboard counts:", err);
-    }
-  };
-
-  useEffect(() => { loadCounts(); }, []);
-
-  const handleLogout = async () => {
-    await logout();
-    window.location.href = "/dashboard/login";
-  };
-
-  const adminInitial = user?.firstName?.[0] || user?.email?.[0]?.toUpperCase() || "A";
+  const cards = [
+    {
+      label: "Total Products",
+      value: stats.totalProducts,
+      icon: <FiBox />,
+      iconBg: "#fff7ed", iconColor: "#f97316",
+      cls: "product-card",
+      link: "/dashboard/products",
+    },
+    {
+      label: "Total Orders",
+      value: stats.totalOrders,
+      icon: <FiShoppingBag />,
+      iconBg: "#f0fdf4", iconColor: "#22c55e",
+      cls: "order-card",
+      link: "/dashboard/orders",
+    },
+    {
+      label: "Contact Messages",
+      value: stats.totalContacts,
+      icon: <FiMessageSquare />,
+      iconBg: "#fefce8", iconColor: "#eab308",
+      cls: "user-card",
+      link: "/dashboard/users",
+    },
+    {
+      label: "Top Selling",
+      value: stats.topSellingCount,
+      icon: <FiTrendingUp />,
+      iconBg: "#f0fdf4", iconColor: "#16a34a",
+      cls: "top-selling-card",
+      link: "/dashboard/inventory",
+    },
+    {
+      label: "Out of Stock",
+      value: stats.outOfStockCount,
+      icon: <FiAlertCircle />,
+      iconBg: "#fef2f2", iconColor: "#dc2626",
+      cls: "out-of-stock-card",
+      link: "/dashboard/inventory",
+    },
+    {
+      label: "Low Stock (≤5)",
+      value: stats.lowStockCount,
+      icon: <FiAlertTriangle />,
+      iconBg: "#fffbeb", iconColor: "#f59e0b",
+      cls: "low-stock-card",
+      link: "/dashboard/inventory",
+    },
+  ];
 
   return (
-    <div className="admin-dashboard">
-      <Slidebar />
+    <div>
+      <h2 style={{ fontFamily: "'Poppins',sans-serif", fontWeight: 700, fontSize: 20, color: "#0f172a", margin: "0 0 24px" }}>
+        Overview
+      </h2>
 
-      {/* Header */}
-      <header className="admin-header">
-        <div className="admin-header-left">
-          <h1 className="admin-title">Dashboard</h1>
-          <p className="admin-subtitle">Welcome back, {user?.firstName || "Admin"}</p>
-        </div>
-        <div className="admin-nav">
-          <div className="admin-avatar">{adminInitial}</div>
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
-        </div>
-      </header>
-
-      {/* Stats Row 1 */}
-      <div className="dashboard-overview">
-        <div className="card product-card" onClick={() => navigate("/dashboard/products")}>
-          <div className="card-icon" style={{ background: "#fff7ed", color: "#f97316" }}>
-            <FiBox />
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+          gap: 18,
+        }}
+      >
+        {cards.map((c) => (
+          <div
+            key={c.label}
+            className={`card ${c.cls}`}
+            onClick={() => navigate(c.link)}
+            style={{ cursor: "pointer" }}
+          >
+            <div
+              className="card-icon"
+              style={{ background: c.iconBg, color: c.iconColor }}
+            >
+              {c.icon}
+            </div>
+            <h3>{c.label}</h3>
+            <p>{c.value}</p>
+            <span className="card-link-text">View details →</span>
           </div>
-          <h3>Total Products</h3>
-          <p>{stats.totalProducts}</p>
-          <span className="card-link-text">View products →</span>
-        </div>
-
-        <div className="card order-card" onClick={() => navigate("/dashboard/orders")}>
-          <div className="card-icon" style={{ background: "#f0fdf4", color: "#22c55e" }}>
-            <FiShoppingBag />
-          </div>
-          <h3>Total Orders</h3>
-          <p>{stats.totalOrders}</p>
-          <span className="card-link-text">View orders →</span>
-        </div>
-
-        <div className="card user-card" onClick={() => navigate("/dashboard/users")}>
-          <div className="card-icon" style={{ background: "#fefce8", color: "#eab308" }}>
-            <FiMessageSquare />
-          </div>
-          <h3>Contact Messages</h3>
-          <p>{stats.totalContacts}</p>
-          <span className="card-link-text">View messages →</span>
-        </div>
-      </div>
-
-      {/* Stats Row 2 — Inventory */}
-      <div className="dashboard-overview" style={{ paddingTop: "18px" }}>
-        <div className="card top-selling-card" onClick={() => navigate("/dashboard/inventory?view=topSelling")}>
-          <div className="card-icon" style={{ background: "#f0fdf4", color: "#16a34a" }}>
-            <FiTrendingUp />
-          </div>
-          <h3>Top Selling</h3>
-          <p>{stats.topSellingCount}</p>
-          <span className="card-link-text">View details →</span>
-        </div>
-
-        <div className="card out-of-stock-card" onClick={() => navigate("/dashboard/inventory?view=outOfStock")}>
-          <div className="card-icon" style={{ background: "#fef2f2", color: "#dc2626" }}>
-            <FiAlertCircle />
-          </div>
-          <h3>Out of Stock</h3>
-          <p>{stats.outOfStockCount}</p>
-          <span className="card-link-text">View details →</span>
-        </div>
-
-        <div className="card low-stock-card" onClick={() => navigate("/dashboard/inventory?view=lowStock")}>
-          <div className="card-icon" style={{ background: "#fffbeb", color: "#f59e0b" }}>
-            <FiAlertTriangle />
-          </div>
-          <h3>Low Stock (≤5)</h3>
-          <p>{stats.lowStockCount}</p>
-          <span className="card-link-text">View details →</span>
-        </div>
+        ))}
       </div>
     </div>
   );

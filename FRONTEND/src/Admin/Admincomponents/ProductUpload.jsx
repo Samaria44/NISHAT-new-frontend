@@ -169,8 +169,7 @@ export default function ProductUpload() {
         error.response?.data || error.message
       );
       alert(
-        `Error saving product: ${
-          error.response?.data?.message || error.message
+        `Error saving product: ${error.response?.data?.message || error.message
         }`
       );
     }
@@ -251,7 +250,7 @@ export default function ProductUpload() {
             <th>Subcategory</th>
             <th>Sizes</th>
             <th>Batches / Variants</th>
-            <th>Price</th> {/* ✅ Added Price column */}
+            <th>Price</th>
             <th>Description</th>
             <th>Action</th>
           </tr>
@@ -359,7 +358,7 @@ export default function ProductUpload() {
                 name="subCategory"
                 value={formData.subCategory}
                 onChange={handleChange}
-                // required
+              // required
               >
                 <option value="">Select Subcategory</option>
                 {filteredSubcategories.map((sub) => (
