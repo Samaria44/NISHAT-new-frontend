@@ -1,6 +1,7 @@
 import { FiTrash2 } from "react-icons/fi";
 import { useCart } from "../components/context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { getImageUrl } from "../../config/api";
 import "./cart.css";
 
 export default function Cart() {
@@ -56,10 +57,7 @@ export default function Cart() {
                   <img
                     src={
                       item.images?.length
-                        ? `
-http://localhost:8000
-
-${item.images[0]}`
+                        ? getImageUrl(item.images[0])
                         : "https://placehold.co/80x120?text=No+Image"
                     }
                     alt={item.name}

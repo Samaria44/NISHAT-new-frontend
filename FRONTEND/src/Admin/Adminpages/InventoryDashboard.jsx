@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInterceptor";
-import { API_BASE_URL } from "../../config/api";
+import { getImageUrl } from "../../config/api";
 import "./InAdmin.css";
-
-const BACKEND_URL = API_BASE_URL.replace(/\/+$/, "");
 
 export default function InventoryDashboard() {
   const [products, setProducts] = useState([]);
@@ -63,7 +61,7 @@ export default function InventoryDashboard() {
     <tr key={p._id}>
       <td>
         {p.images?.length > 0
-          ? <img src={`${BACKEND_URL}${p.images[0]}`} alt={p.name} />
+          ? <img src={getImageUrl(p.images[0])} alt={p.name} />
           : <span style={{ color: "#94a3b8", fontSize: 12 }}>No image</span>}
       </td>
       <td style={{ fontWeight: 600, color: "#0f172a" }}>{p.name}</td>

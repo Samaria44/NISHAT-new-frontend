@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiShoppingCart } from "react-icons/fi";
 import "./checkout.css";
 import axiosInstance from "../../utils/axiosInterceptor";
+import { getImageUrl } from "../../config/api";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -304,10 +305,7 @@ export default function Checkout() {
                 className="ck-summary-img"
                 src={
                   item.images && item.images.length > 0
-                    ? `
-http://localhost:8000
-
-${item.images[0]}`
+                    ? getImageUrl(item.images[0])
                     : "https://via.placeholder.com/80"
                 }
                 alt={item.name}

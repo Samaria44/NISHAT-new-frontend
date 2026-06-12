@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import axiosInstance from '../utils/axiosInterceptor';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -36,21 +37,14 @@ const UserProfile = () => {
 
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/auth/update-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': localStorage.getItem('accessToken')
-        },
-        body: JSON.stringify({
-          currentPassword: profile.currentPassword,
-          newPassword: profile.newPassword
-        }),
+      const response = await axiosInstance.post('/auth/update-password', {
+        currentPassword: profile.currentPassword,
+        newPassword: profile.newPassword,
       });
 
-      const data = await response.json();
+      const data = response.data;
       
-      if (response.ok && data.success) {
+      if (data.success) {
         alert('Password updated successfully!');
         setProfile(prev => ({
           ...prev,
@@ -74,21 +68,14 @@ const UserProfile = () => {
     
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/auth/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': localStorage.getItem('accessToken')
-        },
-        body: JSON.stringify({
-          firstName: profile.firstName,
-          lastName: profile.lastName
-        }),
+      const response = await axiosInstance.put('/auth/profile', {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
       });
 
-      const data = await response.json();
+      const data = response.data;
       
-      if (response.ok && data.success) {
+      if (data.success) {
         alert('Profile updated successfully!');
         setIsEditing(false);
       } else {

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ShopByCategory.css";
 import { CategoryContext } from "../../Admin/context/CategoryContext";
+import { getImageUrl } from "../../config/api";
 
 // Fallback static categories if backend categories are not available
 const staticCategories = [
@@ -86,10 +87,7 @@ export default function ShopByCategory() {
               <img 
                 src={
                   cat.image
-                    ? `
-http://localhost:8000
-
-${cat.image}`
+                    ? getImageUrl(cat.image)
                     : "https://placeholder.co/300x300?text=No+Image"
                 }
                 alt={cat.name} 

@@ -1,6 +1,7 @@
 // src/Main/components/CategoryCarousel.jsx
 import { useEffect, useState, useRef, useContext } from "react";
 import { SpecialSaleContext } from "../../Admin/context/SpecialSaleContext";
+import { getImageUrl } from "../../config/api";
 import "./Categorycarousel.css";
 
 export default function CategoryCarousel() {
@@ -111,10 +112,7 @@ export default function CategoryCarousel() {
                 <img
                   src={
                     item.image
-                      ? `
-http://localhost:8000
-
-${item.image}`
+                      ? getImageUrl(item.image)
                       : "https://placeholder.co/200x200?text=No+Image"
                   }
                   alt={item.name}

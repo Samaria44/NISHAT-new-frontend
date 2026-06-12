@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./orderdetail.css";
 import axiosInstance from "../../utils/axiosInterceptor";
-
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
+import { getImageUrl } from "../../config/api";
 const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://placeholder.co";
 
 export default function OrderDetail() {
@@ -66,7 +65,7 @@ export default function OrderDetail() {
               const imageSrc = imageCandidate
                 ? imageCandidate.startsWith("http")
                   ? imageCandidate
-                  : `${BACKEND_URL}${imageCandidate}`
+                  : getImageUrl(imageCandidate)
                 : `${PLACEHOLDER_IMAGE}/60x60?text=No+Image`;
               const price = (Number(product.price) || 0) * qty;
               return (

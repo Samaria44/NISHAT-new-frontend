@@ -3,7 +3,7 @@ import { CarouselContext } from "../context/CarouselContext";
 import { FiImage, FiEdit2, FiTrash2, FiX } from "react-icons/fi";
 import "./AdminCarousel.css";
 
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
+import { getImageUrl } from "../../config/api";
 const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
 
 export default function AdminCarousel() {
@@ -110,7 +110,7 @@ export default function AdminCarousel() {
       displayOrder: carousel.displayOrder,
     });
     setImagePreview(
-      carousel.image ? `${BACKEND_URL}/${carousel.image.replace(/^\//, "")}` : null
+      carousel.image ? getImageUrl(carousel.image) : null
     );
     setImageFile(null);
     setEditingId(carousel._id);
@@ -282,7 +282,7 @@ export default function AdminCarousel() {
                   <img
                     src={
                       carousel.image
-                        ? `${BACKEND_URL}/${carousel.image.replace(/^\//, "")}`
+                        ? getImageUrl(carousel.image)
                         : `${PLACEHOLDER_IMAGE}/80x50?text=No+Image`
                     }
                     alt={carousel.title}

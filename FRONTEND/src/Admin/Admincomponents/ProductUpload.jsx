@@ -3,9 +3,7 @@ import axiosInstance from "../../utils/axiosInterceptor";
 import "./product.css";
 import { FiEdit2, FiTrash2, FiX, FiImage } from "react-icons/fi";
 import { CategoryContext } from "../context/CategoryContext";
-import { API_BASE_URL } from "../../config/api";
-
-const BACKEND_URL = API_BASE_URL;
+import { getImageUrl } from "../../config/api";
 const ALL_SIZES = ["S", "M", "L", "XL"];
 
 export default function ProductUpload() {
@@ -114,7 +112,7 @@ export default function ProductUpload() {
     if (!window.confirm("Delete this image only?")) return;
     try {
       await axiosInstance.delete(
-        `${BACKEND_URL}/products/${productId}/images/${imageIndex}`
+        `/products/${productId}/images/${imageIndex}`
       );
       fetchProducts();
     } catch (error) {
@@ -150,13 +148,13 @@ export default function ProductUpload() {
     try {
       if (editingProductId) {
         await axiosInstance.patch(
-          `${BACKEND_URL}/products/${editingProductId}`,
+          `/products/${editingProductId}`,
           uploadData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
         alert("Product updated successfully!");
       } else {
-        await axiosInstance.post(`${BACKEND_URL}/products`, uploadData, {
+        await axiosInstance.post("/products", uploadData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Product uploaded successfully!");
@@ -191,9 +189,7 @@ export default function ProductUpload() {
     });
 
     if (product.images && product.images.length > 0) {
-      const serverPreviews = product.images.map(
-        (img) => `${BACKEND_URL}${img}`
-      );
+      const serverPreviews = product.images.map((img) => getImageUrl(img));
       setPreviews(serverPreviews);
     } else setPreviews([]);
 
@@ -205,7 +201,7 @@ export default function ProductUpload() {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
-      await axiosInstance.delete(`${BACKEND_URL}/products/${id}`);
+      await axiosInstance.delete(`/products/${id}`);
       fetchProducts();
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -270,7 +266,7 @@ export default function ProductUpload() {
                     <div className="thumbs-row">
                       {p.images.map((img, index) => (
                         <div key={index} className="thumb-item">
-                          <img src={`${BACKEND_URL}${img}`} alt="" width={40} />
+                          <img src={getImageUrl(img)} alt="" width={40} />
                           <button
                             className="pro-btn"
                             onClick={() =>

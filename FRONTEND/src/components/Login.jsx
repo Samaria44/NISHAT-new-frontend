@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import axiosInstance from '../utils/axiosInterceptor';
 import './Login.css';
 
 const Login = ({ onClose, onLoginSuccess }) => {
@@ -56,23 +57,17 @@ const Login = ({ onClose, onLoginSuccess }) => {
     
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          password: form.password,
-          roles: ['user'] // Default role for new users
-        }),
+      const response = await axiosInstance.post('/auth/signup', {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        password: form.password,
+        roles: ['user'],
       });
 
-      const data = await response.json();
+      const data = response.data;
       
-      if (response.ok) {
+      if (response.status === 200 || response.status === 201) {
         alert("Account created successfully! Please login.");
         setView("login");
         setForm({ firstName: "", lastName: "", email: "", password: "" });
@@ -96,17 +91,13 @@ const Login = ({ onClose, onLoginSuccess }) => {
     
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: form.email }),
+      const response = await axiosInstance.post('/auth/forgot-password', {
+        email: form.email,
       });
 
-      const data = await response.json();
+      const data = response.data;
       
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Password reset link sent! Check your email.");
         setView("login");
       } else {

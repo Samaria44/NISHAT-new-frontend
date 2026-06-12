@@ -1,11 +1,7 @@
 import { createContext, useState } from "react";
 import axiosInstance from "../../utils/axiosInterceptor";
-import { API_BASE_URL } from "../../config/api";
 
 export const CarouselContext = createContext();
-
-// Absolute URL for image src display only
-const BACKEND_URL = API_BASE_URL.replace(/\/+$/, "");
 
 export const CarouselProvider = ({ children }) => {
   const [carouselImages, setCarouselImages] = useState([]);

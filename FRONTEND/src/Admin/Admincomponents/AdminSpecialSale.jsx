@@ -4,7 +4,7 @@ import { SpecialSaleContext } from "../context/SpecialSaleContext";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import "./AdminSpecialSale.css";
 
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
+import { getImageUrl } from "../../config/api";
 const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://via.placeholder.com";
 
 export default function AdminSpecialSale() {
@@ -246,7 +246,7 @@ export default function AdminSpecialSale() {
                     <img
                       src={
                         item.image
-                          ? `${BACKEND_URL}${item.image}`
+                          ? getImageUrl(item.image)
                           : `${PLACEHOLDER_IMAGE}/50`
                       }
                       alt={item.name}

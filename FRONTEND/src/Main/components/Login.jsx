@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { FiX } from "react-icons/fi";
 import axiosInstance from "../../utils/axiosInterceptor";
+import { useAuth } from "../../contexts/AuthContext";
 import "./Login.css";
 
 
 const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
+  const { login } = useAuth();
   const [view, setView] = useState("login");
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
@@ -18,19 +20,16 @@ const UserSidebar = ({ open, onClose, onLoginSuccess }) => {
     if (!form.email || !form.password) return alert("Enter email & password");
     try {
       setLoading(true);
-      const res = await axiosInstance.post(`/auth/signin`, {
-        email: form.email,
-        password: form.password,
-      });
-
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-      localStorage.setItem("user", JSON.stringify(res.data));
-      alert("Login successful!");
-      onLoginSuccess?.();
-      onClose();
+      const result = await login(form.email, form.password);
+      if (result.success) {
+        alert("Login successful!");
+        onLoginSuccess?.();
+        onClose();
+      } else {
+        alert(result.message || "Login failed");
+      }
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      alert(err.message || "Login failed");
     } finally {
       setLoading(false);
     }

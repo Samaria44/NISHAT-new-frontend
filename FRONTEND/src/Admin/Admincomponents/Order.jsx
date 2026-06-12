@@ -3,8 +3,7 @@ import "./order.css";
 import { FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInterceptor";
-
-const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
+import { getImageUrl } from "../../config/api";
 const PLACEHOLDER_IMAGE = process.env.REACT_APP_PLACEHOLDER_IMAGE || "https://placeholder.co";
 
 export default function Orders() {
@@ -84,7 +83,7 @@ export default function Orders() {
     const src = image
       ? image.startsWith("http")
         ? image
-        : `${BACKEND_URL}${image.startsWith("/") ? "" : "/"}${image}`
+        : getImageUrl(image)
       : `${PLACEHOLDER_IMAGE}/50x50?text=No+Image`;
 
     return (
